@@ -20,8 +20,8 @@ static const double FRAMERATE_IN_SECONDS = 1. / 60.;
 /* IHM flag */
 static int flag_animate_rot_scale = 0;
 static int flag_animate_rot_arm = 0;
-static bool flag_walk = false;
-static float walk = 0;
+static int flag_walk = 0;
+float walk = 0;
 
 /* Error handling function */
 void onError(int error, const char* description)
@@ -58,7 +58,7 @@ void onKey(GLFWwindow* window, int key, int scancode, int action, int mods)
 				break;
 			/* *** FAIRE BOUGER LA CAMERA *** */
 			case GLFW_KEY_UP:
-				flag_walk = true;
+				flag_walk = 1;
 				break;
 			default: fprintf(stdout,"Touche non gérée (%d)\n",key);
 		}
@@ -69,7 +69,7 @@ void onKey(GLFWwindow* window, int key, int scancode, int action, int mods)
 		switch(key) 
 		{
 			case GLFW_KEY_UP:
-				flag_walk = false;
+				flag_walk = 0;
 				break;
 			default: fprintf(stdout,"Touche non gérée (%d)\n",key);
 		}
@@ -112,7 +112,7 @@ int main(int argc, char** argv)
 		/* Get time (in second) at loop beginning */
 		double startTime = glfwGetTime();
 
-		if(flag_walk)
+		//if(flag_walk)
 
 
 		/* Cleaning buffers and setting Matrix Mode */

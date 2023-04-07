@@ -110,13 +110,6 @@ void drawLines()
 					glVertex3f(-x+0.1, y, z);
 				glEnd();
 				y-=10;
-
-				glBegin(GL_LINE_LOOP);
-					glVertex3f(-x+0.1, -12, -z+0.1);
-					glVertex3f(x-0.1, -12, -z+0.1);
-					glVertex3f(x-0.1, y, z);
-					glVertex3f(-x+0.1, y, z);
-				glEnd();
 			}
 }
 
