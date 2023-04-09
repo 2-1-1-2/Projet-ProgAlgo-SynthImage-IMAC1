@@ -78,6 +78,7 @@ void drawCone()
 	glEnd();
 }
 
-void drawSphere() {
+void drawSphere() 
+{
 	gluSphere(gluNewQuadric(),1.0,NB_SEG_CIRCLE,NB_SEG_CIRCLE);
 }

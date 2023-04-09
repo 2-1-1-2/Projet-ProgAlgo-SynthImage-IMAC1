@@ -7,9 +7,3 @@
 #include <math.h>
 
 void drawFrame();
-
-void drawBase();
-
-void drawArm();
-
-void drawLines(float walk);

@@ -2,21 +2,7 @@
 #include "3D_tools.h"
 #include "math.h"
 
-void drawBase() 
-{
-	glPushMatrix();
-		glColor3f(235.0/255.0, 207.0/255.0, 52.0/255.0);
-		glScalef(3.0,3.0,0.1);
-		drawCircle();
-	glPopMatrix();
-
-	glPushMatrix();
-		glScalef(2.0,2.0,10.0);
-		drawCone();
-	glPopMatrix();
-}
-
-void drawArm() 
+/*void drawArm() 
 {
 	// sphere
 	glPushMatrix();
@@ -41,7 +27,7 @@ void drawArm()
 			drawCone();
 		glPopMatrix();
 	glPopMatrix();
-}
+}*/
 
 // Repère 3D
 void drawFrame() 
