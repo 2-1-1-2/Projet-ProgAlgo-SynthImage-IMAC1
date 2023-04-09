@@ -42,26 +42,22 @@ void Corridor::drawCorridor()
         drawSquare(m_x, m_y, m_z, m_start, false);
 }
 
+// to make go backward the inside of the corridor
 void Corridor::drawLines()
 {       
-
-        /*// to make walk the inside of the corridor
-        y-=walk;*/
+        // color white
         glColor3f(1, 1, 1);
+        // size of the line
         glLineWidth(2);
-        // deux premiers points = ceux du bas
+        // To create the 7 lines
         for(size_t i = 0; i < 7; i++)
         {
             m_lines[i] -= m_walk;
+
             if(m_lines[i] <= -10)
                 m_lines[i] = m_y-1;
 
-            glBegin(GL_LINE_LOOP);
-                glVertex3f(-m_x+0.1, m_lines[i], -m_z+0.1);
-                glVertex3f(m_x-0.1, m_lines[i], -m_z+0.1);
-                glVertex3f(m_x-0.1, m_lines[i], m_z);
-                glVertex3f(-m_x+0.1, m_lines[i], m_z);
-            glEnd();
+            drawLineLoop(m_x, m_lines[i], m_z);
         }
         m_walk = 0;
 }

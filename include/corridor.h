@@ -20,7 +20,7 @@ class Corridor
 
     private:
         int m_x;
-        int m_y;
+        float m_y;
         int m_z;
         int m_start;
         float m_walk;

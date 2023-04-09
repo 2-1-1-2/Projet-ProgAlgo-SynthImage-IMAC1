@@ -22,6 +22,8 @@ void setCamera();
 /* Draw cannonic objet functions */
 void drawSquare(int x, int y, int z, int start, bool vertical);
 
+void drawLineLoop(int x, int y, int z);
+
 void drawCircle();
 
 void drawCone();
