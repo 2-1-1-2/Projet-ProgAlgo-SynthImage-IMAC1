@@ -7,6 +7,7 @@
 #include <math.h>
 #include "3D_tools.h"
 #include "draw_scene.h"
+#include "corridor.h"
 
 /* Window properties */
 static const unsigned int WINDOW_WIDTH = 1920;
@@ -18,8 +19,6 @@ static float aspectRatio = 1.0;
 static const double FRAMERATE_IN_SECONDS = 1. / 60.;
 
 /* IHM flag */
-static int flag_animate_rot_scale = 0;
-static int flag_animate_rot_arm = 0;
 static int flag_walk = 0;
 float walk = 0;
 
@@ -105,6 +104,9 @@ int main(int argc, char** argv)
 	glPointSize(5.0);
 	glEnable(GL_DEPTH_TEST);
 
+	/* ********** INIT ********** */
+	Corridor corridor(25, 60, 12, 1);
+
 	/* ********** L O O P ********** */
 	/* Loop until the user closes the window */
 	while (!glfwWindowShouldClose(window))
@@ -112,8 +114,8 @@ int main(int argc, char** argv)
 		/* Get time (in second) at loop beginning */
 		double startTime = glfwGetTime();
 
-		//if(flag_walk)
-
+		if(flag_walk)
+			corridor.setWalk();
 
 		/* Cleaning buffers and setting Matrix Mode */
 		glClearColor(0.2,0.0,0.0,0.0);
@@ -127,9 +129,9 @@ int main(int argc, char** argv)
 		/* Initial scenery setup */
 		drawFrame();
 
-		drawCorridor();
+		corridor.drawCorridor();
 
-		drawLines();
+		corridor.drawLines();
 
 		/* Scene rendering */
 

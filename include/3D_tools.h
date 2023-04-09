@@ -20,7 +20,7 @@ extern float walk;
 void setCamera();
 
 /* Draw cannonic objet functions */
-void drawSquare();
+void drawSquare(int x, int y, int z, int start, bool vertical);
 
 void drawCircle();
 

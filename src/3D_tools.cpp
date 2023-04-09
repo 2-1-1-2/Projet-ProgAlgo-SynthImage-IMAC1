@@ -24,14 +24,26 @@ float toRad(float deg)
 }
 
 
-void drawSquare() 
+void drawSquare(int x, int y, int z, int start, bool vertical) 
 {
-	glBegin(GL_TRIANGLE_FAN);
-		glVertex3f(-0.5,-0.5,0.0);
-		glVertex3f(0.5,-0.5,0.0);
-		glVertex3f(0.5,0.5,0.0);
-		glVertex3f(-0.5,0.5,0.0);
-	glEnd();
+	if(vertical)
+	{
+		glBegin(GL_QUADS);
+			glVertex3f(-x, start, z);
+			glVertex3f(x, start, z);
+			glVertex3f(x, y, z);
+			glVertex3f(-x, y, z);
+		glEnd();
+	}
+	else
+	{
+		glBegin(GL_QUADS);
+			glVertex3f(x, start, z);
+			glVertex3f(x, y, z);
+			glVertex3f(x, y, -z);
+			glVertex3f(x, start, -z);
+		glEnd();
+	}
 }
 
 void drawCircle() 

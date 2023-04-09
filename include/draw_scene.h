@@ -12,6 +12,4 @@ void drawBase();
 
 void drawArm();
 
-void drawLines();
-
-void drawCorridor();
+void drawLines(float walk);
