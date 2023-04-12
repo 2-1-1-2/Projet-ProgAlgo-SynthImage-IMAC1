@@ -43,6 +43,12 @@ void drawArm()
 	glPopMatrix();
 }
 
+void drawBall(){
+	GLUquadricObj *quadric = gluNewQuadric();
+	gluQuadricTexture(quadric, GL_TRUE);
+	gluDeleteQuadric(quadric);
+	gluSphere(quadric, 1, 32, 32);
+}
 void drawCorridor() 
 {
 	// Carré du bas

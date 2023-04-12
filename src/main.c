@@ -7,12 +7,15 @@
 #include <math.h>
 #include "3D_tools.h"
 #include "draw_scene.h"
+#define STB_IMAGE_IMPLEMENTATION
+#include "stb_image.h"
 
 /* Window properties */
 static const unsigned int WINDOW_WIDTH = 1920;
 static const unsigned int WINDOW_HEIGHT = 1080;
 static const char WINDOW_TITLE[] = "Super jeu de la mort qui tue";
 static float aspectRatio = 1.0;
+int x, y, n;
 
 /* Minimal time wanted between two images */
 static const double FRAMERATE_IN_SECONDS = 1. / 60.;
@@ -20,7 +23,7 @@ static const double FRAMERATE_IN_SECONDS = 1. / 60.;
 /* IHM flag */
 static int flag_animate_rot_scale = 0;
 static int flag_animate_rot_arm = 0;
-static bool flag_walk = false;
+int flag_walk = 0;
 static float walk = 0;
 
 /* Error handling function */
@@ -58,7 +61,7 @@ void onKey(GLFWwindow* window, int key, int scancode, int action, int mods)
 				break;
 			/* *** FAIRE BOUGER LA CAMERA *** */
 			case GLFW_KEY_UP:
-				flag_walk = true;
+				flag_walk = 1;
 				break;
 			default: fprintf(stdout,"Touche non gérée (%d)\n",key);
 		}
@@ -69,7 +72,7 @@ void onKey(GLFWwindow* window, int key, int scancode, int action, int mods)
 		switch(key) 
 		{
 			case GLFW_KEY_UP:
-				flag_walk = false;
+				flag_walk = 0;
 				break;
 			default: fprintf(stdout,"Touche non gérée (%d)\n",key);
 		}
@@ -105,6 +108,19 @@ int main(int argc, char** argv)
 	glPointSize(5.0);
 	glEnable(GL_DEPTH_TEST);
 
+	//texture
+	unsigned char* image;
+	image = stbi_load("../doc/texture.jpg", &x, &y, &n, 0);
+	if(image==NULL){
+		printf ("erreur");
+	}
+	GLuint texture;
+	glGenTextures(1, &texture);
+
+	glBindTexture(GL_TEXTURE_2D, texture);
+	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
+	glTexImage2D( GL_TEXTURE_2D, 0, GL_RGB, x, y, 0, GL_RGB, GL_UNSIGNED_BYTE, image);
+
 	/* ********** L O O P ********** */
 	/* Loop until the user closes the window */
 	while (!glfwWindowShouldClose(window))
@@ -133,6 +149,15 @@ int main(int argc, char** argv)
 
 		/* Scene rendering */
 
+		/*texture*/
+		glEnable(GL_TEXTURE_2D);
+		glBindTexture(GL_TEXTURE_2D, texture);
+
+		drawBall();
+		
+		glBindTexture(GL_TEXTURE_2D, 0);
+		glDisable(GL_TEXTURE_2D);
+
 		/* Swap front and back buffers */
 		glfwSwapBuffers(window);
 
@@ -150,6 +175,9 @@ int main(int argc, char** argv)
 		/* Animate scenery */
 	}
 
+	stbi_image_free(image);
+	glDeleteTextures(1, &texture);
+	glBindTexture(GL_TEXTURE_2D, 0);
 	glfwTerminate();
 	return 0;
 }
