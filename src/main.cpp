@@ -8,10 +8,11 @@
 #include "3D_tools.h"
 #include "draw_scene.h"
 #include "corridor.h"
+#include "racket.h"
 
 /* Window properties */
-static const unsigned int WINDOW_WIDTH = 1920;
-static const unsigned int WINDOW_HEIGHT = 1080;
+static const unsigned int WINDOW_WIDTH = 1280;
+static const unsigned int WINDOW_HEIGHT = 720;
 static const char WINDOW_TITLE[] = "Super jeu de la mort qui tue";
 static float aspectRatio = 1.0;
 
@@ -21,65 +22,79 @@ static const double FRAMERATE_IN_SECONDS = 1. / 60.;
 /* IHM flag */
 static int flag_walk = 0;
 float walk = 0;
+double posX = 0, posY = 0;
 
 /* Error handling function */
-void onError(int error, const char* description)
+void onError(int error, const char *description)
 {
 	fprintf(stderr, "GLFW Error: %s\n", description);
 }
 
-void onWindowResized(GLFWwindow* window, int width, int height)
+void onWindowResized(GLFWwindow *window, int width, int height)
 {
-	aspectRatio = width / (float) height;
+	aspectRatio = width / (float)height;
 
 	glViewport(0, 0, width, height);
 	glMatrixMode(GL_PROJECTION);
 	glLoadIdentity();
-	gluPerspective(60.0,aspectRatio,Z_NEAR,Z_FAR);
+	gluPerspective(60.0, aspectRatio, Z_NEAR, Z_FAR);
 	glMatrixMode(GL_MODELVIEW);
 }
 
-void onKey(GLFWwindow* window, int key, int scancode, int action, int mods)
+void onKey(GLFWwindow *window, int key, int scancode, int action, int mods)
 {
-	if (action == GLFW_PRESS) 
+	if (action == GLFW_PRESS)
 	{
-		switch(key) 
+		switch (key)
 		{
-			case GLFW_KEY_A :
-			case GLFW_KEY_ESCAPE :
-				glfwSetWindowShouldClose(window, GLFW_TRUE);
-				break;
-			case GLFW_KEY_L :
-				glPolygonMode(GL_FRONT_AND_BACK,GL_LINE);
-				break;
-			case GLFW_KEY_P :
-				glPolygonMode(GL_FRONT_AND_BACK,GL_FILL);
-				break;
-			/* *** FAIRE BOUGER LA CAMERA *** */
-			case GLFW_KEY_UP:
-				flag_walk = 1;
-				break;
-			default: fprintf(stdout,"Touche non gérée (%d)\n",key);
+		case GLFW_KEY_A:
+		case GLFW_KEY_ESCAPE:
+			glfwSetWindowShouldClose(window, GLFW_TRUE);
+			break;
+		case GLFW_KEY_L:
+			glPolygonMode(GL_FRONT_AND_BACK, GL_LINE);
+			break;
+		case GLFW_KEY_P:
+			glPolygonMode(GL_FRONT_AND_BACK, GL_FILL);
+			break;
+		/* *** FAIRE BOUGER LA CAMERA *** */
+		case GLFW_KEY_UP:
+			flag_walk = 1;
+			break;
+		default:
+			fprintf(stdout, "Touche non gérée (%d)\n", key);
 		}
 	}
 
-	if (action == GLFW_RELEASE) 
+	if (action == GLFW_RELEASE)
 	{
-		switch(key) 
+		switch (key)
 		{
-			case GLFW_KEY_UP:
-				flag_walk = 0;
-				break;
-			default: fprintf(stdout,"Touche non gérée (%d)\n",key);
+		case GLFW_KEY_UP:
+			flag_walk = 0;
+			break;
+		default:
+			fprintf(stdout, "Touche non gérée (%d)\n", key);
 		}
 	}
 }
 
-int main(int argc, char** argv)
+static void cursor_position_callback(GLFWwindow *window, double xpos, double ypos)
+{
+
+	glfwGetCursorPos(window, &posX, &posY);
+	posX = (posX / (WINDOW_WIDTH / 2) - (0.5 * 2)) * fmax(aspectRatio, 1);
+	posY = -1 * (posY / (WINDOW_HEIGHT / 2) - (0.5 * 2)) * fmax(1 / aspectRatio, 1);
+
+	printf("X : %f / Y : %f \n", posX, posY);
+}
+
+int main(int argc, char **argv)
 {
 	/* GLFW initialisation */
-	GLFWwindow* window;
-	if (!glfwInit()) return -1;
+	GLFWwindow *window;
+	if (!glfwInit())
+		return -1;
 
 	/* Callback to a function if an error is rised by GLFW */
 	glfwSetErrorCallback(onError);
@@ -96,16 +111,20 @@ int main(int argc, char** argv)
 	/* Make the window's context current */
 	glfwMakeContextCurrent(window);
 
-	glfwSetWindowSizeCallback(window,onWindowResized);
+	// callback function
+	glfwSetCursorPosCallback(window, cursor_position_callback);
+	glfwSetWindowSizeCallback(window, onWindowResized);
 	glfwSetKeyCallback(window, onKey);
 
-	onWindowResized(window,WINDOW_WIDTH,WINDOW_HEIGHT);
+	onWindowResized(window, WINDOW_WIDTH, WINDOW_HEIGHT);
 
 	glPointSize(5.0);
 	glEnable(GL_DEPTH_TEST);
 
 	/* ********** INIT ********** */
+
 	Corridor corridor(25, 60, 12, 1);
+	Racket racket(2.5, -10, 2.5);
 
 	/* ********** L O O P ********** */
 	/* Loop until the user closes the window */
@@ -114,11 +133,12 @@ int main(int argc, char** argv)
 		/* Get time (in second) at loop beginning */
 		double startTime = glfwGetTime();
 
-		if(flag_walk)
+		if (flag_walk)
 			corridor.setWalk();
 
+		racket.setPos(posX, posY);
 		/* Cleaning buffers and setting Matrix Mode */
-		glClearColor(0.2,0.0,0.0,0.0);
+		glClearColor(0.2, 0.0, 0.0, 0.0);
 
 		glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
@@ -132,6 +152,7 @@ int main(int argc, char** argv)
 		corridor.drawCorridor();
 
 		corridor.drawLines();
+		racket.drawRacket();
 
 		/* Scene rendering */
 
@@ -144,9 +165,9 @@ int main(int argc, char** argv)
 		/* Elapsed time computation from loop begining */
 		double elapsedTime = glfwGetTime() - startTime;
 		/* If to few time is spend vs our wanted FPS, we wait */
-		if(elapsedTime < FRAMERATE_IN_SECONDS)
+		if (elapsedTime < FRAMERATE_IN_SECONDS)
 		{
-			glfwWaitEventsTimeout(FRAMERATE_IN_SECONDS-elapsedTime);
+			glfwWaitEventsTimeout(FRAMERATE_IN_SECONDS - elapsedTime);
 		}
 
 		/* Animate scenery */

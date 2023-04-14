@@ -15,51 +15,51 @@ Corridor::Corridor(int x, int y, int z, float speed)
     this->m_speed = 0.3;
 
     float colors[6] = {0.5, 0.5, 1, 0.5, 0.8, 1};
-    std::copy(colors, colors+6, this->m_colors);
+    std::copy(colors, colors + 6, this->m_colors);
 
     int temp = y;
-    for(size_t i = 0; i < 7; i++)
+    for (size_t i = 0; i < 7; i++)
     {
         this->m_lines[i] = temp;
-        temp-=10;
+        temp -= 10;
     }
 }
 
 void Corridor::drawCorridor()
-{       
-        // bottom square
-        glColor3f(m_colors[0], m_colors[1], m_colors[2]);
-        drawSquare(m_x, m_y, -m_z, m_start, true);
+{
+    // bottom square
+    glColor3f(m_colors[0], m_colors[1], m_colors[2]);
+    drawSquare(m_x, m_y, -m_z, m_start, true);
 
-        // top square
-        drawSquare(m_x, m_y, m_z, m_start, true);
+    // top square
+    drawSquare(m_x, m_y, m_z, m_start, true);
 
-        // left square
-        glColor3f(m_colors[3], m_colors[4], m_colors[5]);
-        drawSquare(-m_x, m_y, m_z, m_start, false);
+    // left square
+    glColor3f(m_colors[3], m_colors[4], m_colors[5]);
+    drawSquare(-m_x, m_y, m_z, m_start, false);
 
-        // right square
-        drawSquare(m_x, m_y, m_z, m_start, false);
+    // right square
+    drawSquare(m_x, m_y, m_z, m_start, false);
 }
 
 // to make go backward the inside of the corridor
 void Corridor::drawLines()
-{       
-        // color white
-        glColor3f(1, 1, 1);
-        // size of the line
-        glLineWidth(2);
-        // To create the 7 lines
-        for(size_t i = 0; i < 7; i++)
-        {
-            m_lines[i] -= m_walk;
+{
+    // color blue
+    glColor3f(1, 1, 1);
+    // size of the line
+    glLineWidth(2);
+    // To create the 7 lines
+    for (size_t i = 0; i < 7; i++)
+    {
+        m_lines[i] -= m_walk;
 
-            if(m_lines[i] <= -10)
-                m_lines[i] = m_y-1;
+        if (m_lines[i] <= -10)
+            m_lines[i] = m_y - 1;
 
-            drawLineLoop(m_x, m_lines[i], m_z);
-        }
-        m_walk = 0;
+        drawLineLoop(m_x, m_lines[i], m_z);
+    }
+    m_walk = 0;
 }
 
 /* ********** G E T T E R S ********** */
