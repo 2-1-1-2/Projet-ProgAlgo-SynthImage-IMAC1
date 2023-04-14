@@ -1,13 +1,10 @@
 #pragma once
-
+#define NB_SEG_CIRCLE 64
 #include <GLFW/glfw3.h>
 #include <GL/gl.h>
 #include <GL/glu.h>
-#include <stdlib.h>
 #include <stdio.h>
 #include <math.h>
-
-#define NB_SEG_CIRCLE 64
 
 /* Camera parameters and functions */
 static const float Z_NEAR = 0.1f;
@@ -21,6 +18,7 @@ void setCamera();
 
 /* Draw cannonic objet functions */
 void drawSquare(int x, int y, int z, int start, bool vertical);
+void drawSquare(int x1, int x2, int y, int z);
 
 void drawLineLoop(int x, int y, int z);
 

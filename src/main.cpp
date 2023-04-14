@@ -1,13 +1,9 @@
 #define GLFW_INCLUDE_NONE
-#include <GLFW/glfw3.h>
-#include <GL/gl.h>
-#include <GL/glu.h>
-#include <stdlib.h>
-#include <stdio.h>
-#include <math.h>
+#include <vector>
 #include "3D_tools.h"
 #include "draw_scene.h"
 #include "corridor.h"
+#include "enemy.h"
 
 /* Window properties */
 static const unsigned int WINDOW_WIDTH = 1920;
@@ -104,8 +100,14 @@ int main(int argc, char** argv)
 	glPointSize(5.0);
 	glEnable(GL_DEPTH_TEST);
 
-	/* ********** INIT ********** */
+	/* ********** I N I T ********** */
 	Corridor corridor(25, 60, 12, 1);
+	std::vector<Enemy> v_enemys;
+	Enemy enemy(10, corridor.getZ(), 100, 100, false);
+	/*Enemy *blabla;
+	blabla = &caca;
+	blabla->wesh();*/
+	v_enemys.push_back(enemy);
 
 	/* ********** L O O P ********** */
 	/* Loop until the user closes the window */
@@ -131,7 +133,7 @@ int main(int argc, char** argv)
 
 		corridor.drawCorridor();
 
-		corridor.drawLines();
+		corridor.drawLines(v_enemys);
 
 		/* Scene rendering */
 
@@ -151,6 +153,8 @@ int main(int argc, char** argv)
 
 		/* Animate scenery */
 	}
+
+	v_enemys.clear();
 
 	glfwTerminate();
 	return 0;

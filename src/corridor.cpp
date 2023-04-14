@@ -1,5 +1,6 @@
 #include <GL/gl.h>
 #include <GL/glu.h>
+#include <vector>
 #include "math.h"
 #include "algorithm"
 #include "3D_tools.h"
@@ -43,7 +44,7 @@ void Corridor::drawCorridor()
 }
 
 // to make go backward the inside of the corridor
-void Corridor::drawLines()
+void Corridor::drawLines(std::vector<Enemy> &v_enemys)
 {       
         // color white
         glColor3f(1, 1, 1);
@@ -59,10 +60,27 @@ void Corridor::drawLines()
 
             drawLineLoop(m_x, m_lines[i], m_z);
         }
+        // To create the enemys
+        for(Enemy &element : v_enemys)
+        {
+            int x2 = 0;
+            element.setDWithWalk(m_walk);
+            glColor3f(1, 0, 0);
+
+            if(element.getLeft())
+                drawSquare(-m_x, -m_x + element.getW(), element.getD(), element.getH());
+            else
+                drawSquare(m_x, m_x - element.getW(), element.getD(), element.getH());
+        }
         m_walk = 0;
 }
 
 /* ********** G E T T E R S ********** */
+int Corridor::getZ()
+{
+    return this->m_z;
+}
+
 int Corridor::getWalk()
 {
     return this->m_walk;

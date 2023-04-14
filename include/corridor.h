@@ -1,5 +1,7 @@
 #ifndef CORRIDOR_H
 #define CORRIDOR_H
+#include <vector>
+#include "enemy.h"
 
 class Corridor
 {
@@ -9,9 +11,10 @@ class Corridor
 
         /* ********** F U N C T I O N S ********** */
         void drawCorridor();
-        void drawLines();
+        void drawLines(std::vector<Enemy> &v_enemys);
 
         /* ********** G E T T E R S ********** */
+        int getZ();
         int getWalk();
 
         /* ********** S E T T E R S ********** */

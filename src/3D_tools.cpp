@@ -46,6 +46,16 @@ void drawSquare(int x, int y, int z, int start, bool vertical)
 	}
 }
 
+void drawSquare(int x1, int x2, int y, int z) 
+{
+	glBegin(GL_QUADS);
+		glVertex3f(x1, y, -z);
+	    glVertex3f(x2, y, -z);
+	    glVertex3f(x2, y, z);
+	    glVertex3f(x1, y, z);
+	glEnd();
+}
+
 void drawLineLoop(int x, int y, int z) 
 {
 	glBegin(GL_LINE_LOOP);
