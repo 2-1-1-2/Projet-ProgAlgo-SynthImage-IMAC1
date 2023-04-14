@@ -148,6 +148,14 @@ int main(int argc, char** argv)
 		drawLines();
 
 		/* Scene rendering */
+		glPushMatrix();
+			glScalef(4,4,4);
+			glRotated(90,1,0,0);
+			glRotated(-25,0,1,0);
+			glTranslatef(-4,0,2);
+			drawTransparence();
+			drawSquare();
+		glPopMatrix();
 
 		/*texture*/
 		glEnable(GL_TEXTURE_2D);

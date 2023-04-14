@@ -44,10 +44,18 @@ void drawArm()
 }
 
 void drawBall(){
+	glColor3f(1,1,1);
 	GLUquadricObj *quadric = gluNewQuadric();
 	gluQuadricTexture(quadric, GL_TRUE);
 	gluDeleteQuadric(quadric);
 	gluSphere(quadric, 1, 32, 32);
+}
+
+void drawTransparence(){
+	glEnable(GL_BLEND);
+	glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
+	glDisable(GL_CULL_FACE);
+	glColor4f(0.2, 0.2, 0.2, 0.9);
 }
 void drawCorridor() 
 {
