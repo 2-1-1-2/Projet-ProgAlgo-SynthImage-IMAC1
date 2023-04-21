@@ -1,6 +1,8 @@
 #include "draw_scene.h"
 #include "3D_tools.h"
 #include "math.h"
+#define STB_IMAGE_IMPLEMENTATION
+#include "stb_image.h"
 
 void drawBase() 
 {
@@ -161,3 +163,33 @@ void drawFrame()
 		glVertex3f(0, 0, 10);
 	glEnd();
 }
+GLuint loadTexture(const char* fileName){
+	int x, y, n;
+	unsigned char* image;
+	image = stbi_load(fileName, &x, &y, &n, 0);
+	if(image==NULL){
+		printf ("erreur");
+	}
+	GLuint texture;
+	glGenTextures(1, &texture);
+
+	glBindTexture(GL_TEXTURE_2D, texture);
+	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
+	glTexImage2D( GL_TEXTURE_2D, 0, GL_RGB, x, y, 0, GL_RGB, GL_UNSIGNED_BYTE, image);
+	stbi_image_free(image);
+	return texture;
+
+}
+
+void drawTexture(GLuint texture){
+	glEnable(GL_TEXTURE_2D);
+	glBindTexture(GL_TEXTURE_2D, texture);
+
+}
+
+void deleteTexture(){
+	glBindTexture(GL_TEXTURE_2D, 0);
+	glDisable(GL_TEXTURE_2D);
+
+}
+

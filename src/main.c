@@ -7,15 +7,14 @@
 #include <math.h>
 #include "3D_tools.h"
 #include "draw_scene.h"
-#define STB_IMAGE_IMPLEMENTATION
-#include "stb_image.h"
+
+//#include "stb_image.h"
 
 /* Window properties */
 static const unsigned int WINDOW_WIDTH = 1920;
 static const unsigned int WINDOW_HEIGHT = 1080;
 static const char WINDOW_TITLE[] = "Super jeu de la mort qui tue";
 static float aspectRatio = 1.0;
-int x, y, n;
 
 /* Minimal time wanted between two images */
 static const double FRAMERATE_IN_SECONDS = 1. / 60.;
@@ -109,17 +108,10 @@ int main(int argc, char** argv)
 	glEnable(GL_DEPTH_TEST);
 
 	//texture
-	unsigned char* image;
-	image = stbi_load("../doc/texture.jpg", &x, &y, &n, 0);
-	if(image==NULL){
-		printf ("erreur");
-	}
-	GLuint texture;
-	glGenTextures(1, &texture);
+	
+	GLuint texture = loadTexture("../doc/texture.jpg");
 
-	glBindTexture(GL_TEXTURE_2D, texture);
-	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
-	glTexImage2D( GL_TEXTURE_2D, 0, GL_RGB, x, y, 0, GL_RGB, GL_UNSIGNED_BYTE, image);
+	
 
 	/* ********** L O O P ********** */
 	/* Loop until the user closes the window */
@@ -158,13 +150,10 @@ int main(int argc, char** argv)
 		glPopMatrix();
 
 		/*texture*/
-		glEnable(GL_TEXTURE_2D);
-		glBindTexture(GL_TEXTURE_2D, texture);
-
-		drawBall();
 		
-		glBindTexture(GL_TEXTURE_2D, 0);
-		glDisable(GL_TEXTURE_2D);
+		drawTexture(texture);
+			drawBall();
+		deleteTexture();
 
 		/* Swap front and back buffers */
 		glfwSwapBuffers(window);
@@ -182,8 +171,7 @@ int main(int argc, char** argv)
 
 		/* Animate scenery */
 	}
-
-	stbi_image_free(image);
+	
 	glDeleteTextures(1, &texture);
 	glBindTexture(GL_TEXTURE_2D, 0);
 	glfwTerminate();

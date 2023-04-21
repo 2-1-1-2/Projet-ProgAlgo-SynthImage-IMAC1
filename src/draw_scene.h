@@ -23,6 +23,10 @@ void drawObstacle();
 void drawBall();
 
 void drawTexture();
+GLuint loadTexture(const char* fileName);
+void drawTexture(GLuint texture);
+void deleteTexture();
 
 void drawTransparence();
 
+void drawMenu();
