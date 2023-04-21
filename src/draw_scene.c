@@ -163,6 +163,7 @@ void drawFrame()
 		glVertex3f(0, 0, 10);
 	glEnd();
 }
+
 GLuint loadTexture(const char* fileName){
 	int x, y, n;
 	unsigned char* image;
@@ -187,9 +188,34 @@ void drawTexture(GLuint texture){
 
 }
 
-void deleteTexture(){
+void finTexture(){
 	glBindTexture(GL_TEXTURE_2D, 0);
 	glDisable(GL_TEXTURE_2D);
 
 }
+void deleteTexture(GLuint texture){
+	glDeleteTextures(1, &texture);
+	glBindTexture(GL_TEXTURE_2D, 0);
+}
 
+void drawMenu(){
+	GLuint textureMenu = loadTexture("../doc/textureMenu.jpg");
+	drawTexture(textureMenu);
+	glBegin(GL_QUADS);
+
+			glTexCoord2f(0,0);
+			glVertex2d(-1,-1);
+			glTexCoord2f(1,0);
+			glVertex2d(1,-1);
+			glTexCoord2f(1,1);
+			glVertex2d(1,1);
+			glTexCoord2f(0,1);
+			glVertex2d(-1,1);
+
+		glEnd();
+
+		finTexture();
+
+
+	
+}

@@ -16,6 +16,7 @@ static const unsigned int WINDOW_HEIGHT = 1080;
 static const char WINDOW_TITLE[] = "Super jeu de la mort qui tue";
 static float aspectRatio = 1.0;
 
+
 /* Minimal time wanted between two images */
 static const double FRAMERATE_IN_SECONDS = 1. / 60.;
 
@@ -109,7 +110,7 @@ int main(int argc, char** argv)
 
 	//texture
 	
-	GLuint texture = loadTexture("../doc/texture.jpg");
+	GLuint textureBall = loadTexture("../doc/textureBall.jpg");
 
 	
 
@@ -134,12 +135,13 @@ int main(int argc, char** argv)
 
 		/* Initial scenery setup */
 		drawFrame();
-
+		
 		drawCorridor();
-
+		
 		drawLines();
-
+		
 		/* Scene rendering */
+		
 		glPushMatrix();
 			glScalef(4,4,4);
 			glRotated(90,1,0,0);
@@ -151,7 +153,7 @@ int main(int argc, char** argv)
 
 		/*texture*/
 		
-		drawTexture(texture);
+		drawTexture(textureBall);
 			drawBall();
 		deleteTexture();
 
@@ -172,8 +174,9 @@ int main(int argc, char** argv)
 		/* Animate scenery */
 	}
 	
-	glDeleteTextures(1, &texture);
-	glBindTexture(GL_TEXTURE_2D, 0);
+	deleteTexture(textureBall);
+	
 	glfwTerminate();
+	
 	return 0;
 }
