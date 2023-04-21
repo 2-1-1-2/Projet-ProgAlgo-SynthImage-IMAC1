@@ -15,6 +15,7 @@ static const unsigned int WINDOW_WIDTH = 1280;
 static const unsigned int WINDOW_HEIGHT = 720;
 static const char WINDOW_TITLE[] = "Super jeu de la mort qui tue";
 static float aspectRatio = 1.0;
+static float GL_VIEW_SIZE = 21.5;
 
 /* Minimal time wanted between two images */
 static const double FRAMERATE_IN_SECONDS = 1. / 60.;
@@ -83,10 +84,16 @@ static void cursor_position_callback(GLFWwindow *window, double xpos, double ypo
 {
 
 	glfwGetCursorPos(window, &posX, &posY);
-	posX = (posX / (WINDOW_WIDTH / 2) - (0.5 * 2)) * fmax(aspectRatio, 1);
-	posY = -1 * (posY / (WINDOW_HEIGHT / 2) - (0.5 * 2)) * fmax(1 / aspectRatio, 1);
+	int windowTopLeftX = 0;
+	int windowTopLeftY = 0;
+	glfwGetWindowPos(window, &windowTopLeftX, &windowTopLeftY);
 
-	printf("X : %f / Y : %f \n", posX, posY);
+	// posX = (posX / (WINDOW_WIDTH / GL_VIEW_SIZE) - (0.5 * GL_VIEW_SIZE)) * fmax(aspectRatio, 1);
+	// posY = -1 * (posY / (WINDOW_HEIGHT / GL_VIEW_SIZE) - (0.5 * GL_VIEW_SIZE)) * fmax(1 / aspectRatio, 1);
+	posX = (25. / WINDOW_HEIGHT) * (posX - (WINDOW_WIDTH / 2));
+	posY = -(25. / WINDOW_HEIGHT) * (posY - (WINDOW_HEIGHT / 2));
+
+	printf("X : %f / Y : %f , aspect ratio %f \n", posX, posY, aspectRatio);
 }
 
 int main(int argc, char **argv)
