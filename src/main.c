@@ -116,6 +116,10 @@ int main(int argc, char** argv)
 	GLuint textureQuitter = loadTexture("../doc/textureQuitter.jpg");
 	GLuint textureBall = loadTexture("../doc/textureBall.jpg");
 
+	GLuint textureFin = loadTexture("../doc/textureFin.jpg");
+	GLuint textureRejouer = loadTexture("../doc/textureRejouer.jpg");
+	GLuint textureScore = loadTexture("../doc/textureScore.jpg");
+
 	
 
 	/* ********** L O O P ********** */
@@ -149,7 +153,8 @@ int main(int argc, char** argv)
 		
 		/* Scene rendering */
 		glPushMatrix();
-		drawMenu(textureMenu, textureJouer, textureNiveaux, textureQuitter);
+		//drawMenu(textureMenu, textureJouer, textureNiveaux, textureQuitter);
+		//drawFinJeu(textureFin, textureRejouer, textureScore, textureQuitter);
 		glPopMatrix();
 
 		glPushMatrix();
