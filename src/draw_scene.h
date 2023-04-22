@@ -25,9 +25,9 @@ void drawBall();
 GLuint loadTexture(const char* fileName);
 void drawTexture(GLuint texture);
 void finTexture();
-void deleteTexture();
+void deleteTexture(GLuint texture);
 
 void drawTransparence();
 
-void drawMenu();
+void drawMenu(GLuint textureMenu, GLuint textureJouer,GLuint textureNiveaux, GLuint textureQuitter);
 

@@ -79,6 +79,7 @@ void onKey(GLFWwindow* window, int key, int scancode, int action, int mods)
 	}
 }
 
+
 int main(int argc, char** argv)
 {
 	/* GLFW initialisation */
@@ -108,8 +109,11 @@ int main(int argc, char** argv)
 	glPointSize(5.0);
 	glEnable(GL_DEPTH_TEST);
 
-	//texture
-	
+	//Load texture
+	GLuint textureMenu = loadTexture("../doc/textureMenu.jpg");
+	GLuint textureJouer = loadTexture("../doc/textureJouer.jpg");
+	GLuint textureNiveaux = loadTexture("../doc/textureNiveaux.jpg");
+	GLuint textureQuitter = loadTexture("../doc/textureQuitter.jpg");
 	GLuint textureBall = loadTexture("../doc/textureBall.jpg");
 
 	
@@ -132,8 +136,11 @@ int main(int argc, char** argv)
 		glMatrixMode(GL_MODELVIEW);
 		glLoadIdentity();
 		setCamera();
-
+		
+		
 		/* Initial scenery setup */
+		
+
 		drawFrame();
 		
 		drawCorridor();
@@ -141,7 +148,10 @@ int main(int argc, char** argv)
 		drawLines();
 		
 		/* Scene rendering */
-		
+		glPushMatrix();
+		drawMenu(textureMenu, textureJouer, textureNiveaux, textureQuitter);
+		glPopMatrix();
+
 		glPushMatrix();
 			glScalef(4,4,4);
 			glRotated(90,1,0,0);
@@ -155,7 +165,7 @@ int main(int argc, char** argv)
 		
 		drawTexture(textureBall);
 			drawBall();
-		deleteTexture();
+		finTexture();
 
 		/* Swap front and back buffers */
 		glfwSwapBuffers(window);
@@ -175,7 +185,11 @@ int main(int argc, char** argv)
 	}
 	
 	deleteTexture(textureBall);
-	
+	deleteTexture(textureMenu);
+	deleteTexture(textureJouer);
+	deleteTexture(textureNiveaux);
+	deleteTexture(textureQuitter);
+
 	glfwTerminate();
 	
 	return 0;
