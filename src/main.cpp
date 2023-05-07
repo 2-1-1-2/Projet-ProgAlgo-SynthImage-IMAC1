@@ -5,17 +5,21 @@
 #include <stdlib.h>
 #include <stdio.h>
 #include <math.h>
+#include <vector>
+#include <list>
 #include "3D_tools.h"
 #include "draw_scene.h"
 
 //#include "stb_image.h"
+
+/*Light*/
+
 
 /* Window properties */
 static const unsigned int WINDOW_WIDTH = 1920;
 static const unsigned int WINDOW_HEIGHT = 1080;
 static const char WINDOW_TITLE[] = "Super jeu de la mort qui tue";
 static float aspectRatio = 1.0;
-
 
 /* Minimal time wanted between two images */
 static const double FRAMERATE_IN_SECONDS = 1. / 60.;
@@ -109,16 +113,24 @@ int main(int argc, char** argv)
 	glPointSize(5.0);
 	glEnable(GL_DEPTH_TEST);
 
-	//Load texture
+	//Load texture Menu
 	GLuint textureMenu = loadTexture("../doc/textureMenu.jpg");
 	GLuint textureJouer = loadTexture("../doc/textureJouer.jpg");
 	GLuint textureNiveaux = loadTexture("../doc/textureNiveaux.jpg");
 	GLuint textureQuitter = loadTexture("../doc/textureQuitter.jpg");
 	GLuint textureBall = loadTexture("../doc/textureBall.jpg");
 
+	//Load texture Fin du jeu
 	GLuint textureFin = loadTexture("../doc/textureFin.jpg");
 	GLuint textureRejouer = loadTexture("../doc/textureRejouer.jpg");
 	GLuint textureScore = loadTexture("../doc/textureScore.jpg");
+
+	//Load texture Niveaux
+	GLuint textureNiveau1 = loadTexture("../doc/textureNiveau1.jpg");
+	GLuint textureNiveau2 = loadTexture("../doc/textureNiveau2.jpg");
+	GLuint textureNiveau3 = loadTexture("../doc/textureNiveau3.jpg");
+	GLuint textureNiveau4 = loadTexture("../doc/textureNiveau4.jpg");
+	GLuint textureNiveau5 = loadTexture("../doc/textureNiveau5.jpg");
 
 	
 
@@ -153,6 +165,7 @@ int main(int argc, char** argv)
 		
 		/* Scene rendering */
 		glPushMatrix();
+		//drawNiveaux(textureNiveau1, textureNiveau2, textureNiveau3, textureNiveau4, textureNiveau5);
 		//drawMenu(textureMenu, textureJouer, textureNiveaux, textureQuitter);
 		//drawFinJeu(textureFin, textureRejouer, textureScore, textureQuitter);
 		glPopMatrix();
@@ -193,7 +206,15 @@ int main(int argc, char** argv)
 	deleteTexture(textureMenu);
 	deleteTexture(textureJouer);
 	deleteTexture(textureNiveaux);
+	deleteTexture(textureFin);
+	deleteTexture(textureRejouer);
+	deleteTexture(textureScore);
 	deleteTexture(textureQuitter);
+	deleteTexture(textureNiveau1);
+	deleteTexture(textureNiveau2);
+	deleteTexture(textureNiveau3);
+	deleteTexture(textureNiveau4);
+	deleteTexture(textureNiveau5);
 
 	glfwTerminate();
 	
