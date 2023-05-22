@@ -198,6 +198,26 @@ void deleteTexture(GLuint texture){
 	glBindTexture(GL_TEXTURE_2D, 0);
 }
 
+void drawMenuCase(GLuint textureMenu){
+	glPushMatrix();
+	drawTexture(textureMenu);
+	glTranslatef(16,-4,10);
+	glScalef(0.5,0.5,1);
+	glBegin(GL_QUADS);
+//ajouter un z sinon à cause du zbuffer ça se dessine derrière tout
+			glTexCoord3f(0,1,0);
+			glVertex3d(-10,-10,-1);
+			glTexCoord3f(1,1,0);
+			glVertex3d(10,-10,-1);
+			glTexCoord3f(1,0,0);
+			glVertex3d(10,-10,1);
+			glTexCoord3f(0,0,0);
+			glVertex3d(-10,-10,1);
+		glEnd();
+		finTexture();
+	glPopMatrix();
+}
+
 void drawMenu(GLuint textureMenu, GLuint textureJouer,GLuint textureNiveaux, GLuint textureQuitter){
 	//texture Menu
 	glPushMatrix();

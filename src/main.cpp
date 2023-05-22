@@ -30,6 +30,9 @@ static int flag_animate_rot_arm = 0;
 int flag_walk = 0;
 static float walk = 0;
 
+// cursor position
+double xpos, ypos;
+
 /* Error handling function */
 void onError(int error, const char* description)
 {
@@ -47,12 +50,43 @@ void onWindowResized(GLFWwindow* window, int width, int height)
 	glMatrixMode(GL_MODELVIEW);
 }
 
+bool menuItemSelected = false;
+bool jouerSelected = false;
+bool niveauSelected = false;
+bool quitterSelected = false;
+int menu =0;
+void mouseButtonCallback(GLFWwindow* window, int button, int action, int mods) {
+
+    if (button == GLFW_MOUSE_BUTTON_LEFT && action == GLFW_PRESS) { 
+
+        glfwGetCursorPos(window, &xpos, &ypos);
+		fprintf(stdout, "Coordonnées du curseur : (%f, %f)\n", xpos, ypos);
+
+		if(xpos >= 1462 && xpos <= 1893 && ypos >= 35 && ypos <= 110){
+			menuItemSelected = true;
+			menu +=1;
+			
+		}
+		if( menu>=1 && xpos >= 590 && xpos <= 1330 && ypos >= 542 && ypos <= 675){
+			niveauSelected = true;
+		}
+		if( menu>=1 && xpos >= 590 && xpos <= 1330 && ypos >= 353 && ypos <= 491){
+			jouerSelected = true;
+		}
+		if( menu>=1 && xpos >= 590 && xpos <= 1330 && ypos >= 728 && ypos <= 864){
+			quitterSelected = true;
+		}
+		
+    }
+}
+
 void onKey(GLFWwindow* window, int key, int scancode, int action, int mods)
 {
 	if (action == GLFW_PRESS) 
 	{
 		switch(key) 
-		{
+		{	
+			
 			case GLFW_KEY_A :
 			case GLFW_KEY_ESCAPE :
 				glfwSetWindowShouldClose(window, GLFW_TRUE);
@@ -68,8 +102,13 @@ void onKey(GLFWwindow* window, int key, int scancode, int action, int mods)
 				flag_walk = 1;
 				break;
 			default: fprintf(stdout,"Touche non gérée (%d)\n",key);
+
+			
+			
 		}
-	}
+		
+    }
+	
 
 	if (action == GLFW_RELEASE) 
 	{
@@ -79,10 +118,11 @@ void onKey(GLFWwindow* window, int key, int scancode, int action, int mods)
 				flag_walk = 0;
 				break;
 			default: fprintf(stdout,"Touche non gérée (%d)\n",key);
+			
 		}
 	}
-}
 
+}
 
 int main(int argc, char** argv)
 {
@@ -104,9 +144,11 @@ int main(int argc, char** argv)
 
 	/* Make the window's context current */
 	glfwMakeContextCurrent(window);
-
+	
 	glfwSetWindowSizeCallback(window,onWindowResized);
 	glfwSetKeyCallback(window, onKey);
+	glfwSetMouseButtonCallback(window, mouseButtonCallback);
+	
 
 	onWindowResized(window,WINDOW_WIDTH,WINDOW_HEIGHT);
 
@@ -142,7 +184,7 @@ int main(int argc, char** argv)
 		double startTime = glfwGetTime();
 
 		if(flag_walk)
-
+		
 
 		/* Cleaning buffers and setting Matrix Mode */
 		glClearColor(0.2,0.0,0.0,0.0);
@@ -155,8 +197,21 @@ int main(int argc, char** argv)
 		
 		
 		/* Initial scenery setup */
-		
-
+		if (menuItemSelected) {
+			menuItemSelected=true;
+            drawMenu(textureMenu, textureJouer, textureNiveaux, textureQuitter); // Appeler la fonction de menu
+		}
+		if(niveauSelected){
+			menuItemSelected=false;
+			drawNiveaux(textureNiveau1, textureNiveau2, textureNiveau3, textureNiveau4, textureNiveau5);			
+		}
+		if(jouerSelected){
+			menuItemSelected=false;
+		}
+		if(quitterSelected){
+			menuItemSelected=false;
+			glfwWindowShouldClose(window);
+		}
 		drawFrame();
 		
 		drawCorridor();
@@ -165,6 +220,7 @@ int main(int argc, char** argv)
 		
 		/* Scene rendering */
 		glPushMatrix();
+		drawMenuCase(textureMenu);
 		//drawNiveaux(textureNiveau1, textureNiveau2, textureNiveau3, textureNiveau4, textureNiveau5);
 		//drawMenu(textureMenu, textureJouer, textureNiveaux, textureQuitter);
 		//drawFinJeu(textureFin, textureRejouer, textureScore, textureQuitter);

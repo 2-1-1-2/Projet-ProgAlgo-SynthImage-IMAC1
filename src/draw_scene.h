@@ -29,6 +29,8 @@ void deleteTexture(GLuint texture);
 
 void drawTransparence();
 
+void drawMenuCase(GLuint textureMenu);
 void drawMenu(GLuint textureMenu, GLuint textureJouer,GLuint textureNiveaux, GLuint textureQuitter);
 void drawFinJeu(GLuint textureFin, GLuint textureRejouer,GLuint textureScore, GLuint textureQuitter);
+void drawNiveaux(GLuint textureNiveau1, GLuint textureNiveau2, GLuint textureNiveau3, GLuint textureNiveau4, GLuint textureNiveau5);
 
