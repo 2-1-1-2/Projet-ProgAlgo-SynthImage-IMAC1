@@ -1,5 +1,6 @@
 #define GLFW_INCLUDE_NONE
 #include "3D_tools.h"
+#include "ball.h"
 #include "corridor.h"
 #include "draw_scene.h"
 #include "racket.h"
@@ -27,8 +28,7 @@ static int flag_walk = 0;
 float walk = 0;
 double posX = 0, posY = 0;
 float distance = -10;
-float h = 23; // tan(toRad(60 / 2.)) * 2 * distance;
-Racket racket(0., -10., 0);
+float h = -tan(toRad(60 / 2.)) * 4 * distance;
 
 /* Error handling function */
 void onError(int error, const char *description) {
@@ -69,9 +69,6 @@ void onKey(GLFWwindow *window, int key, int scancode, int action, int mods) {
 
   if (action == GLFW_RELEASE) {
     switch (key) {
-    case GLFW_KEY_UP:
-      flag_walk = 0;
-      break;
     default:
       fprintf(stdout, "Touche non gérée (%d)\n", key);
     }
@@ -86,8 +83,15 @@ static void cursor_position_callback(GLFWwindow *window, double xpos,
 
 void mouse_button_callback(GLFWwindow *window, int button, int action,
                            int mods) {
-  if (button == GLFW_MOUSE_BUTTON_LEFT) {
-    racket.setMode();
+  switch (button) {
+  case GLFW_MOUSE_BUTTON_LEFT:
+    flag_walk = action == GLFW_PRESS ? 1 : 0;
+  case GLFW_MOUSE_BUTTON_RIGHT:
+
+    break;
+
+  default:
+    fprintf(stdout, "Touche non gérée (%d)\n", button);
   }
 }
 
@@ -124,8 +128,10 @@ int main(int argc, char **argv) {
   glEnable(GL_DEPTH_TEST);
 
   /* ********** INIT ********** */
-
+  Ball ball(posX, -9, posY);
   Corridor corridor(25, 60, 12, 1);
+  Racket racket(0., -10., 0);
+  GLuint textureBall = loadTexture("../doc/textureBall.jpg");
 
   /* ********** L O O P ********** */
   /* Loop until the user closes the window */
@@ -133,10 +139,13 @@ int main(int argc, char **argv) {
     /* Get time (in second) at loop beginning */
     double startTime = glfwGetTime();
 
-    if (flag_walk)
+    if (flag_walk) {
       corridor.setWalk();
+      racket.setMode();
+    }
 
     racket.setPos(posX, posY);
+    ball.setPos(posX, posY);
     /* Cleaning buffers and setting Matrix Mode */
     glClearColor(0.2, 0.0, 0.0, 0.0);
 
@@ -153,10 +162,16 @@ int main(int argc, char **argv) {
 
     corridor.drawLines();
     glPushMatrix();
-
-    // glTranslatef(posX, 0, posY);
     racket.drawRacket();
+    glPopMatrix();
 
+    glPushMatrix();
+    drawTexture(textureBall);
+    drawTransparence();
+
+    glTranslatef(ball.getPos('X'), ball.getPos('Y'), ball.getPos('Z'));
+    ball.drawBall();
+    finTexture();
     glPopMatrix();
 
     /* Scene rendering */
@@ -177,6 +192,7 @@ int main(int argc, char **argv) {
     /* Animate scenery */
   }
 
+  deleteTexture(textureBall);
   glfwTerminate();
   return 0;
 }
