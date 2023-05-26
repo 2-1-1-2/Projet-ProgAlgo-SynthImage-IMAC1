@@ -2,12 +2,10 @@
 #define GAME_H
 #include "3D_tools.h"
 #include "algorithm"
+#include "ball.h"
 #include "math.h"
 #include <GL/gl.h>
 #include <GL/glu.h>
-#include "ball.h"
-#include "corridor.h"
-
 
 class Game {
 public:
@@ -20,9 +18,7 @@ public:
   Corridor &getCorridor();
   Racket &getRacket();
 
-
   /* ********** S E T T E R S ********** */
-
 
 private:
   Ball m_ball;

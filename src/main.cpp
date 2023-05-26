@@ -1,9 +1,9 @@
 #define GLFW_INCLUDE_NONE
 #include "3D_tools.h"
 #include "ball.h"
-#include "game.h"
 #include "corridor.h"
 #include "draw_scene.h"
+#include "game.h"
 #include "racket.h"
 #include <GL/gl.h>
 #include <GL/glu.h>
@@ -27,10 +27,11 @@ static const double FRAMERATE_IN_SECONDS = 1. / 60.;
 /* IHM flag */
 static int flag_walk = 0;
 float alpha = 60;
-static Game game(Ball(0., DISTANCE+1, 0.), Corridor(25, alpha, 12, 1), Racket(0., DISTANCE, 0));
+static Game game(Ball(0., DISTANCE - 4, 0.), Corridor(25, alpha, 12, 1),
+                 Racket(0., DISTANCE - 5, 0));
 float walk = 0;
 double posX = 0, posY = 0;
-float h = -tan(toRad(alpha / 2.)) * 4 * DISTANCE;
+float h = -tan(toRad(alpha / 2.)) * 3 * DISTANCE;
 
 /* Error handling function */
 void onError(int error, const char *description) {
@@ -79,8 +80,8 @@ void onKey(GLFWwindow *window, int key, int scancode, int action, int mods) {
 
 static void cursor_position_callback(GLFWwindow *window, double xpos,
                                      double ypos) {
-  float r_l =  game.getRacket().getLength();
-  //TODO décalage sur les bords pour que ça ne sorte pas
+  float r_l = game.getRacket().getLength();
+  // TODO décalage sur les bords pour que ça ne sorte pas
   posX = xpos * ((h * aspectRatio) / WINDOW_WIDTH) - ((h * aspectRatio) / 2);
   posY = (-ypos * (h / WINDOW_HEIGHT) + (h / 2));
 }
@@ -91,7 +92,8 @@ void mouse_button_callback(GLFWwindow *window, int button, int action,
   case GLFW_MOUSE_BUTTON_LEFT:
     flag_walk = action == GLFW_PRESS ? 1 : 0;
   case GLFW_MOUSE_BUTTON_RIGHT:
-    if(action == GLFW_PRESS && game.getBall().getMode() == 1) game.getBall().setMode();
+    if (action == GLFW_PRESS && game.getBall().getMode() == 1)
+      game.getBall().setMode();
     break;
 
   default:
@@ -132,7 +134,7 @@ int main(int argc, char **argv) {
   glEnable(GL_DEPTH_TEST);
 
   /* ********** INIT ********** */
-  
+
   GLuint textureBall = loadTexture("../doc/textureBall.jpg");
 
   /* ********** L O O P ********** */
@@ -171,12 +173,14 @@ int main(int argc, char **argv) {
     drawTexture(textureBall);
     drawTransparence();
 
-    glTranslatef(game.getBall().getPos('X'), game.getBall().getPos('Y'), game.getBall().getPos('Z'));
+    glTranslatef(game.getBall().getPos('X'), game.getBall().getPos('Y'),
+                 game.getBall().getPos('Z'));
     game.getBall().drawBall();
     finTexture();
     glPopMatrix();
-  game.getBall().collisionRacket(game.getRacket());
-    //printf("TOUCHE ? %d\n", game.getBall().collisionRacket(game.getRacket()));
+    game.getBall().collision(game.getCorridor(), game.getRacket());
+    // printf("TOUCHE ? %d\n",
+    // game.getBall().collisionRacket(game.getRacket()));
 
     /* Scene rendering */
 
