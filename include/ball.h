@@ -5,25 +5,31 @@
 #include "math.h"
 #include <GL/gl.h>
 #include <GL/glu.h>
+#include "racket.h"
 
 class Ball {
 public:
   Ball(float x, float y, float z);
+  Ball(){};
 
   /* ********** F U N C T I O N S ********** */
   void drawBall();
-
+  bool collisionRacket(Racket r);
   /* ********** G E T T E R S ********** */
   float getPos(char pos);
+  int getMode();
   /* ********** S E T T E R S ********** */
-  void setPos(float posX, float posY);
+  void move(float posX, float posY);
+  void setMode();
 
 private:
   float m_x;
   float m_y;
   float m_z;
   int m_size;
-  float m_speed;
+  float m_speedX;
+  float m_speedY;
+  float m_speedZ;
   int m_mode;
 };
 #endif

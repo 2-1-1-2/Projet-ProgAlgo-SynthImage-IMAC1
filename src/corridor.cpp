@@ -7,20 +7,20 @@
 
 Corridor::Corridor(int x, int y, int z, float speed)
 {
-    this->m_x = x;
-    this->m_y = y;
-    this->m_z = z;
-    this->m_start = -14;
-    this->m_walk = 0;
-    this->m_speed = 0.3;
+    m_x = x;
+    m_y = y;
+    m_z = z;
+    m_start = -14;
+    m_walk = 0;
+    m_speed = 0.3;
 
     float colors[6] = {0.5, 0.5, 1, 0.5, 0.8, 1};
-    std::copy(colors, colors + 6, this->m_colors);
+    std::copy(colors, colors + 6, m_colors);
 
     int temp = y;
     for (size_t i = 0; i < 7; i++)
     {
-        this->m_lines[i] = temp;
+        m_lines[i] = temp;
         temp -= 10;
     }
 }
@@ -65,16 +65,25 @@ void Corridor::drawLines()
 /* ********** G E T T E R S ********** */
 int Corridor::getWalk()
 {
-    return this->m_walk;
+    return m_walk;
+}
+
+
+int Corridor::getSpeed()
+{
+    return m_speed;
+}
+float Corridor::getPos(char pos) {
+  return pos == 'X' ? m_x : pos == 'Y' ? m_y : m_z;
 }
 
 /* ********** S E T T E R S ********** */
 void Corridor::setWalk()
 {
-    this->m_walk += m_speed;
+    m_walk += m_speed;
 }
 
 void Corridor::setWalk(int walk)
 {
-    this->m_walk = walk;
+    m_walk = walk;
 }

@@ -8,6 +8,7 @@
 #include <stdlib.h>
 
 #define NB_SEG_CIRCLE 64
+#define DISTANCE -10.
 
 /* Camera parameters and functions */
 static const float Z_NEAR = 0.1f;

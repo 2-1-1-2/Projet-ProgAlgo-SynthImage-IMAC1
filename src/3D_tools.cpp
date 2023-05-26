@@ -1,10 +1,5 @@
 #include "3D_tools.h"
 
-/* Camera parameters and functions */
-/*float theta = 90.0f; // Angle between x axis and viewpoint
-float phy = 90.0f; // Angle between z axis and viewpoint
-float dist_zoom = 30.0f; // Distance between origin and viewpoint*/
-
 void setCamera() {
   /*gluLookAt(dist_zoom*cos(toRad(theta))*sin(toRad(phy)),
                     dist_zoom*sin(toRad(theta))*sin(toRad(phy)),
@@ -12,7 +7,7 @@ void setCamera() {
                     0.0,0.0,0,
                     0.0,0.0,1.0);*/
   // printf("test : %f \n", test);
-  gluLookAt(0, -30, 0, 0, 0, 0, 0, 0, 1);
+  gluLookAt(0, 3*DISTANCE, 0, 0, 1., 0, 0, 0, 1);
 }
 
 /* Convert degree to radians */

@@ -6,6 +6,7 @@ class Corridor
     public:
     
         Corridor(int x, int y, int z, float speed);
+        Corridor(){};
 
         /* ********** F U N C T I O N S ********** */
         void drawCorridor();
@@ -13,6 +14,8 @@ class Corridor
 
         /* ********** G E T T E R S ********** */
         int getWalk();
+        int getSpeed();
+        float getPos(char pos);
 
         /* ********** S E T T E R S ********** */
         void setWalk();

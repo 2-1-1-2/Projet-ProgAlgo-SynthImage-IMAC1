@@ -27,7 +27,9 @@ void Racket::drawRacket() {
 }
 
 /* ********** G E T T E R S ********** */
-int Racket::getPos() { return m_pos; }
+float Racket::getPos(char pos) { return pos == 'X' ? m_x : pos == 'Y' ? m_y : m_z; }
+
+float Racket::getLength(){return m_length;}
 
 /* ********** S E T T E R S ********** */
 void Racket::setPos() { m_pos += m_speed; }
