@@ -1,9 +1,9 @@
 #ifndef GAME_H
 #define GAME_H
 #include "3D_tools.h"
-#include "algorithm"
+#include <algorithm>
 #include "ball.h"
-#include "math.h"
+#include <math.h>
 #include <GL/gl.h>
 #include <GL/glu.h>
 

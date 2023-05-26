@@ -1,9 +1,9 @@
 #include <GL/gl.h>
 #include <GL/glu.h>
-#include "math.h"
-#include "algorithm"
-#include "3D_tools.h"
-#include "corridor.h"
+#include "../include/math.h"
+#include <algorithm>
+#include "../include/3D_tools.h"
+#include "../include/corridor.h"
 
 Corridor::Corridor(int x, int y, int z, float speed)
 {

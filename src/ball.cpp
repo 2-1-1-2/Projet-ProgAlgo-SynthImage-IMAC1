@@ -1,9 +1,10 @@
-#include "ball.h"
+#include "../include/ball.h"
 
 Ball::Ball(float x, float y, float z) {
   m_x = x;
   m_y = y;
   m_z = z;
+  m_life = 5;
   m_size = 32;
   m_speedX = 0;
   m_speedY = 0.5;
@@ -22,19 +23,29 @@ void Ball::drawBall() {
 
 bool Ball::collisionRacket(Racket r) {
   // On vérifie si c'est sur le même Y
-  if ((int)m_y != r.getPos('Y'))
+  if ((int)m_y != r.getPos('Y')-1)
     return false;
   float d_x = r.getPos('X') - m_x;
   float d_z = r.getPos('Z') - m_z;
-  if (abs(d_x) > r.getLength() || abs(d_z) > r.getLength())
+  if (abs(d_x) - (m_size / (6. * M_PI)) > r.getLength() || abs(d_z)- (m_size / (6. * M_PI)) > r.getLength())
     return false;
 
   m_speedX = (d_x) / (r.getLength() * 2);
   m_speedZ = (d_z) / (r.getLength() * 2);
-  m_y += 0.3;
+  m_y += r.getLength();
   m_speedY *= -1;
-  printf("SPEED X : %f\n", m_speedX);
+
+  //TODO gérer écart sur les coins => game over automatique sinon
   return true;
+}
+
+bool Ball::gameOver(Racket r){
+  if (m_y >= r.getPos('Y')-1) return false;
+  setPos('X', r.getPos('X'));
+  setPos('Z', r.getPos('Z'));
+  setMode();
+  setLife(m_life-1);
+  return m_life < 0;
 }
 
 /*
@@ -62,11 +73,11 @@ int Ball::collisionCorridor(Corridor c) {
   // On vérifie si c'est sur le même Y
   int res = 0; // 0 rien, 1 GD, 2 HB, 3 GBHB
 
-  if (abs(m_x) + (m_size / (4. * M_PI)) > abs(c.getPos('X'))) {
+  if (abs(m_x) + (m_size / (6. * M_PI)) > abs(c.getPos('X'))) {
     m_speedX *= -1;
     res += 1;
   }
-  if (abs(m_z) + (m_size / (4. * M_PI)) > abs(c.getPos('Z'))) {
+  if (abs(m_z) + (m_size / (6. * M_PI)) > abs(c.getPos('Z'))) {
     m_speedZ *= -1;
     res += 2;
   }
@@ -84,8 +95,13 @@ float Ball::getPos(char pos) {
   return pos == 'X' ? m_x : pos == 'Y' ? m_y : m_z;
 }
 int Ball::getMode() { return m_mode; }
+int Ball::getLife() { return m_life; }
 
 /* ********** S E T T E R S ********** */
+
+void Ball::setLife(int life){
+  m_life = life;
+};
 
 void Ball::move(float posX, float posY) {
   if (m_mode == -1) {
@@ -95,9 +111,21 @@ void Ball::move(float posX, float posY) {
     m_y += m_speedY;
     m_z += m_speedZ;
   } else {
+    
     m_x = posX;
     m_z = posY;
   }
 }
 
 void Ball::setMode() { m_mode = -m_mode; }
+
+void Ball::setPos(char pos, float p) {
+  switch (pos)
+  {
+    case 'X': m_x = p; break;
+    case 'Y': m_y = p; break;
+    case 'Z': m_z = p; break;
+  default:
+    break;
+  }
+}

@@ -1,8 +1,8 @@
 #ifndef RACKET_H
 #define RACKET_H
 #include "3D_tools.h"
-#include "algorithm"
-#include "math.h"
+#include <algorithm>
+#include <math.h>
 #include <GL/gl.h>
 #include <GL/glu.h>
 

@@ -1,10 +1,10 @@
 #define GLFW_INCLUDE_NONE
-#include "3D_tools.h"
-#include "ball.h"
-#include "corridor.h"
-#include "draw_scene.h"
-#include "game.h"
-#include "racket.h"
+#include "../include/3D_tools.h"
+#include "../include/ball.h"
+#include "../include/corridor.h"
+#include "../include/draw_scene.h"
+#include "../include/game.h"
+#include "../include/racket.h"
 #include <GL/gl.h>
 #include <GL/glu.h>
 #include <GLFW/glfw3.h>
@@ -145,11 +145,12 @@ int main(int argc, char **argv) {
 
     if (flag_walk) {
       game.getCorridor().setWalk();
-      game.getRacket().setMode();
+      //game.getRacket().setMode();
     }
 
     game.getRacket().setPos(posX, posY);
     game.getBall().move(posX, posY);
+    game.getBall().gameOver(game.getRacket());
     /* Cleaning buffers and setting Matrix Mode */
     glClearColor(0.2, 0.0, 0.0, 0.0);
 
@@ -165,8 +166,9 @@ int main(int argc, char **argv) {
     game.getCorridor().drawCorridor();
 
     game.getCorridor().drawLines();
+    
     glPushMatrix();
-    game.getRacket().drawRacket();
+      game.getRacket().drawRacket();
     glPopMatrix();
 
     glPushMatrix();

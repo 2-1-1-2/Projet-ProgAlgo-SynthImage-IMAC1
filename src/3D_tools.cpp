@@ -1,4 +1,4 @@
-#include "3D_tools.h"
+#include "../include/3D_tools.h"
 
 void setCamera() {
   /*gluLookAt(dist_zoom*cos(toRad(theta))*sin(toRad(phy)),

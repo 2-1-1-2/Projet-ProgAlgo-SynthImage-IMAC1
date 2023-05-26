@@ -1,8 +1,8 @@
-#include "draw_scene.h"
-#include "3D_tools.h"
-#include "math.h"
+#include "../include/draw_scene.h"
+#include "../include/3D_tools.h"
+#include <math.h>
 #define STB_IMAGE_IMPLEMENTATION
-#include "stb_image.h"
+#include "../include/stb_image.h"
 
 // Repère 3D
 void drawFrame() {

@@ -1,4 +1,4 @@
-#include "racket.h"
+#include "../include/racket.h"
 
 Racket::Racket(float x, float y, float z) {
   m_x = x;
@@ -7,7 +7,7 @@ Racket::Racket(float x, float y, float z) {
   m_length = 2.5;
   m_pos = 0;
   m_speed = 0.3;
-  m_mode = GL_LINE_LOOP;
+  m_mode = GL_POLYGON;
 }
 
 void Racket::drawRacket() {

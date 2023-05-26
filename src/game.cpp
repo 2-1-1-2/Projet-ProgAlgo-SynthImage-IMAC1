@@ -1,4 +1,4 @@
-#include "game.h"
+#include "../include/game.h"
 
 Game::Game(Ball b, Corridor c, Racket r) {
   m_ball = Ball(b.getPos('X'), b.getPos('Y'), b.getPos('Z'));
