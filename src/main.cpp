@@ -108,6 +108,21 @@ void mouse_button_callback(GLFWwindow *window, int button, int action,
   }
 }
 
+void init(GLuint& textureBall, std::vector<Enemy>& v_enemys)
+{
+    textureBall = loadTexture("../doc/textureBall.jpg");
+    GLenum error = glGetError();
+    if (error != GL_NO_ERROR) 
+    {
+      // Il y a eu une erreur OpenGL lors du chargement de la texture
+      const char* errorMessage = reinterpret_cast<const char*>(gluErrorString(error));
+      fprintf(stderr, "Erreur OpenGL lors du chargement de la texture : %s\n", errorMessage);
+    }
+    
+    game.getCorridor().loadEnemys(v_enemys);
+}
+
+
 int main(int argc, char **argv) 
 {
   /* GLFW initialisation */
@@ -143,9 +158,10 @@ int main(int argc, char **argv)
 
   /* ********** INIT ********** */
 
-  GLuint textureBall = loadTexture("../doc/textureBall.jpg");
+  GLuint textureBall;
   std::vector<Enemy> v_enemys;
-  game.getCorridor().loadEnemys(v_enemys);
+  init(textureBall, v_enemys);
+  
 
   /* ********** L O O P ********** */
   /* Loop until the user closes the window */
