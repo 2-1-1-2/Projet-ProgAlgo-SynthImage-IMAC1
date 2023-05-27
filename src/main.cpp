@@ -66,10 +66,6 @@ void onKey(GLFWwindow *window, int key, int scancode, int action, int mods)
     case GLFW_KEY_P:
       glPolygonMode(GL_FRONT_AND_BACK, GL_FILL);
       break;
-    /* *** FAIRE BOUGER LA CAMERA *** */
-    case GLFW_KEY_UP:
-      flag_walk = 1;
-      break;
     default:
       fprintf(stdout, "Touche non gérée (%d)\n", key);
     }
@@ -99,6 +95,7 @@ void mouse_button_callback(GLFWwindow *window, int button, int action,
 {
   switch (button) 
   {
+    /* ***** W A L K ***** */
     case GLFW_MOUSE_BUTTON_LEFT:
       flag_walk = action == GLFW_PRESS ? 1 : 0;
     case GLFW_MOUSE_BUTTON_RIGHT:
@@ -212,9 +209,8 @@ int main(int argc, char **argv)
     /* Elapsed time computation from loop begining */
     double elapsedTime = glfwGetTime() - startTime;
     /* If to few time is spend vs our wanted FPS, we wait */
-    if (elapsedTime < FRAMERATE_IN_SECONDS) {
+    if (elapsedTime < FRAMERATE_IN_SECONDS)
       glfwWaitEventsTimeout(FRAMERATE_IN_SECONDS - elapsedTime);
-    }
 
     /* Animate scenery */
   }
