@@ -61,6 +61,15 @@ void drawTransparence(){
 }
 void drawCorridor() 
 {
+	GLfloat globalAmbientColor[] = { 1.0f, 1.0f, 1.0f, 1.0f };  // Couleur ambiante globale (RGB)
+		GLfloat globalDiffuseColor[] = { 0.5f, 0.5f, 1.0f, 1.0f };  // Couleur diffuse globale (RGB)
+		GLfloat globalSpecularColor[] = { 1.0f, 1.0f, 1.0f, 1.0f }; // Couleur spéculaire globale (RGB)
+		GLfloat globalShininess = 90.0f; // Brillance globale du matériau
+
+		glMaterialfv(GL_FRONT_AND_BACK, GL_AMBIENT, globalAmbientColor);
+		glMaterialfv(GL_FRONT_AND_BACK, GL_DIFFUSE, globalDiffuseColor);
+		glMaterialfv(GL_FRONT_AND_BACK, GL_SPECULAR, globalSpecularColor);
+		glMaterialf(GL_FRONT_AND_BACK, GL_SHININESS, globalShininess);
 	// Carré du bas
 		int x = 25;
 		int y = 60;
@@ -86,6 +95,16 @@ void drawCorridor()
 			glVertex3f(-x, -y, z);
 		glEnd();
 
+
+		GLfloat globalAmbientColor1[] = { 1.0f, 1.0f, 1.0f, 1.0f };  // Couleur ambiante globale (RGB)
+		GLfloat globalDiffuseColor1[] = { 0.5f, 0.8f, 1.0f, 1.0f };  // Couleur diffuse globale (RGB)
+		GLfloat globalSpecularColor1[] = { 1.0f, 1.0f, 1.0f, 1.0f }; // Couleur spéculaire globale (RGB)
+		GLfloat globalShininess1 = 90.0f; // Brillance globale du matériau
+
+		glMaterialfv(GL_FRONT_AND_BACK, GL_AMBIENT, globalAmbientColor1);
+		glMaterialfv(GL_FRONT_AND_BACK, GL_DIFFUSE, globalDiffuseColor1);
+		glMaterialfv(GL_FRONT_AND_BACK, GL_SPECULAR, globalSpecularColor1);
+		glMaterialf(GL_FRONT_AND_BACK, GL_SHININESS, globalShininess1);
 		// carré de gauche
 		glColor3f(0.5, 0.8, 1);
 		// carré du bas
@@ -109,6 +128,15 @@ void drawCorridor()
 
 void drawLines() 
 {
+	GLfloat globalAmbientColor[] = { 1.0f, 1.0f, 1.0f, 1.0f };  // Couleur ambiante globale (RGB)
+		GLfloat globalDiffuseColor[] = { 1.0f, 1.0f, 1.0f, 1.0f };  // Couleur diffuse globale (RGB)
+		GLfloat globalSpecularColor[] = { 1.0f, 1.0f, 1.0f, 1.0f }; // Couleur spéculaire globale (RGB)
+		GLfloat globalShininess = 90.0f; // Brillance globale du matériau
+
+		glMaterialfv(GL_FRONT_AND_BACK, GL_AMBIENT, globalAmbientColor);
+		glMaterialfv(GL_FRONT_AND_BACK, GL_DIFFUSE, globalDiffuseColor);
+		glMaterialfv(GL_FRONT_AND_BACK, GL_SPECULAR, globalSpecularColor);
+		glMaterialf(GL_FRONT_AND_BACK, GL_SHININESS, globalShininess);
 	// Carré du bas
 		int x = 25;
 		int y = 60;

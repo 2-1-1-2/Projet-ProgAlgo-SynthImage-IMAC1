@@ -10,10 +10,12 @@
 #include "3D_tools.h"
 #include "draw_scene.h"
 
+
 //#include "stb_image.h"
 
 /*Light*/
-
+GLfloat light_position[] = { 0.0, -5.0, -5.0, 0.0 };  // Position de la lumière
+GLfloat light_direction[] = { 0.0, 0.0, 1.0 };    // Direction de la lumière
 
 /* Window properties */
 static const unsigned int WINDOW_WIDTH = 1920;
@@ -43,6 +45,8 @@ void onWindowResized(GLFWwindow* window, int width, int height)
 {
 	aspectRatio = width / (float) height;
 
+	glEnable(GL_LIGHTING);
+    glEnable(GL_LIGHT0);
 	glViewport(0, 0, width, height);
 	glMatrixMode(GL_PROJECTION);
 	glLoadIdentity();
@@ -51,10 +55,13 @@ void onWindowResized(GLFWwindow* window, int width, int height)
 }
 
 bool menuItemSelected = false;
+bool menu1=true;
 bool jouerSelected = false;
 bool niveauSelected = false;
+bool niveau1Selected = false;
+bool niveau2Selected = false;
+bool niveau3Selected = false;
 bool quitterSelected = false;
-int menu =0;
 void mouseButtonCallback(GLFWwindow* window, int button, int action, int mods) {
 
     if (button == GLFW_MOUSE_BUTTON_LEFT && action == GLFW_PRESS) { 
@@ -62,19 +69,34 @@ void mouseButtonCallback(GLFWwindow* window, int button, int action, int mods) {
         glfwGetCursorPos(window, &xpos, &ypos);
 		fprintf(stdout, "Coordonnées du curseur : (%f, %f)\n", xpos, ypos);
 
-		if(xpos >= 1462 && xpos <= 1893 && ypos >= 35 && ypos <= 110){
-			menuItemSelected = true;
-			menu +=1;
-			
-		}
-		if( menu>=1 && xpos >= 590 && xpos <= 1330 && ypos >= 542 && ypos <= 675){
+		if(( xpos >= 590 && xpos <= 1330 && ypos >= 542 && ypos <= 675) ){
+			menu1=false;
+			menuItemSelected=false;
 			niveauSelected = true;
 		}
-		if( menu>=1 && xpos >= 590 && xpos <= 1330 && ypos >= 353 && ypos <= 491){
+		if( (xpos >= 590 && xpos <= 1330 && ypos >= 353 && ypos <= 491)){
+			menu1=false;
+			menuItemSelected=false;
 			jouerSelected = true;
 		}
-		if( menu>=1 && xpos >= 590 && xpos <= 1330 && ypos >= 728 && ypos <= 864){
+		if( (xpos >= 590 && xpos <= 1335 && ypos >= 72 && ypos <= 210)){
+			menu1=false;
+			menuItemSelected=false;
+			niveauSelected=false;
+			niveau1Selected = true;
+		}
+		if( (xpos >= 590 && xpos <= 1330 && ypos >= 728 && ypos <= 864) ){
+			menu1=false;
+			menuItemSelected=false;
 			quitterSelected = true;
+		}
+		if((xpos >= 1462 && xpos <= 1893 && ypos >= 35 && ypos <= 110)){
+			niveauSelected = false;
+			niveau1Selected = false;
+			jouerSelected = false;
+			quitterSelected = false;
+			menu1=false;
+			menuItemSelected = true;
 		}
 		
     }
@@ -155,6 +177,10 @@ int main(int argc, char** argv)
 	glPointSize(5.0);
 	glEnable(GL_DEPTH_TEST);
 
+    /*Light*/
+	
+
+
 	//Load texture Menu
 	GLuint textureMenu = loadTexture("../doc/textureMenu.jpg");
 	GLuint textureJouer = loadTexture("../doc/textureJouer.jpg");
@@ -197,21 +223,58 @@ int main(int argc, char** argv)
 		
 		
 		/* Initial scenery setup */
+		glPushMatrix();
+		glLoadIdentity();
+		glPopMatrix();
+		
+		
+
+		// Dev Menu
+		glPushMatrix();
+		glDisable(GL_LIGHTING);
+		drawMenuCase(textureMenu);
+
+		if (menu1){
+			drawMenu(textureMenu, textureJouer, textureNiveaux, textureQuitter);
+		}
+		
 		if (menuItemSelected) {
-			menuItemSelected=true;
             drawMenu(textureMenu, textureJouer, textureNiveaux, textureQuitter); // Appeler la fonction de menu
 		}
 		if(niveauSelected){
-			menuItemSelected=false;
 			drawNiveaux(textureNiveau1, textureNiveau2, textureNiveau3, textureNiveau4, textureNiveau5);			
 		}
-		if(jouerSelected){
-			menuItemSelected=false;
+		if(niveau1Selected){
+			menuItemSelected= false;
+			menu1=false;
+			niveauSelected= false;
+		}
+		if(jouerSelected){ 
+			menuItemSelected= false;
+			menu1=false;
 		}
 		if(quitterSelected){
-			menuItemSelected=false;
+			menuItemSelected= false;
+			menu1=false;
 			glfwWindowShouldClose(window);
 		}
+
+	glPopMatrix();
+
+	glEnable(GL_LIGHTING);
+	glEnable(GL_LIGHT0);
+
+		glLightfv(GL_LIGHT0, GL_POSITION, light_position);
+		glLightfv(GL_LIGHT0, GL_SPOT_DIRECTION, light_direction);
+		GLfloat globalAmbientColor[] = { 1.0f, 1.0f, 1.0f, 1.0f };  // Couleur ambiante globale (RGB)
+		GLfloat globalDiffuseColor[] = { 1.0f, 1.0f, 1.0f, 1.0f };  // Couleur diffuse globale (RGB)
+		GLfloat globalSpecularColor[] = { 1.0f, 1.0f, 1.0f, 1.0f }; // Couleur spéculaire globale (RGB)
+		GLfloat globalShininess = 90.0f; // Brillance globale du matériau
+
+		glMaterialfv(GL_FRONT_AND_BACK, GL_AMBIENT, globalAmbientColor);
+		glMaterialfv(GL_FRONT_AND_BACK, GL_DIFFUSE, globalDiffuseColor);
+		glMaterialfv(GL_FRONT_AND_BACK, GL_SPECULAR, globalSpecularColor);
+		glMaterialf(GL_FRONT_AND_BACK, GL_SHININESS, globalShininess);
 		drawFrame();
 		
 		drawCorridor();
@@ -219,12 +282,7 @@ int main(int argc, char** argv)
 		drawLines();
 		
 		/* Scene rendering */
-		glPushMatrix();
-		drawMenuCase(textureMenu);
-		//drawNiveaux(textureNiveau1, textureNiveau2, textureNiveau3, textureNiveau4, textureNiveau5);
-		//drawMenu(textureMenu, textureJouer, textureNiveaux, textureQuitter);
-		//drawFinJeu(textureFin, textureRejouer, textureScore, textureQuitter);
-		glPopMatrix();
+
 
 		glPushMatrix();
 			glScalef(4,4,4);
