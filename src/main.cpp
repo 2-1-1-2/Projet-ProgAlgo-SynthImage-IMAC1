@@ -110,7 +110,7 @@ void mouse_button_callback(GLFWwindow *window, int button, int action,
 
 void init(GLuint& textureBall, std::vector<Enemy>& v_enemys)
 {
-    textureBall = loadTexture("../doc/textureBall.jpg");
+    textureBall = loadTexture("img/textureBall.jpg");
     GLenum error = glGetError();
     if (error != GL_NO_ERROR) 
     {
