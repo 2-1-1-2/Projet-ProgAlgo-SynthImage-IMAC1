@@ -2,6 +2,7 @@
 *.o
 
 # Fichier exécutable généré
+/bin/
 
 # Fichiers générés par l'outil de documentation Doxygen
 #/doc/
