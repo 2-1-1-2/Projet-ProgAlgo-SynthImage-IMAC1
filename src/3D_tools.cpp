@@ -7,7 +7,7 @@ void setCamera() {
                     0.0,0.0,0,
                     0.0,0.0,1.0);*/
   // printf("test : %f \n", test);
-  gluLookAt(0, 3*DISTANCE, 0, 0, 1., 0, 0, 0, 1);
+  gluLookAt(0, 3*DISTANCE, 0, 0, 0, 0, 0, 0, 1);
 }
 
 /* Convert degree to radians */
@@ -72,6 +72,7 @@ void drawLineLoop(int x, int y, int z)
         glVertex3f(x-0.1, y, -z+0.1);
         glVertex3f(x-0.1, y, z);
         glVertex3f(-x+0.1, y, z);
+  glEnd();
 }
 
 void drawCircle() 

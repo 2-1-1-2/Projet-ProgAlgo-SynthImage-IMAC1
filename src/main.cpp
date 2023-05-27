@@ -15,8 +15,8 @@
 #include "enemy.h"
 
 /* Window properties */
-static const unsigned int WINDOW_WIDTH = 1280;
-static const unsigned int WINDOW_HEIGHT = 720;
+static const unsigned int WINDOW_WIDTH = 1920;
+static const unsigned int WINDOW_HEIGHT = 1080;
 static const char WINDOW_TITLE[] = "Super jeu de la mort qui tue";
 static float aspectRatio = 1;
 
@@ -179,7 +179,7 @@ int main(int argc, char **argv)
     /* ***** Create the corridor ***** */
     game.getCorridor().drawCorridor();
 
-    game.getCorridor().drawLines();
+    game.getCorridor().drawLines(v_enemys);
     
     glPushMatrix();
       game.getRacket().drawRacket();

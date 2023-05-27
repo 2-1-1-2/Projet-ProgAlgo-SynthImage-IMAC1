@@ -31,20 +31,22 @@ void drawFrame() {
   glEnd();
 }
 
-void drawTransparence() {
+void drawTransparence() 
+{
   glEnable(GL_BLEND);
   glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
   glDisable(GL_CULL_FACE);
   glColor4f(0.2, 0.2, 0.2, 0.9);
 }
 
-GLuint loadTexture(const char *fileName) {
+GLuint loadTexture(const char *fileName) 
+{
   int x, y, n;
   unsigned char *image;
   image = stbi_load(fileName, &x, &y, &n, 0);
-  if (image == NULL) {
+  if (image == NULL)
     printf("erreur");
-  }
+
   GLuint texture;
   glGenTextures(1, &texture);
 
@@ -56,16 +58,20 @@ GLuint loadTexture(const char *fileName) {
   return texture;
 }
 
-void drawTexture(GLuint texture) {
+void drawTexture(GLuint texture) 
+{
   glEnable(GL_TEXTURE_2D);
   glBindTexture(GL_TEXTURE_2D, texture);
 }
 
-void finTexture() {
+void finTexture() 
+{
   glBindTexture(GL_TEXTURE_2D, 0);
   glDisable(GL_TEXTURE_2D);
 }
-void deleteTexture(GLuint texture) {
+
+void deleteTexture(GLuint texture) 
+{
   glDeleteTextures(1, &texture);
   glBindTexture(GL_TEXTURE_2D, 0);
 }

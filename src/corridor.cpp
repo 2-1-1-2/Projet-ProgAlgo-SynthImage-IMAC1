@@ -67,6 +67,7 @@ void Corridor::drawLines(std::vector<Enemy> &v_enemys)
 
         drawLineLoop(m_x, m_lines[i], m_z);
     }
+
     // To create the enemys
     for(Enemy &element : v_enemys)
     {

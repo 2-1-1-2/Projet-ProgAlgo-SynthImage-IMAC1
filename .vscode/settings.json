@@ -1,8 +1,0 @@
-{
-    "files.associations": {
-        "cmath": "cpp",
-        "bitset": "cpp",
-        "atomic": "cpp"
-    },
-    "editor.formatOnSave": false
-}
