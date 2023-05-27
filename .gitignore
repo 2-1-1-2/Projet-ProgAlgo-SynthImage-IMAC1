@@ -27,3 +27,5 @@ config.ini
 
 # Fichiers spécifiques à votre environnement de développement
 /.env
+bin/project.out
+*.o
