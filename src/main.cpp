@@ -11,6 +11,8 @@
 #include <math.h>
 #include <stdio.h>
 #include <stdlib.h>
+#include <vector>
+#include "enemy.h"
 
 /* Window properties */
 static const unsigned int WINDOW_WIDTH = 1280;
@@ -38,7 +40,8 @@ void onError(int error, const char *description) {
   fprintf(stderr, "GLFW Error: %s\n", description);
 }
 
-void onWindowResized(GLFWwindow *window, int width, int height) {
+void onWindowResized(GLFWwindow *window, int width, int height) 
+{
   aspectRatio = width / (float)height;
 
   glViewport(0, 0, width, height);
@@ -48,8 +51,10 @@ void onWindowResized(GLFWwindow *window, int width, int height) {
   glMatrixMode(GL_MODELVIEW);
 }
 
-void onKey(GLFWwindow *window, int key, int scancode, int action, int mods) {
-  if (action == GLFW_PRESS) {
+void onKey(GLFWwindow *window, int key, int scancode, int action, int mods) 
+{
+  if (action == GLFW_PRESS) 
+  {
     switch (key) {
     case GLFW_KEY_A:
     case GLFW_KEY_ESCAPE:
@@ -70,16 +75,19 @@ void onKey(GLFWwindow *window, int key, int scancode, int action, int mods) {
     }
   }
 
-  if (action == GLFW_RELEASE) {
-    switch (key) {
-    default:
+  if (action == GLFW_RELEASE) 
+  {
+    switch (key) 
+    {
+      default:
       fprintf(stdout, "Touche non gérée (%d)\n", key);
     }
   }
 }
 
 static void cursor_position_callback(GLFWwindow *window, double xpos,
-                                     double ypos) {
+                                     double ypos) 
+{
   float r_l = game.getRacket().getLength();
   // TODO décalage sur les bords pour que ça ne sorte pas
   posX = xpos * ((h * aspectRatio) / WINDOW_WIDTH) - ((h * aspectRatio) / 2);
@@ -87,21 +95,24 @@ static void cursor_position_callback(GLFWwindow *window, double xpos,
 }
 
 void mouse_button_callback(GLFWwindow *window, int button, int action,
-                           int mods) {
-  switch (button) {
-  case GLFW_MOUSE_BUTTON_LEFT:
-    flag_walk = action == GLFW_PRESS ? 1 : 0;
-  case GLFW_MOUSE_BUTTON_RIGHT:
-    if (action == GLFW_PRESS && game.getBall().getMode() == 1)
-      game.getBall().setMode();
-    break;
+                           int mods) 
+{
+  switch (button) 
+  {
+    case GLFW_MOUSE_BUTTON_LEFT:
+      flag_walk = action == GLFW_PRESS ? 1 : 0;
+    case GLFW_MOUSE_BUTTON_RIGHT:
+      if (action == GLFW_PRESS && game.getBall().getMode() == 1)
+        game.getBall().setMode();
+      break;
 
-  default:
-    fprintf(stdout, "Touche non gérée (%d)\n", button);
+    default:
+      fprintf(stdout, "Touche non gérée (%d)\n", button);
   }
 }
 
-int main(int argc, char **argv) {
+int main(int argc, char **argv) 
+{
   /* GLFW initialisation */
   GLFWwindow *window;
   if (!glfwInit())
@@ -111,9 +122,9 @@ int main(int argc, char **argv) {
   glfwSetErrorCallback(onError);
 
   /* Create a windowed mode window and its OpenGL context */
-  window =
-      glfwCreateWindow(WINDOW_WIDTH, WINDOW_HEIGHT, WINDOW_TITLE, NULL, NULL);
-  if (!window) {
+  window = glfwCreateWindow(WINDOW_WIDTH, WINDOW_HEIGHT, WINDOW_TITLE, NULL, NULL);
+  if (!window) 
+  {
     // If no context created : exit !
     glfwTerminate();
     return -1;
@@ -136,18 +147,23 @@ int main(int argc, char **argv) {
   /* ********** INIT ********** */
 
   GLuint textureBall = loadTexture("../doc/textureBall.jpg");
+  std::vector<Enemy> v_enemys;
+  game.getCorridor().loadEnemys(v_enemys);
 
   /* ********** L O O P ********** */
   /* Loop until the user closes the window */
-  while (!glfwWindowShouldClose(window)) {
+  while (!glfwWindowShouldClose(window)) 
+  {
     /* Get time (in second) at loop beginning */
     double startTime = glfwGetTime();
 
-    if (flag_walk) {
+    if (flag_walk) 
+    {
       game.getCorridor().setWalk();
       //game.getRacket().setMode();
     }
 
+    /* ***** R A C K E T ***** */
     game.getRacket().setPos(posX, posY);
     game.getBall().move(posX, posY);
     game.getBall().gameOver(game.getRacket());
@@ -163,6 +179,7 @@ int main(int argc, char **argv) {
     /* Initial scenery setup */
     drawFrame();
 
+    /* ***** Create the corridor ***** */
     game.getCorridor().drawCorridor();
 
     game.getCorridor().drawLines();
@@ -172,13 +189,13 @@ int main(int argc, char **argv) {
     glPopMatrix();
 
     glPushMatrix();
-    drawTexture(textureBall);
-    drawTransparence();
+      drawTexture(textureBall);
+      drawTransparence();
 
-    glTranslatef(game.getBall().getPos('X'), game.getBall().getPos('Y'),
-                 game.getBall().getPos('Z'));
-    game.getBall().drawBall();
-    finTexture();
+      glTranslatef(game.getBall().getPos('X'), game.getBall().getPos('Y'),
+                   game.getBall().getPos('Z'));
+      game.getBall().drawBall();
+      finTexture();
     glPopMatrix();
     game.getBall().collision(game.getCorridor(), game.getRacket());
     // printf("TOUCHE ? %d\n",
@@ -202,7 +219,10 @@ int main(int argc, char **argv) {
     /* Animate scenery */
   }
 
+  /* ***** D E L E T E ***** */
   deleteTexture(textureBall);
+  v_enemys.clear();
+
   glfwTerminate();
   return 0;
 }

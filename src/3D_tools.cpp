@@ -13,34 +13,69 @@ void setCamera() {
 /* Convert degree to radians */
 float toRad(float deg) { return deg * M_PI / 180.0f; }
 
-void drawSquare(int x, int y, int z, int start, bool vertical) {
-  if (vertical) {
-    glBegin(GL_QUADS);
-    glVertex3f(-x, start, z);
-    glVertex3f(x, start, z);
-    glVertex3f(x, y, z);
-    glVertex3f(-x, y, z);
-    glEnd();
-  } else {
-    glBegin(GL_QUADS);
-    glVertex3f(x, start, z);
-    glVertex3f(x, y, z);
-    glVertex3f(x, y, -z);
-    glVertex3f(x, start, -z);
-    glEnd();
-  }
+void drawEnemy(int x1, int x2, int y, int z1, int z2)
+{
+	glBegin(GL_QUADS);
+		glVertex3f(x1, y, z1);
+	    glVertex3f(x2, y, z1);
+	    glVertex3f(x2, y, z2);
+	    glVertex3f(x1, y, z2);
+	glEnd();
 }
 
-void drawLineLoop(int x, int y, int z) {
-  glBegin(GL_LINE_LOOP);
-  glVertex3f(-x + 0.1, y, -z + 0.1);
-  glVertex3f(x - 0.1, y, -z + 0.1);
-  glVertex3f(x - 0.1, y, z);
-  glVertex3f(-x + 0.1, y, z);
-  glEnd();
+void drawHorizontalEnemy(int x, int y, int z1, int z2)
+{
+	glBegin(GL_QUADS);
+		glVertex3f(-x, y, z1);
+	    glVertex3f(x, y, z1);
+	    glVertex3f(x, y, z2);
+	    glVertex3f(-x, y, z2);
+	glEnd();
 }
 
-void drawCircle() {
+void drawVerticalEnemy(int x1, int x2, int y, int z)
+{
+	glBegin(GL_QUADS);
+		glVertex3f(x1, y, -z);
+	    glVertex3f(x2, y, -z);
+	    glVertex3f(x2, y, z);
+	    glVertex3f(x1, y, z);
+	glEnd();
+}
+
+void drawSquare(int x, int y, int z, int start, bool vertical) 
+{
+	if(vertical)
+	{
+		glBegin(GL_QUADS);
+			glVertex3f(-x, start, z);
+			glVertex3f(x, start, z);
+			glVertex3f(x, y, z);
+			glVertex3f(-x, y, z);
+		glEnd();
+	}
+	else
+	{
+		glBegin(GL_QUADS);
+			glVertex3f(x, start, z);
+			glVertex3f(x, y, z);
+			glVertex3f(x, y, -z);
+			glVertex3f(x, start, -z);
+		glEnd();
+	}
+}
+
+void drawLineLoop(int x, int y, int z) 
+{
+	glBegin(GL_LINE_LOOP);
+        glVertex3f(-x+0.1, y, -z+0.1);
+        glVertex3f(x-0.1, y, -z+0.1);
+        glVertex3f(x-0.1, y, z);
+        glVertex3f(-x+0.1, y, z);
+}
+
+void drawCircle() 
+{
   glBegin(GL_TRIANGLE_FAN);
   glVertex3f(0.0, 0.0, 0.0);
   float step_rad = 2 * M_PI / (float)NB_SEG_CIRCLE;
@@ -50,7 +85,8 @@ void drawCircle() {
   glEnd();
 }
 
-void drawCone() {
+void drawCone() 
+{
   glBegin(GL_TRIANGLE_FAN);
   glVertex3f(0.0, 0.0, 1.0);
   float step_rad = 2 * M_PI / (float)NB_SEG_CIRCLE;
@@ -60,6 +96,7 @@ void drawCone() {
   glEnd();
 }
 
-void drawSphere() {
+void drawSphere() 
+{
   gluSphere(gluNewQuadric(), 1.0, NB_SEG_CIRCLE, NB_SEG_CIRCLE);
 }

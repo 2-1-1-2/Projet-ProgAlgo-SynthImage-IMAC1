@@ -3,8 +3,11 @@
 #include <GL/gl.h>
 #include <GL/glu.h>
 #include <GLFW/glfw3.h>
-#include <math.h>
+#include <GLFW/glfw3.h>
+#include <GL/gl.h>
+#include <GL/glu.h>
 #include <stdio.h>
+#include <math.h>
 #include <stdlib.h>
 
 #define NB_SEG_CIRCLE 64
@@ -21,6 +24,9 @@ extern float walk;
 void setCamera();
 
 /* Draw cannonic objet functions */
+void drawEnemy(int x1, int x2, int y, int z1, int z2);
+void drawHorizontalEnemy(int x, int y, int z1, int z2);
+void drawVerticalEnemy(int x1, int x2, int y, int z);
 void drawSquare(int x, int y, int z, int start, bool vertical);
 
 void drawLineLoop(int x, int y, int z);

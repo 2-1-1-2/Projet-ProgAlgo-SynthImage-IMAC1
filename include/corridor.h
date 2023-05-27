@@ -1,5 +1,8 @@
 #ifndef CORRIDOR_H
 #define CORRIDOR_H
+#include <vector>
+#include "enemy.h"
+#include "dataEnemy.h"
 
 class Corridor
 {
@@ -10,9 +13,11 @@ class Corridor
 
         /* ********** F U N C T I O N S ********** */
         void drawCorridor();
-        void drawLines();
+        void drawLines(std::vector<Enemy> &v_enemys);
+        void loadEnemys(std::vector<Enemy> &v_enemys);
 
         /* ********** G E T T E R S ********** */
+        int getZ();
         int getWalk();
         int getSpeed();
         float getPos(char pos);
@@ -26,6 +31,7 @@ class Corridor
         float m_y;
         int m_z;
         int m_start;
+        float m_km;
         float m_walk;
         float m_speed;
         float m_colors[6];
