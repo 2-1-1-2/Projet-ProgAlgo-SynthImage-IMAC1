@@ -23,6 +23,35 @@ float toRad(float deg)
 	return deg*M_PI/180.0f;
 }
 
+void drawEnemy(int x1, int x2, int y, int z1, int z2)
+{
+	glBegin(GL_QUADS);
+		glVertex3f(x1, y, z1);
+	    glVertex3f(x2, y, z1);
+	    glVertex3f(x2, y, z2);
+	    glVertex3f(x1, y, z2);
+	glEnd();
+}
+
+void drawHorizontalEnemy(int x, int y, int z1, int z2)
+{
+	glBegin(GL_QUADS);
+		glVertex3f(-x, y, z1);
+	    glVertex3f(x, y, z1);
+	    glVertex3f(x, y, z2);
+	    glVertex3f(-x, y, z2);
+	glEnd();
+}
+
+void drawVerticalEnemy(int x1, int x2, int y, int z)
+{
+	glBegin(GL_QUADS);
+		glVertex3f(x1, y, -z);
+	    glVertex3f(x2, y, -z);
+	    glVertex3f(x2, y, z);
+	    glVertex3f(x1, y, z);
+	glEnd();
+}
 
 void drawSquare(int x, int y, int z, int start, bool vertical) 
 {
@@ -44,16 +73,6 @@ void drawSquare(int x, int y, int z, int start, bool vertical)
 			glVertex3f(x, start, -z);
 		glEnd();
 	}
-}
-
-void drawSquare(int x1, int x2, int y, int z) 
-{
-	glBegin(GL_QUADS);
-		glVertex3f(x1, y, -z);
-	    glVertex3f(x2, y, -z);
-	    glVertex3f(x2, y, z);
-	    glVertex3f(x1, y, z);
-	glEnd();
 }
 
 void drawLineLoop(int x, int y, int z) 

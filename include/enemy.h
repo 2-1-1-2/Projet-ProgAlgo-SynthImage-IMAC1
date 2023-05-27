@@ -6,7 +6,9 @@ class Enemy
 {
     public:
     
-        Enemy(int w, int h, int km, int points, bool left);
+        Enemy();
+        Enemy(int w, int h, int d, int points, int left, int up);
+        Enemy (const Enemy &e);
 
         /* ********** F U N C T I O N S ********** */
         
@@ -14,7 +16,8 @@ class Enemy
         int getW();
         int getH();
         float getD();
-        bool getLeft();
+        int getLeft();
+        int getUp();
 
         /* ********** S E T T E R S ********** */
         void setD(float d);
@@ -24,8 +27,8 @@ class Enemy
         int m_w;
         int m_h;
         float m_d;
-        int m_km;
         int m_points;
-        bool m_left;
+        int m_left;
+        int m_up;
 };
 #endif

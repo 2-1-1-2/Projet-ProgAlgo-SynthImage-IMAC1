@@ -17,8 +17,10 @@ extern float walk;
 void setCamera();
 
 /* Draw cannonic objet functions */
+void drawEnemy(int x1, int x2, int y, int z1, int z2);
+void drawHorizontalEnemy(int x, int y, int z1, int z2);
+void drawVerticalEnemy(int x1, int x2, int y, int z);
 void drawSquare(int x, int y, int z, int start, bool vertical);
-void drawSquare(int x1, int x2, int y, int z);
 
 void drawLineLoop(int x, int y, int z);
 

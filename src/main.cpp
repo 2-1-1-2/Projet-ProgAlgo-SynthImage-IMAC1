@@ -101,13 +101,13 @@ int main(int argc, char** argv)
 	glEnable(GL_DEPTH_TEST);
 
 	/* ********** I N I T ********** */
-	Corridor corridor(25, 60, 12, 1);
+	// x, 
+	Corridor corridor(25, 60, 12, 0.5);
 	std::vector<Enemy> v_enemys;
-	Enemy enemy(10, corridor.getZ(), 100, 100, false);
+	corridor.loadEnemys(v_enemys);
 	/*Enemy *blabla;
 	blabla = &caca;
 	blabla->wesh();*/
-	v_enemys.push_back(enemy);
 
 	/* ********** L O O P ********** */
 	/* Loop until the user closes the window */

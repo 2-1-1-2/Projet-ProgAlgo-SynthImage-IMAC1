@@ -1,10 +1,15 @@
 #include <GL/gl.h>
 #include <GL/glu.h>
 #include <vector>
+#include <fstream>
+#include <sstream>
+#include <string>
+#include <cstring>
 #include "math.h"
 #include "algorithm"
 #include "3D_tools.h"
 #include "corridor.h"
+#include "enemy.h"
 
 Corridor::Corridor(int x, int y, int z, float speed)
 {
@@ -13,7 +18,8 @@ Corridor::Corridor(int x, int y, int z, float speed)
     this->m_z = z;
     this->m_start = -14;
     this->m_walk = 0;
-    this->m_speed = 0.3;
+    this->m_km = -14;
+    this->m_speed = speed;
 
     float colors[6] = {0.5, 0.5, 1, 0.5, 0.8, 1};
     std::copy(colors, colors+6, this->m_colors);
@@ -63,16 +69,84 @@ void Corridor::drawLines(std::vector<Enemy> &v_enemys)
         // To create the enemys
         for(Enemy &element : v_enemys)
         {
-            int x2 = 0;
+            // to make walk the enemys
             element.setDWithWalk(m_walk);
+            // color of the enemy
             glColor3f(1, 0, 0);
 
-            if(element.getLeft())
-                drawSquare(-m_x, -m_x + element.getW(), element.getD(), element.getH());
+            if(element.getLeft() != -1 && element.getUp() != -1)
+            {
+                // Gauche
+                if(element.getLeft())
+                {
+                    // Haut
+                    if(element.getUp())
+                        drawEnemy(-m_x, -m_x + element.getW(), element.getD(), m_z - element.getH(), m_z);
+                    // Bas
+                    else
+                        drawEnemy(-m_x, -m_x + element.getW(), element.getD(), -m_z, -m_z + element.getH());
+                }
+                // Droite
+                else
+                {
+                    // Haut
+                    if(element.getUp())
+                        drawEnemy(m_x - element.getW(), m_x, element.getD(), m_z - element.getH(), m_z);
+                    // Bas    
+                    else
+                        drawEnemy(m_x - element.getW(), m_x, element.getD(), -m_z, -m_z + element.getH());
+                }
+            }
+            /* *** Enemy is completely horizontal *** */
+            else if(element.getLeft() == -1)
+            {
+                // il est en haut
+                if(element.getUp())
+                    drawHorizontalEnemy(m_x, element.getD(), m_z - element.getH(), m_z);
+                // il est en bas
+                else
+                    drawHorizontalEnemy(m_x, element.getD(), -m_z, -m_z + element.getH());
+            }
+            /* *** Enemy is completely vertical *** */
             else
-                drawSquare(m_x, m_x - element.getW(), element.getD(), element.getH());
+            {
+                if(element.getLeft())
+                    drawVerticalEnemy(-m_x, -m_x + element.getW(), element.getD(), m_z);
+                else
+                    drawVerticalEnemy(m_x, m_x - element.getW(), element.getD(), m_z);
+            }
         }
         m_walk = 0;
+}
+
+// to initialize the enemys
+void Corridor::loadEnemys(std::vector<Enemy> &v_enemys)
+{
+    std::map<std::string, std::tuple<int, int, int, int, int, int>> enemyMap;
+    std::string line;
+    std::ifstream file("src/enemys.txt");
+    std::string e;
+    int d;
+
+    if (!file.is_open())
+        perror("error while opening file\n");
+
+    initializeEnemyMap(enemyMap);
+    while (std::getline(file, line))
+    {
+        std::istringstream iss(line);
+        
+        if (!(iss >> e >> d)) 
+            perror("not the good number of elements");
+
+        Enemy enemy = createEnemy(enemyMap, e, d);
+        v_enemys.push_back(enemy);
+    }
+
+    if (file.bad())
+        perror("error while reading file");
+
+    file.close();
 }
 
 /* ********** G E T T E R S ********** */
@@ -90,6 +164,8 @@ int Corridor::getWalk()
 void Corridor::setWalk()
 {
     this->m_walk += m_speed;
+    this->m_km += m_speed;
+    printf("Km: %f\n", m_km);
 }
 
 void Corridor::setWalk(int walk)
