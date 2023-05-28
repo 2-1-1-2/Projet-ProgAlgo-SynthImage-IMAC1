@@ -3,6 +3,7 @@
 #include <vector>
 #include "enemy.h"
 #include "dataEnemy.h"
+#include "struct.h"
 
 class Corridor
 {
@@ -12,8 +13,8 @@ class Corridor
         Corridor(){};
 
         /* ********** F U N C T I O N S ********** */
-        void drawCorridor();
-        void drawLines(std::vector<Enemy> &v_enemys);
+        void drawCorridor(std::vector<ImgTexture>& v_texture);
+        void drawLines(std::vector<Enemy> &v_enemys, std::vector<ImgTexture>& v_texture);
         void loadEnemys(std::vector<Enemy> &v_enemys);
 
         /* ********** G E T T E R S ********** */

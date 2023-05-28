@@ -18,10 +18,12 @@ class Enemy
         float getD();
         int getLeft();
         int getUp();
+        int getRot();
 
         /* ********** S E T T E R S ********** */
         void setD(float d);
         void setDWithWalk(float walk);
+        void setRot(int rot);
 
     private:
         int m_w;
@@ -30,5 +32,6 @@ class Enemy
         int m_points;
         int m_left;
         int m_up;
+        int m_rot;
 };
 #endif

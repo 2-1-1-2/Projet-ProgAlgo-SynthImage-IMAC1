@@ -66,7 +66,7 @@ void drawTexture(GLuint texture)
 
 void finTexture() 
 {
-  glBindTexture(GL_TEXTURE_2D, 0);
+  //glBindTexture(GL_TEXTURE_2D, 0);
   glDisable(GL_TEXTURE_2D);
 }
 

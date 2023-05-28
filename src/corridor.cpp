@@ -3,6 +3,7 @@
 #include "../include/math.h"
 #include <algorithm>
 #include "../include/3D_tools.h"
+#include "../include/draw_scene.h"
 #include "../include/corridor.h"
 #include <vector>
 #include <fstream>
@@ -11,6 +12,7 @@
 #include <cstring>
 #include "algorithm"
 #include "enemy.h"
+#include <cstdlib>
 
 Corridor::Corridor(int x, int y, int z, float speed)
 {
@@ -33,25 +35,27 @@ Corridor::Corridor(int x, int y, int z, float speed)
     }
 }
 
-void Corridor::drawCorridor()
+void Corridor::drawCorridor(std::vector<ImgTexture>& v_texture)
 {
     // bottom square
-    glColor3f(m_colors[0], m_colors[1], m_colors[2]);
+    drawTexture(v_texture[3].img);
     drawSquare(m_x, m_y, -m_z, m_start, true);
-
+    finTexture();
     // top square
+    drawTexture(v_texture[2].img);
     drawSquare(m_x, m_y, m_z, m_start, true);
+    finTexture();
 
+    drawTexture(v_texture[1].img);
     // left square
-    glColor3f(m_colors[3], m_colors[4], m_colors[5]);
     drawSquare(-m_x, m_y, m_z, m_start, false);
-
     // right square
     drawSquare(m_x, m_y, m_z, m_start, false);
+    finTexture();
 }
 
 // to make go backward the inside of the corridor
-void Corridor::drawLines(std::vector<Enemy> &v_enemys)
+void Corridor::drawLines(std::vector<Enemy> &v_enemys, std::vector<ImgTexture>& v_texture)
 {       
     // color white
     glColor3f(1, 1, 1);
@@ -73,11 +77,10 @@ void Corridor::drawLines(std::vector<Enemy> &v_enemys)
     {
         // to make walk the enemys
         element.setDWithWalk(m_walk);
-        // color of the enemy
-        glColor3f(1, 0, 0);
 
         if(element.getLeft() != -1 && element.getUp() != -1)
         {
+            drawTexture(v_texture[7].img);
             // Gauche
             if(element.getLeft())
             {
@@ -98,24 +101,37 @@ void Corridor::drawLines(std::vector<Enemy> &v_enemys)
                 else
                     drawEnemy(m_x - element.getW(), m_x, element.getD(), -m_z, -m_z + element.getH());
             }
+            finTexture();
         }
         /* *** Enemy is completely horizontal *** */
         else if(element.getLeft() == -1)
         {
-            // il est en haut
             if(element.getUp())
+            {
+                drawTexture(v_texture[6].img);
                 drawHorizontalEnemy(m_x, element.getD(), m_z - element.getH(), m_z);
-            // il est en bas
+            }
             else
+            {
+                drawTexture(v_texture[5].img);
                 drawHorizontalEnemy(m_x, element.getD(), -m_z, -m_z + element.getH());
+            }
+            finTexture();
         }
         /* *** Enemy is completely vertical *** */
         else
         {
+            drawTexture(v_texture[4].img);
+            // Picture can be upside down
+            if(v_texture[4].rot && element.getRot() == -1)
+                element.setRot(rand() % 2);
+
             if(element.getLeft())
-                drawVerticalEnemy(-m_x, -m_x + element.getW(), element.getD(), m_z);
+                drawVerticalEnemy(-m_x, -m_x + element.getW(), element.getD(), m_z, element.getRot());
             else
-                drawVerticalEnemy(m_x, m_x - element.getW(), element.getD(), m_z);
+                drawVerticalEnemy(m_x, m_x - element.getW(), element.getD(), m_z, element.getRot());
+
+            finTexture();
         }
     }
     m_walk = 0;
@@ -174,7 +190,7 @@ void Corridor::setWalk()
 {
     this->m_walk += m_speed;
     this->m_km += m_speed;
-    printf("Km: %f\n", m_km);
+    //printf("Km: %f\n", m_km);
 }
 
 void Corridor::setWalk(int walk) {

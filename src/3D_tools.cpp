@@ -16,53 +16,90 @@ float toRad(float deg) { return deg * M_PI / 180.0f; }
 void drawEnemy(int x1, int x2, int y, int z1, int z2)
 {
 	glBegin(GL_QUADS);
+		glTexCoord2f(0.0f, 0.0f);
 		glVertex3f(x1, y, z1);
-	    glVertex3f(x2, y, z1);
-	    glVertex3f(x2, y, z2);
-	    glVertex3f(x1, y, z2);
+		glTexCoord2f(1.0f, 0.0f);
+	  glVertex3f(x2, y, z1);
+	  glTexCoord2f(1.0f, 1.0f);
+	  glVertex3f(x2, y, z2);
+	  glTexCoord2f(0.0f, 1.0f);
+	  glVertex3f(x1, y, z2);
 	glEnd();
 }
 
 void drawHorizontalEnemy(int x, int y, int z1, int z2)
 {
 	glBegin(GL_QUADS);
+		glTexCoord2f(0.0f, 0.0f);
 		glVertex3f(-x, y, z1);
-	    glVertex3f(x, y, z1);
-	    glVertex3f(x, y, z2);
-	    glVertex3f(-x, y, z2);
+		glTexCoord2f(1.0f, 0.0f);
+	  glVertex3f(x, y, z1);
+	  glTexCoord2f(1.0f, 1.0f);
+	  glVertex3f(x, y, z2);
+	  glTexCoord2f(0.0f, 1.0f);
+	  glVertex3f(-x, y, z2);
 	glEnd();
 }
 
-void drawVerticalEnemy(int x1, int x2, int y, int z)
+void drawVerticalEnemy(int x1, int x2, int y, int z, bool rot)
 {
-	glBegin(GL_QUADS);
-		glVertex3f(x1, y, -z);
-	    glVertex3f(x2, y, -z);
-	    glVertex3f(x2, y, z);
-	    glVertex3f(x1, y, z);
-	glEnd();
-}
-
-void drawSquare(int x, int y, int z, int start, bool vertical) 
-{
-	if(vertical)
+	// right side up
+	if(rot)
 	{
 		glBegin(GL_QUADS);
-			glVertex3f(-x, start, z);
-			glVertex3f(x, start, z);
-			glVertex3f(x, y, z);
-			glVertex3f(-x, y, z);
+			glTexCoord2f(0.0f, 1.0f);
+			glVertex3f(x1, y, -z);
+			glTexCoord2f(1.0f, 1.0f);
+		  glVertex3f(x2, y, -z);
+		  glTexCoord2f(1.0f, 0.0f);
+		  glVertex3f(x2, y, z);
+		  glTexCoord2f(0.0f, 0.0f);
+		  glVertex3f(x1, y, z);
 		glEnd();
 	}
 	else
 	{
 		glBegin(GL_QUADS);
-			glVertex3f(x, start, z);
-			glVertex3f(x, y, z);
-			glVertex3f(x, y, -z);
-			glVertex3f(x, start, -z);
+			glTexCoord2f(0.0f, 0.0f);
+			glVertex3f(x1, y, -z);
+			glTexCoord2f(1.0f, 0.0f);
+		  glVertex3f(x2, y, -z);
+		  glTexCoord2f(1.0f, 1.0f);
+		  glVertex3f(x2, y, z);
+		  glTexCoord2f(0.0f, 1.0f);
+		  glVertex3f(x1, y, z);
 		glEnd();
 	}
+}
+
+void drawSquare(int x, int y, int z, int start, bool vertical) 
+{
+	if (vertical)
+    {
+        glBegin(GL_QUADS);
+	        glTexCoord2f(0.0f, 0.0f);
+	        glVertex3f(-x, start, z);
+	        glTexCoord2f(1.0f, 0.0f);
+	        glVertex3f(x, start, z);
+	        glTexCoord2f(1.0f, 1.0f);
+	        glVertex3f(x, y, z);
+	        glTexCoord2f(0.0f, 1.0f);
+	        glVertex3f(-x, y, z);
+        glEnd();
+    }
+    else
+    {
+        glBegin(GL_QUADS);
+	        glTexCoord2f(0.0f, 0.0f);
+	        glVertex3f(x, start, z);
+	        glTexCoord2f(1.0f, 0.0f);
+	        glVertex3f(x, y, z);
+	        glTexCoord2f(1.0f, 1.0f);
+	        glVertex3f(x, y, -z);
+	        glTexCoord2f(0.0f, 1.0f);
+	        glVertex3f(x, start, -z);
+        glEnd();
+    }
 }
 
 void drawLineLoop(int x, int y, int z) 

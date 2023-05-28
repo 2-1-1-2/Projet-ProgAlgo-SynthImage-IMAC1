@@ -1,7 +1,7 @@
 CC		= gcc
 CFLAGS	= -Wall -O2 -g
 #LDFLAGS	= -lSDL -lm
-LDFLAGS	= -lglfw -lGLU -lGL -lm -lstdc++
+LDFLAGS	= -lglfw -lGLU -lGL -lm -lstdc++ -lSOIL
 
 BIN_DIR	= bin
 INC_DIR = -I include

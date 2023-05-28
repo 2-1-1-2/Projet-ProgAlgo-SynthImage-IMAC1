@@ -1,0 +1,8 @@
+img/mario/luma.jpg 0 0
+img/mario/mario_side.jpg 0 0
+img/mario/mario_top.jpg 0 0
+img/mario/mario_bottom.jpg 0 0
+img/mario/piranna.png 1 1
+img/mario/world.png 1 0
+img/mario/cloud.png 1 0
+img/mario/background.png 1 0

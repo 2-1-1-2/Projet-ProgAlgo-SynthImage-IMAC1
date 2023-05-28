@@ -13,6 +13,13 @@
 #include <stdlib.h>
 #include <vector>
 #include "enemy.h"
+#include <fstream>
+#include <SOIL.h>
+#include <sstream>
+#include "struct.h"
+#include <cstdlib>
+#include <ctime> 
+
 
 /* Window properties */
 static const unsigned int WINDOW_WIDTH = 1920;
@@ -108,20 +115,63 @@ void mouse_button_callback(GLFWwindow *window, int button, int action,
   }
 }
 
-void init(GLuint& textureBall, std::vector<Enemy>& v_enemys)
+void readFile(std::string nameFile, std::vector<ImgTexture>& v_texture, int start, int end)
 {
-    textureBall = loadTexture("img/textureBall.jpg");
-    GLenum error = glGetError();
-    if (error != GL_NO_ERROR) 
-    {
-      // Il y a eu une erreur OpenGL lors du chargement de la texture
-      const char* errorMessage = reinterpret_cast<const char*>(gluErrorString(error));
-      fprintf(stderr, "Erreur OpenGL lors du chargement de la texture : %s\n", errorMessage);
-    }
-    
-    game.getCorridor().loadEnemys(v_enemys);
-}
+  std::string line;
+  std::ifstream file(nameFile);
 
+  if (!file.is_open())
+    perror("error while opening file\n");
+
+  v_texture.clear();
+
+  GLuint img;
+  std::string t;
+  int format, rot;
+  float r = 0.0f;
+  float g = 0.0f;
+  float b = 0.0f;
+  int lineNumber = 0; 
+  ColorRGB color(r, g, b);
+
+  while (std::getline(file, line) && start < end) 
+  {
+    if(lineNumber >= start)
+    {
+      std::istringstream iss(line);
+          
+      if (!(iss >> t >> format >> rot) && !(iss >> t >> format >> rot >> r >> g >> b)) 
+        perror("not the good number of elements");
+
+      // jpg
+      if(format == 0)
+        img = loadTexture(t.c_str());
+      else
+      // png
+      {
+        img = SOIL_load_OGL_texture(t.c_str(), SOIL_LOAD_AUTO, SOIL_CREATE_NEW_ID, SOIL_FLAG_INVERT_Y);
+      }
+
+      GLenum error = glGetError();
+      if (error != GL_NO_ERROR) 
+      {
+        // Il y a eu une erreur OpenGL lors du chargement de la texture
+        const char* errorMessage = reinterpret_cast<const char*>(gluErrorString(error));
+        fprintf(stderr, "Erreur OpenGL lors du chargement de la texture : %s n°%d\n", errorMessage, start); 
+      }
+
+      v_texture.push_back(ImgTexture{img, color, rot});
+
+      start++;
+    }
+    lineNumber++;
+  }
+    
+  if (file.bad())
+    perror("error while reading file");
+
+  file.close();
+}
 
 int main(int argc, char **argv) 
 {
@@ -156,11 +206,12 @@ int main(int argc, char **argv)
   glPointSize(5.0);
   glEnable(GL_DEPTH_TEST);
 
-  /* ********** INIT ********** */
-
-  GLuint textureBall;
+  /* ********** I N I T ********** */
+  srand(static_cast<unsigned int>(time(nullptr)));
+  std::vector<ImgTexture> v_texture;
   std::vector<Enemy> v_enemys;
-  init(textureBall, v_enemys);
+  readFile("src/loadImg.txt", v_texture, 0, 8);
+  game.getCorridor().loadEnemys(v_enemys);
   
 
   /* ********** L O O P ********** */
@@ -192,17 +243,17 @@ int main(int argc, char **argv)
     /* Initial scenery setup */
     drawFrame();
 
-    /* ***** Create the corridor ***** */
-    game.getCorridor().drawCorridor();
-
-    game.getCorridor().drawLines(v_enemys);
+    /* ***** C O R R I D O R ***** */
+    game.getCorridor().drawCorridor(v_texture);
+    game.getCorridor().drawLines(v_enemys, v_texture);
     
     glPushMatrix();
       game.getRacket().drawRacket();
     glPopMatrix();
 
     glPushMatrix();
-      drawTexture(textureBall);
+      // On dessine la balle
+      drawTexture(v_texture[0].img);
       drawTransparence();
 
       glTranslatef(game.getBall().getPos('X'), game.getBall().getPos('Y'),
@@ -232,7 +283,10 @@ int main(int argc, char **argv)
   }
 
   /* ***** D E L E T E ***** */
-  deleteTexture(textureBall);
+  for (auto texture : v_texture) {
+    deleteTexture(texture.img);
+  }
+
   v_enemys.clear();
 
   glfwTerminate();

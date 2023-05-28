@@ -13,12 +13,13 @@ Ball::Ball(float x, float y, float z) {
 }
 
 /* ********** F U N C T I O N S ********** */
-void Ball::drawBall() {
+void Ball::drawBall() 
+{
   glColor3f(1, 1, 1);
   GLUquadricObj *quadric = gluNewQuadric();
   gluQuadricTexture(quadric, GL_TRUE);
   // gluDeleteQuadric(quadric);
-  gluSphere(quadric, 1, m_size, m_size);
+  gluSphere(quadric, 2, m_size, m_size);
 }
 
 bool Ball::collisionRacket(Racket r) {
