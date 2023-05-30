@@ -13,10 +13,10 @@
 #include <stdlib.h>
 
 /* Window properties */
-static const unsigned int WINDOW_WIDTH = 1280;
-static const unsigned int WINDOW_HEIGHT = 720;
+static unsigned int WINDOW_WIDTH = 1280;
+static unsigned int WINDOW_HEIGHT = 720;
 static const char WINDOW_TITLE[] = "Super jeu de la mort qui tue";
-static float aspectRatio = 1;
+static float aspectRatio = WINDOW_WIDTH / (float)WINDOW_HEIGHT;
 
 /* Test position*/
 static const float GL_VIEW_SIZE = 1.;
@@ -31,7 +31,7 @@ static Game game(Ball(0., DISTANCE - 4, 0.), Corridor(25, alpha, 12, 1),
                  Racket(0., DISTANCE - 5, 0));
 float walk = 0;
 double posX = 0, posY = 0;
-float h = -tan(toRad(alpha / 2.)) * 3 * DISTANCE;
+float h = -tan(toRad(alpha / 2.)) *3 * DISTANCE;
 
 /* Error handling function */
 void onError(int error, const char *description) {
@@ -39,8 +39,11 @@ void onError(int error, const char *description) {
 }
 
 void onWindowResized(GLFWwindow *window, int width, int height) {
+  WINDOW_WIDTH = width;
+  WINDOW_HEIGHT = height;
   aspectRatio = width / (float)height;
 
+h = -tan(toRad(alpha / 2.)) * 3 * DISTANCE;
   glViewport(0, 0, width, height);
   glMatrixMode(GL_PROJECTION);
   glLoadIdentity();
@@ -82,6 +85,7 @@ static void cursor_position_callback(GLFWwindow *window, double xpos,
                                      double ypos) {
   float r_l = game.getRacket().getLength();
   // TODO décalage sur les bords pour que ça ne sorte pas
+  printf("aspect raatio %f\n", aspectRatio);
   posX = xpos * ((h * aspectRatio) / WINDOW_WIDTH) - ((h * aspectRatio) / 2);
   posY = (-ypos * (h / WINDOW_HEIGHT) + (h / 2));
 }
