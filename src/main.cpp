@@ -3,27 +3,26 @@
 #include "../include/ball.h"
 #include "../include/corridor.h"
 #include "../include/draw_scene.h"
+#include "../include/enemy.h"
 #include "../include/game.h"
 #include "../include/racket.h"
+#include "../include/struct.h"
 #include <GL/gl.h>
 #include <GL/glu.h>
 #include <GLFW/glfw3.h>
+#include <SOIL.h>
+#include <cstdlib>
+#include <ctime>
+#include <fstream>
 #include <math.h>
+#include <sstream>
 #include <stdio.h>
 #include <stdlib.h>
 #include <vector>
-#include "enemy.h"
-#include <fstream>
-#include <SOIL.h>
-#include <sstream>
-#include "struct.h"
-#include <cstdlib>
-#include <ctime> 
-
 
 /* Window properties */
-static const unsigned int WINDOW_WIDTH = 1920;
-static const unsigned int WINDOW_HEIGHT = 1080;
+static unsigned int WINDOW_WIDTH = 1280;
+static unsigned int WINDOW_HEIGHT = 720;
 static const char WINDOW_TITLE[] = "Super jeu de la mort qui tue";
 static float aspectRatio = 1;
 
@@ -47,10 +46,12 @@ void onError(int error, const char *description) {
   fprintf(stderr, "GLFW Error: %s\n", description);
 }
 
-void onWindowResized(GLFWwindow *window, int width, int height) 
-{
+void onWindowResized(GLFWwindow *window, int width, int height) {
+  WINDOW_WIDTH = width;   // AJOUTER ICI
+  WINDOW_HEIGHT = height; // AJOUTER ICI
   aspectRatio = width / (float)height;
 
+  h = -tan(toRad(alpha / 2.)) * 3 * DISTANCE;
   glViewport(0, 0, width, height);
   glMatrixMode(GL_PROJECTION);
   glLoadIdentity();
@@ -58,10 +59,8 @@ void onWindowResized(GLFWwindow *window, int width, int height)
   glMatrixMode(GL_MODELVIEW);
 }
 
-void onKey(GLFWwindow *window, int key, int scancode, int action, int mods) 
-{
-  if (action == GLFW_PRESS) 
-  {
+void onKey(GLFWwindow *window, int key, int scancode, int action, int mods) {
+  if (action == GLFW_PRESS) {
     switch (key) {
     case GLFW_KEY_A:
     case GLFW_KEY_ESCAPE:
@@ -78,19 +77,16 @@ void onKey(GLFWwindow *window, int key, int scancode, int action, int mods)
     }
   }
 
-  if (action == GLFW_RELEASE) 
-  {
-    switch (key) 
-    {
-      default:
+  if (action == GLFW_RELEASE) {
+    switch (key) {
+    default:
       fprintf(stdout, "Touche non gérée (%d)\n", key);
     }
   }
 }
 
 static void cursor_position_callback(GLFWwindow *window, double xpos,
-                                     double ypos) 
-{
+                                     double ypos) {
   float r_l = game.getRacket().getLength();
   // TODO décalage sur les bords pour que ça ne sorte pas
   posX = xpos * ((h * aspectRatio) / WINDOW_WIDTH) - ((h * aspectRatio) / 2);
@@ -98,25 +94,23 @@ static void cursor_position_callback(GLFWwindow *window, double xpos,
 }
 
 void mouse_button_callback(GLFWwindow *window, int button, int action,
-                           int mods) 
-{
-  switch (button) 
-  {
-    /* ***** W A L K ***** */
-    case GLFW_MOUSE_BUTTON_LEFT:
-      flag_walk = action == GLFW_PRESS ? 1 : 0;
-    case GLFW_MOUSE_BUTTON_RIGHT:
-      if (action == GLFW_PRESS && game.getBall().getMode() == 1)
-        game.getBall().setMode();
-      break;
+                           int mods) {
+  switch (button) {
+  /* ***** W A L K ***** */
+  case GLFW_MOUSE_BUTTON_LEFT:
+    flag_walk = action == GLFW_PRESS ? 1 : 0;
+  case GLFW_MOUSE_BUTTON_RIGHT:
+    if (action == GLFW_PRESS && game.getBall().getMode() == 1)
+      game.getBall().setMode();
+    break;
 
-    default:
-      fprintf(stdout, "Touche non gérée (%d)\n", button);
+  default:
+    fprintf(stdout, "Touche non gérée (%d)\n", button);
   }
 }
 
-void readFile(std::string nameFile, std::vector<ImgTexture>& v_texture, int start, int end)
-{
+void readFile(std::string nameFile, std::vector<ImgTexture> &v_texture,
+              int start, int end) {
   std::string line;
   std::ifstream file(nameFile);
 
@@ -131,33 +125,35 @@ void readFile(std::string nameFile, std::vector<ImgTexture>& v_texture, int star
   float r = 0.0f;
   float g = 0.0f;
   float b = 0.0f;
-  int lineNumber = 0; 
+  int lineNumber = 0;
   ColorRGB color(r, g, b);
 
-  while (std::getline(file, line) && start < end) 
-  {
-    if(lineNumber >= start)
-    {
+  while (std::getline(file, line) && start < end) {
+    if (lineNumber >= start) {
       std::istringstream iss(line);
-          
-      if (!(iss >> t >> format >> rot) && !(iss >> t >> format >> rot >> r >> g >> b)) 
+
+      if (!(iss >> t >> format >> rot) &&
+          !(iss >> t >> format >> rot >> r >> g >> b))
         perror("not the good number of elements");
 
       // jpg
-      if(format == 0)
+      if (format == 0)
         img = loadTexture(t.c_str());
       else
       // png
       {
-        img = SOIL_load_OGL_texture(t.c_str(), SOIL_LOAD_AUTO, SOIL_CREATE_NEW_ID, SOIL_FLAG_INVERT_Y);
+        img = SOIL_load_OGL_texture(t.c_str(), SOIL_LOAD_AUTO,
+                                    SOIL_CREATE_NEW_ID, SOIL_FLAG_INVERT_Y);
       }
 
       GLenum error = glGetError();
-      if (error != GL_NO_ERROR) 
-      {
+      if (error != GL_NO_ERROR) {
         // Il y a eu une erreur OpenGL lors du chargement de la texture
-        const char* errorMessage = reinterpret_cast<const char*>(gluErrorString(error));
-        fprintf(stderr, "Erreur OpenGL lors du chargement de la texture : %s n°%d\n", errorMessage, start); 
+        const char *errorMessage =
+            reinterpret_cast<const char *>(gluErrorString(error));
+        fprintf(stderr,
+                "Erreur OpenGL lors du chargement de la texture : %s n°%d\n",
+                errorMessage, start);
       }
 
       v_texture.push_back(ImgTexture{img, color, rot});
@@ -166,15 +162,14 @@ void readFile(std::string nameFile, std::vector<ImgTexture>& v_texture, int star
     }
     lineNumber++;
   }
-    
+
   if (file.bad())
     perror("error while reading file");
 
   file.close();
 }
 
-int main(int argc, char **argv) 
-{
+int main(int argc, char **argv) {
   /* GLFW initialisation */
   GLFWwindow *window;
   if (!glfwInit())
@@ -184,9 +179,9 @@ int main(int argc, char **argv)
   glfwSetErrorCallback(onError);
 
   /* Create a windowed mode window and its OpenGL context */
-  window = glfwCreateWindow(WINDOW_WIDTH, WINDOW_HEIGHT, WINDOW_TITLE, NULL, NULL);
-  if (!window) 
-  {
+  window =
+      glfwCreateWindow(WINDOW_WIDTH, WINDOW_HEIGHT, WINDOW_TITLE, NULL, NULL);
+  if (!window) {
     // If no context created : exit !
     glfwTerminate();
     return -1;
@@ -212,19 +207,16 @@ int main(int argc, char **argv)
   std::vector<Enemy> v_enemys;
   readFile("src/loadImg.txt", v_texture, 0, 8);
   game.getCorridor().loadEnemys(v_enemys);
-  
 
   /* ********** L O O P ********** */
   /* Loop until the user closes the window */
-  while (!glfwWindowShouldClose(window)) 
-  {
+  while (!glfwWindowShouldClose(window)) {
     /* Get time (in second) at loop beginning */
     double startTime = glfwGetTime();
 
-    if (flag_walk) 
-    {
+    if (flag_walk) {
       game.getCorridor().setWalk();
-      //game.getRacket().setMode();
+      // game.getRacket().setMode();
     }
 
     /* ***** R A C K E T ***** */
@@ -246,20 +238,20 @@ int main(int argc, char **argv)
     /* ***** C O R R I D O R ***** */
     game.getCorridor().drawCorridor(v_texture);
     game.getCorridor().drawLines(v_enemys, v_texture);
-    
+
     glPushMatrix();
-      game.getRacket().drawRacket();
+    game.getRacket().drawRacket();
     glPopMatrix();
 
     glPushMatrix();
-      // On dessine la balle
-      drawTexture(v_texture[0].img);
-      drawTransparence();
+    // On dessine la balle
+    drawTexture(v_texture[0].img);
+    drawTransparence();
 
-      glTranslatef(game.getBall().getPos('X'), game.getBall().getPos('Y'),
-                   game.getBall().getPos('Z'));
-      game.getBall().drawBall();
-      finTexture();
+    glTranslatef(game.getBall().getPos('X'), game.getBall().getPos('Y'),
+                 game.getBall().getPos('Z'));
+    game.getBall().drawBall();
+    finTexture();
     glPopMatrix();
     game.getBall().collision(game.getCorridor(), game.getRacket());
     // printf("TOUCHE ? %d\n",
