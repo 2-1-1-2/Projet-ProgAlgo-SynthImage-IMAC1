@@ -245,6 +245,61 @@ void drawMenuCase(GLuint textureMenu){
 		finTexture();
 	glPopMatrix();
 }
+void drawScoreCase(GLuint textureScoreCase, GLuint textureScore0, GLuint textureScore1){
+	glPushMatrix();
+	drawTexture(textureScoreCase);
+	glTranslatef(-18.4,-6.45,10);
+	glScalef(0.25,0.25,1);
+	glBegin(GL_QUADS);
+//ajouter un z sinon à cause du zbuffer ça se dessine derrière tout
+			glTexCoord3f(0,1,0);
+			glVertex3d(-10,-10,-1);
+			glTexCoord3f(1,1,0);
+			glVertex3d(10,-10,-1);
+			glTexCoord3f(1,0,0);
+			glVertex3d(10,-10,1);
+			glTexCoord3f(0,0,0);
+			glVertex3d(-10,-10,1);
+		glEnd();
+		finTexture();
+	glPopMatrix();
+
+	glPushMatrix();
+	drawTexture(textureScore0);
+	glTranslatef(-15.2,-7.95,10);
+	glScalef(1,1,1);
+	glBegin(GL_QUADS);
+//ajouter un z sinon à cause du zbuffer ça se dessine derrière tout
+			glTexCoord3f(0,1,0);
+			glVertex3d(-1,-1,-1);
+			glTexCoord3f(1,1,0);
+			glVertex3d(1,-1,-1);
+			glTexCoord3f(1,0,0);
+			glVertex3d(1,-1,1);
+			glTexCoord3f(0,0,0);
+			glVertex3d(-1,-1,1);
+		glEnd();
+		finTexture();
+	glPopMatrix();
+	
+	glPushMatrix();
+	drawTexture(textureScore1);
+	glTranslatef(-13.4,-7.95,10);
+	glScalef(1,1,1);
+	glBegin(GL_QUADS);
+//ajouter un z sinon à cause du zbuffer ça se dessine derrière tout
+			glTexCoord3f(0,1,0);
+			glVertex3d(-1,-1,-1);
+			glTexCoord3f(1,1,0);
+			glVertex3d(1,-1,-1);
+			glTexCoord3f(1,0,0);
+			glVertex3d(1,-1,1);
+			glTexCoord3f(0,0,0);
+			glVertex3d(-1,-1,1);
+		glEnd();
+		finTexture();
+	glPopMatrix();
+}
 
 void drawMenu(GLuint textureMenu, GLuint textureJouer,GLuint textureNiveaux, GLuint textureQuitter){
 	//texture Menu

@@ -6,6 +6,7 @@
 #include <stdio.h>
 #include <math.h>
 
+
 void drawFrame();
 
 void drawBase();
@@ -30,6 +31,7 @@ void deleteTexture(GLuint texture);
 void drawTransparence();
 
 void drawMenuCase(GLuint textureMenu);
+void drawScoreCase(GLuint textureScore, GLuint textureScore0, GLuint textureScore1);
 void drawMenu(GLuint textureMenu, GLuint textureJouer,GLuint textureNiveaux, GLuint textureQuitter);
 void drawFinJeu(GLuint textureFin, GLuint textureRejouer,GLuint textureScore, GLuint textureQuitter);
 void drawNiveaux(GLuint textureNiveau1, GLuint textureNiveau2, GLuint textureNiveau3, GLuint textureNiveau4, GLuint textureNiveau5);
