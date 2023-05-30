@@ -35,6 +35,9 @@ static float walk = 0;
 // cursor position
 double xpos, ypos;
 
+//score 
+int score = 0;
+
 /* Error handling function */
 void onError(int error, const char* description)
 {
@@ -192,6 +195,7 @@ int main(int argc, char** argv)
 	GLuint textureFin = loadTexture("../doc/textureFin.jpg");
 	GLuint textureRejouer = loadTexture("../doc/textureRejouer.jpg");
 	GLuint textureScore = loadTexture("../doc/textureScore.jpg");
+	GLuint textureScoreCase = loadTexture("../doc/textureScoreCase.jpg");
 
 	//Load texture Niveaux
 	GLuint textureNiveau1 = loadTexture("../doc/textureNiveau1.jpg");
@@ -199,6 +203,18 @@ int main(int argc, char** argv)
 	GLuint textureNiveau3 = loadTexture("../doc/textureNiveau3.jpg");
 	GLuint textureNiveau4 = loadTexture("../doc/textureNiveau4.jpg");
 	GLuint textureNiveau5 = loadTexture("../doc/textureNiveau5.jpg");
+
+	// afficher le score, changement de texture en fonction du score
+
+	int score = 0;
+	int score0 = score/10;
+	int score1 = score%10;
+	const int nombreTexture = 10;
+	const char* cheminTexture[nombreTexture] = {"../doc/textureScore0.jpg", "../doc/textureScore1.jpg", "../doc/textureScore2.jpg", "../doc/textureScore3.jpg","../doc/textureScore4.jpg","../doc/textureScore5.jpg", "../doc/textureScore6.jpg", "../doc/textureScore7.jpg","../doc/textureScore8.jpg","../doc/textureScore9.jpg"};
+	GLuint textureScore0 = loadTexture(cheminTexture[score0]);
+	GLuint textureScore1 = loadTexture(cheminTexture[score1]);
+
+
 
 	
 
@@ -233,6 +249,7 @@ int main(int argc, char** argv)
 		glPushMatrix();
 		glDisable(GL_LIGHTING);
 		drawMenuCase(textureMenu);
+		drawScoreCase(textureScoreCase, textureScore0, textureScore1);
 
 		if (menu1){
 			drawMenu(textureMenu, textureJouer, textureNiveaux, textureQuitter);
