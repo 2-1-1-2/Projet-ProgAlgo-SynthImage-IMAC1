@@ -1,198 +1,166 @@
-#include <GL/gl.h>
-#include <GL/glu.h>
-#include "../include/math.h"
-#include <algorithm>
-#include "../include/3D_tools.h"
-#include "../include/draw_scene.h"
 #include "../include/corridor.h"
-#include <vector>
-#include <fstream>
-#include <sstream>
-#include <string>
-#include <cstring>
 #include "algorithm"
-#include "enemy.h"
-#include <cstdlib>
 
-Corridor::Corridor(int x, int y, int z, float speed)
-{
-    this->m_x = x;
-    this->m_y = y;
-    this->m_z = z;
-    this->m_start = -14;
-    this->m_walk = 0;
-    this->m_km = -14;
-    this->m_speed = speed;
+Corridor::Corridor(int x, int y, int z, float speed) {
+  this->m_x = x;
+  this->m_y = y;
+  this->m_z = z;
+  this->m_start = -14;
+  this->m_walk = 0;
+  this->m_km = -14;
+  this->m_speed = speed;
 
-    float colors[6] = {0.5, 0.5, 1, 0.5, 0.8, 1};
-    std::copy(colors, colors + 6, m_colors);
+  float colors[6] = {0.5, 0.5, 1, 0.5, 0.8, 1};
+  std::copy(colors, colors + 6, m_colors);
 
-    int temp = y;
-    for (size_t i = 0; i < 7; i++)
-    {
-        m_lines[i] = temp;
-        temp -= 10;
-    }
+  int temp = y;
+  for (size_t i = 0; i < 7; i++) {
+    m_lines[i] = temp;
+    temp -= 10;
+  }
 }
 
-void Corridor::drawCorridor(std::vector<ImgTexture>& v_texture)
-{
-    // bottom square
-    drawTexture(v_texture[3].img);
-    drawSquare(m_x, m_y, -m_z, m_start, true);
-    finTexture();
-    // top square
-    drawTexture(v_texture[2].img);
-    drawSquare(m_x, m_y, m_z, m_start, true);
-    finTexture();
+void Corridor::drawCorridor(std::vector<ImgTexture> &v_texture) {
+  // bottom square
+  drawTexture(v_texture[3].img);
+  drawSquare(m_x, m_y, -m_z, m_start, true);
+  finTexture();
+  // top square
+  drawTexture(v_texture[2].img);
+  drawSquare(m_x, m_y, m_z, m_start, true);
+  finTexture();
 
-    drawTexture(v_texture[1].img);
-    // left square
-    drawSquare(-m_x, m_y, m_z, m_start, false);
-    // right square
-    drawSquare(m_x, m_y, m_z, m_start, false);
-    finTexture();
+  drawTexture(v_texture[1].img);
+  // left square
+  drawSquare(-m_x, m_y, m_z, m_start, false);
+  // right square
+  drawSquare(m_x, m_y, m_z, m_start, false);
+  finTexture();
 }
 
 // to make go backward the inside of the corridor
-void Corridor::drawLines(std::vector<Enemy> &v_enemys, std::vector<ImgTexture>& v_texture)
-{       
-    // color white
-    glColor3f(1, 1, 1);
-    // size of the line
-    glLineWidth(2);
-    // To create the 7 lines
-    for(size_t i = 0; i < 7; i++)
-    {
-        m_lines[i] -= m_walk;
+void Corridor::drawLines(std::vector<Enemy> &v_enemys,
+                         std::vector<ImgTexture> &v_texture) {
+  // color white
+  glColor3f(1, 1, 1);
+  // size of the line
+  glLineWidth(2);
+  // To create the 7 lines
+  for (size_t i = 0; i < 7; i++) {
+    m_lines[i] -= m_walk;
 
-        if (m_lines[i] <= -10)
-            m_lines[i] = m_y - 1;
+    if (m_lines[i] <= -10)
+      m_lines[i] = m_y - 1;
 
-        drawLineLoop(m_x, m_lines[i], m_z);
-    }
+    drawLineLoop(m_x, m_lines[i], m_z);
+  }
 
-    // To create the enemys
-    for(Enemy &element : v_enemys)
-    {
-        // to make walk the enemys
-        element.setDWithWalk(m_walk);
+  // To create the enemys
+  for (Enemy &element : v_enemys) {
+    // to make walk the enemys
+    element.setDWithWalk(m_walk);
 
-        if(element.getLeft() != -1 && element.getUp() != -1)
-        {
-            drawTexture(v_texture[7].img);
-            // Gauche
-            if(element.getLeft())
-            {
-                // Haut
-                if(element.getUp())
-                    drawEnemy(-m_x, -m_x + element.getW(), element.getD(), m_z - element.getH(), m_z);
-                // Bas
-                else
-                    drawEnemy(-m_x, -m_x + element.getW(), element.getD(), -m_z, -m_z + element.getH());
-            }
-            // Droite
-            else
-            {
-                // Haut
-                if(element.getUp())
-                    drawEnemy(m_x - element.getW(), m_x, element.getD(), m_z - element.getH(), m_z);
-                // Bas    
-                else
-                    drawEnemy(m_x - element.getW(), m_x, element.getD(), -m_z, -m_z + element.getH());
-            }
-            finTexture();
-        }
-        /* *** Enemy is completely horizontal *** */
-        else if(element.getLeft() == -1)
-        {
-            if(element.getUp())
-            {
-                drawTexture(v_texture[6].img);
-                drawHorizontalEnemy(m_x, element.getD(), m_z - element.getH(), m_z);
-            }
-            else
-            {
-                drawTexture(v_texture[5].img);
-                drawHorizontalEnemy(m_x, element.getD(), -m_z, -m_z + element.getH());
-            }
-            finTexture();
-        }
-        /* *** Enemy is completely vertical *** */
+    if (element.getLeft() != -1 && element.getUp() != -1) {
+      drawTexture(v_texture[7].img);
+      // Gauche
+      if (element.getLeft()) {
+        // Haut
+        if (element.getUp())
+          drawEnemy(-m_x, -m_x + element.getW(), element.getD(),
+                    m_z - element.getH(), m_z);
+        // Bas
         else
-        {
-            drawTexture(v_texture[4].img);
-            // Picture can be upside down
-            if(v_texture[4].rot && element.getRot() == -1)
-                element.setRot(rand() % 2);
-
-            if(element.getLeft())
-                drawVerticalEnemy(-m_x, -m_x + element.getW(), element.getD(), m_z, element.getRot());
-            else
-                drawVerticalEnemy(m_x, m_x - element.getW(), element.getD(), m_z, element.getRot());
-
-            finTexture();
-        }
+          drawEnemy(-m_x, -m_x + element.getW(), element.getD(), -m_z,
+                    -m_z + element.getH());
+      }
+      // Droite
+      else {
+        // Haut
+        if (element.getUp())
+          drawEnemy(m_x - element.getW(), m_x, element.getD(),
+                    m_z - element.getH(), m_z);
+        // Bas
+        else
+          drawEnemy(m_x - element.getW(), m_x, element.getD(), -m_z,
+                    -m_z + element.getH());
+      }
+      finTexture();
     }
-    m_walk = 0;
+    /* *** Enemy is completely horizontal *** */
+    else if (element.getLeft() == -1) {
+      if (element.getUp()) {
+        drawTexture(v_texture[6].img);
+        drawHorizontalEnemy(m_x, element.getD(), m_z - element.getH(), m_z);
+      } else {
+        drawTexture(v_texture[5].img);
+        drawHorizontalEnemy(m_x, element.getD(), -m_z, -m_z + element.getH());
+      }
+      finTexture();
+    }
+    /* *** Enemy is completely vertical *** */
+    else {
+      drawTexture(v_texture[4].img);
+      // Picture can be upside down
+      if (v_texture[4].rot && element.getRot() == -1)
+        element.setRot(rand() % 2);
+
+      if (element.getLeft())
+        drawVerticalEnemy(-m_x, -m_x + element.getW(), element.getD(), m_z,
+                          element.getRot());
+      else
+        drawVerticalEnemy(m_x, m_x - element.getW(), element.getD(), m_z,
+                          element.getRot());
+
+      finTexture();
+    }
+  }
+  m_walk = 0;
 }
 
 // to initialize the enemys
-void Corridor::loadEnemys(std::vector<Enemy> &v_enemys)
-{
-    std::map<std::string, std::tuple<int, int, int, int, int, int>> enemyMap;
-    std::string line;
-    std::ifstream file("src/enemys.txt");
-    std::string e;
-    int d;
+void Corridor::loadEnemys(std::vector<Enemy> &v_enemys) {
+  std::map<std::string, std::tuple<int, int, int, int, int, int>> enemyMap;
+  std::string line;
+  std::ifstream file("src/enemys.txt");
+  std::string e;
+  int d;
 
-    if (!file.is_open())
-        perror("error while opening file\n");
+  if (!file.is_open())
+    perror("error while opening file\n");
 
-    initializeEnemyMap(enemyMap);
-    while (std::getline(file, line))
-    {
-        std::istringstream iss(line);
-        
-        if (!(iss >> e >> d)) 
-            perror("not the good number of elements");
+  initializeEnemyMap(enemyMap);
+  while (std::getline(file, line)) {
+    std::istringstream iss(line);
 
-        Enemy enemy = createEnemy(enemyMap, e, d);
-        v_enemys.push_back(enemy);
-    }
+    if (!(iss >> e >> d))
+      perror("not the good number of elements");
 
-    if (file.bad())
-        perror("error while reading file");
+    Enemy enemy = createEnemy(enemyMap, e, d);
+    v_enemys.push_back(enemy);
+  }
 
-    file.close();
+  if (file.bad())
+    perror("error while reading file");
+
+  file.close();
 }
 
 /* ********** G E T T E R S ********** */
-int Corridor::getZ() {
-    return this->m_z;
-}
+int Corridor::getZ() { return this->m_z; }
 
-int Corridor::getWalk() {
-    return m_walk;
-}
+int Corridor::getWalk() { return m_walk; }
 
-
-int Corridor::getSpeed() {
-    return m_speed;
-}
+int Corridor::getSpeed() { return m_speed; }
 
 float Corridor::getPos(char pos) {
   return pos == 'X' ? m_x : pos == 'Y' ? m_y : m_z;
 }
 
 /* ********** S E T T E R S ********** */
-void Corridor::setWalk()
-{
-    this->m_walk += m_speed;
-    this->m_km += m_speed;
-    //printf("Km: %f\n", m_km);
+void Corridor::setWalk() {
+  this->m_walk += m_speed;
+  this->m_km += m_speed;
+  // printf("Km: %f\n", m_km);
 }
 
-void Corridor::setWalk(int walk) {
-    m_walk = walk;
-}
+void Corridor::setWalk(int walk) { m_walk = walk; }

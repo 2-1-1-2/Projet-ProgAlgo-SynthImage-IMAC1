@@ -214,11 +214,6 @@ int main(int argc, char **argv) {
     /* Get time (in second) at loop beginning */
     double startTime = glfwGetTime();
 
-    if (flag_walk) {
-      game.getCorridor().setWalk();
-      // game.getRacket().setMode();
-    }
-
     /* ***** R A C K E T ***** */
     game.getRacket().setPos(posX, posY);
     game.getBall().move(posX, posY);
@@ -253,12 +248,16 @@ int main(int argc, char **argv) {
     game.getBall().drawBall();
     finTexture();
     glPopMatrix();
-    game.getBall().collision(game.getCorridor(), game.getRacket());
+    game.getBall().collision(game.getCorridor(), game.getRacket(), v_enemys);
     // printf("TOUCHE ? %d\n",
     // game.getBall().collisionRacket(game.getRacket()));
 
     /* Scene rendering */
 
+    if (flag_walk) {
+      game.getCorridor().setWalk();
+      // game.getRacket().setMode();
+    }
     /* Swap front and back buffers */
     glfwSwapBuffers(window);
 
