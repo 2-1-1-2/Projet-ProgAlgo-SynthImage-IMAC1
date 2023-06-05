@@ -119,7 +119,7 @@ static void cursor_position_callback(GLFWwindow *window, double xpos,
   posX = -(((xpos * 2 / WINDOW_WIDTH) - 1) * aspectRatio) * toRad(FOCAL / 2.) *
          DISTANCE;
 
-  // printf("POSX %f POSY %f\n", posX, posY);
+  printf("POSX %f POSY %f\n", posX, posY);
 }
 
 void mouse_button_callback(GLFWwindow *window, int button, int action,
@@ -128,26 +128,46 @@ void mouse_button_callback(GLFWwindow *window, int button, int action,
   /* ***** W A L K ***** */
   case GLFW_MOUSE_BUTTON_LEFT:
     // si le bouton est pressé et que la balle est en mouvement
-    if (action == GLFW_PRESS) {
-      printf("AU MOINS JE SUIS PRESSE!\n");
-      if (game.getMenu().getMenu()) {
-        if (posX >= -8.915609 && posX <= 9.018680) {
-          // Jouer
-          if (posY >= 0.669959 && posY <= 3.813613) {
-            game.getMenu().setType(0);
-            game.getMenu().setMenu(false);
+    if (action == GLFW_PRESS) 
+    {
+      if (game.getMenu().getMenu()) 
+      {
+        if (posX >= -8.915609 && posX <= 9.018680) 
+        {
+          printf("TA RACE\n");
+          // Menu 1
+          if(game.getMenu().getType() == 0)
+          {
+            // Jouer
+            if (posY >= 0.669959 && posY <= 3.813613) {
+              game.getMenu().setMenu(false);
+            }
+            // Niveaux
+            if (posY >= -3.813613 && posY <= -0.773030)
+              game.getMenu().setType(1);
+            // Quitter
+            if (posY >= -8.451791 && posY <= -5.153531)
+              glfwSetWindowShouldClose(window, GLFW_TRUE);
           }
-          // Niveaux
-          if (posY >= -3.813613 && posY <= -0.773030)
-            game.getMenu().setType(1);
-          // Quitter
-          if (posY >= -8.451791 && posY <= -5.153531)
-            glfwSetWindowShouldClose(window, GLFW_TRUE);
+          else if(game.getMenu().getType() == 1) 
+          {
+            printf("coucou");
+            // Niveau 1
+            if (posY >= 7.472621 && posY <= 10.770881)
+              game.getMenu().setMenu(false);
+            // Niveau 2
+            if (posY >= 2.989048 && posY <= 6.081167)
+            {}
+            // Retour
+            if (posY >= -1.546059 && posY <= 1.597595)
+              game.getMenu().setType(0);
+          }
         }
-      } else if (game.getBall().getMode() == -1) {
+      } 
+      else if (game.getBall().getMode() == -1)
         flag_walk = 1;
-      }
-    } else if (action == GLFW_RELEASE)
+    } 
+    else if (action == GLFW_RELEASE)
       flag_walk = 0;
     break;
   case GLFW_MOUSE_BUTTON_RIGHT:
@@ -274,10 +294,7 @@ int main(int argc, char **argv) {
   // Load texture Niveaux
   GLuint textureNiveau1 = loadTexture("img/menu/niveaux/niveau1.jpg");
   GLuint textureNiveau2 = loadTexture("img/menu/niveaux/niveau2.jpg");
-  GLuint textureNiveau3 = loadTexture("img/menu/niveaux/niveau3.jpg");
-  GLuint textureNiveau4 = loadTexture("img/menu/niveaux/niveau4.jpg");
-  GLuint textureNiveau5 = loadTexture("img/menu/niveaux/niveau5.jpg");
-
+  GLuint textureRetour = loadTexture("img/menu/niveaux/retour.jpg");
   // score
   GLuint textureScoreCase = loadTexture("img/menu/score/textureScoreCase.jpg");
   int arr[6] = {0};
@@ -318,9 +335,7 @@ int main(int argc, char **argv) {
         drawMenu(textureMenu, textureJouer, textureNiveaux, textureQuitter);
         break;
       case 1:
-        printf("DANS LE MENU UN\n");
-        drawNiveaux(textureNiveau1, textureNiveau2, textureNiveau3,
-                    textureNiveau4, textureNiveau5);
+        drawNiveaux(textureNiveau1, textureNiveau2, textureRetour);
         break;
       }
     }
@@ -392,25 +407,6 @@ int main(int argc, char **argv) {
       game.getBall().drawBall();
       finTexture();
       glPopMatrix();
-
-      // S'il y a collision avec la raquette
-      /*if(game.getBall().collision(game.getCorridor(), game.getRacket(),
-      game.getGlue()))
-      {
-        // Le joueur a perdu
-        /*if(game.getLose())
-          flag_walk = 0;
-        // Si le joueur n'a pas perdu et qu'il a le bonus colle
-        else if(!game.getLose() && game.getGlue())
-          game.setGlue(false);*/
-      //}
-      // printf("TOUCHE ? %d\n",
-      // game.getBall().collisionRacket(game.getRacket()));
-
-      // game.getBall().collision(game.getCorridor(), game.getRacket(),
-      // v_enemys);
-      //  printf("TOUCHE ? %d\n",
-      //  game.getBall().collisionRacket(game.getRacket()));
     }
 
     /* Swap front and back buffers */
@@ -440,9 +436,7 @@ int main(int argc, char **argv) {
   deleteTexture(textureQuitter);
   deleteTexture(textureNiveau1);
   deleteTexture(textureNiveau2);
-  deleteTexture(textureNiveau3);
-  deleteTexture(textureNiveau4);
-  deleteTexture(textureNiveau5);
+  deleteTexture(textureRetour);
 
   v_enemys.clear();
   v_bonus.clear();

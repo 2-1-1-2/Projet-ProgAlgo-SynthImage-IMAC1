@@ -208,7 +208,7 @@ void drawMenu(GLuint textureMenu, GLuint textureJouer,GLuint textureNiveaux, GLu
 
 }
 
-void drawNiveaux(GLuint textureNiveau1, GLuint textureNiveau2, GLuint textureNiveau3, GLuint textureNiveau4, GLuint textureNiveau5){
+void drawNiveaux(GLuint textureNiveau1, GLuint textureNiveau2, GLuint textureRetour){
   glPushMatrix();
   drawTexture(textureNiveau1);
   glTranslatef(0,0,8);
@@ -246,44 +246,8 @@ void drawNiveaux(GLuint textureNiveau1, GLuint textureNiveau2, GLuint textureNiv
   glPopMatrix();
 
   glPushMatrix();
-  drawTexture(textureNiveau3);
+  drawTexture(textureRetour);
   glTranslatef(0,0,0);
-  glScalef(0.8,1,1.5);
-  glBegin(GL_QUADS);
-//ajouter un z sinon à cause du zbuffer ça se dessine derrière tout
-      glTexCoord3f(0,1,0);
-      glVertex3d(-10,-10,-1);
-      glTexCoord3f(1,1,0);
-      glVertex3d(10,-10,-1);
-      glTexCoord3f(1,0,0);
-      glVertex3d(10,-10,1);
-      glTexCoord3f(0,0,0);
-      glVertex3d(-10,-10,1);
-    glEnd();
-    finTexture();
-  glPopMatrix();
-
-  glPushMatrix();
-  drawTexture(textureNiveau4);
-  glTranslatef(0,0,-4);
-  glScalef(0.8,1,1.5);
-  glBegin(GL_QUADS);
-//ajouter un z sinon à cause du zbuffer ça se dessine derrière tout
-      glTexCoord3f(0,1,0);
-      glVertex3d(-10,-10,-1);
-      glTexCoord3f(1,1,0);
-      glVertex3d(10,-10,-1);
-      glTexCoord3f(1,0,0);
-      glVertex3d(10,-10,1);
-      glTexCoord3f(0,0,0);
-      glVertex3d(-10,-10,1);
-    glEnd();
-    finTexture();
-  glPopMatrix();
-
-  glPushMatrix();
-  drawTexture(textureNiveau5);
-  glTranslatef(0,0,-8);
   glScalef(0.8,1,1.5);
   glBegin(GL_QUADS);
 //ajouter un z sinon à cause du zbuffer ça se dessine derrière tout
