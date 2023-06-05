@@ -117,12 +117,14 @@ void Corridor::drawBonus(std::vector<Bonus> &v_bonus,
   }
 }
 
-void Corridor::drawEnemys(std::vector<Enemy> &v_enemys,
+void Corridor::drawEnemys(Racket r, std::vector<Enemy> &v_enemys,
                           std::vector<ImgTexture> &v_texture) {
   for (Enemy &element : v_enemys) {
     // to make walk the enemys
     element.setDWithWalk(m_walk);
 
+    if (element.getD() < DISTANCE / 5 - 1)
+      continue;
     if (element.getLeft() != -1 && element.getUp() != -1) {
       drawTexture(v_texture[7].img);
       // Gauche
@@ -180,7 +182,7 @@ void Corridor::drawEnemys(std::vector<Enemy> &v_enemys,
 }
 
 // to make go backward the inside of the corridor
-void Corridor::drawLines(std::vector<Enemy> &v_enemys,
+void Corridor::drawLines(Racket r, std::vector<Enemy> &v_enemys,
                          std::vector<Bonus> &v_bonus,
                          std::vector<ImgTexture> &v_texture) {
   // color white
@@ -206,7 +208,7 @@ void Corridor::drawLines(std::vector<Enemy> &v_enemys,
   }
 
   // To create the enemys
-  drawEnemys(v_enemys, v_texture);
+  drawEnemys(r, v_enemys, v_texture);
 
   // To create the bonus
   drawBonus(v_bonus, v_texture);

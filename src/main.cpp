@@ -336,6 +336,8 @@ int main(int argc, char **argv) {
       GLuint textureScore5 = loadTexture(cheminTexture[arr[5]]);
 
       if (flag_walk) {
+        game.getBall().setPos('Y', game.getBall().getPos('Y') -
+                                       game.getCorridor().getSpeed());
         game.getCorridor().setWalk();
         game.setScore();
         // printf("ALEEEEEED %f\n", game.getScore());
@@ -344,7 +346,8 @@ int main(int argc, char **argv) {
       /* ****************************** D R A W I N G
        * ****************************** */
       game.getCorridor().drawCorridor(v_texture);
-      game.getCorridor().drawLines(v_enemys, v_bonus, v_texture);
+      game.getCorridor().drawLines(game.getRacket(), v_enemys, v_bonus,
+                                   v_texture);
       game.drawBonus(v_texture);
       drawMenuCase(textureMenu);
       drawScoreCase(textureScoreCase, textureScore0, textureScore1,
