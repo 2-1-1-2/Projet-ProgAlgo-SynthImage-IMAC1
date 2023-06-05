@@ -64,30 +64,42 @@ void Corridor::collision(Racket r, std::vector<Enemy> v_enemys) {
 }
 
 void Corridor::drawCorridor(std::vector<ImgTexture> &v_texture) {
-  static GLfloat vCompColor[4];
-  vCompColor[0] = 1.0f;
-  vCompColor[1] = 1.0f;
-  vCompColor[2] = 1.0f;
-  vCompColor[3] = 1.0f;
-  glMaterialfv(GL_FRONT, GL_AMBIENT_AND_DIFFUSE, vCompColor);
-  glMaterialfv(GL_FRONT, GL_SPECULAR, vCompColor);
+    static GLfloat vCompColor[4];
+    vCompColor[0] = 1.0f;
+    vCompColor[1] = 1.0f;
+    vCompColor[2] = 1.0f;
+    vCompColor[3] = 1.0f;
+    glMaterialfv(GL_FRONT, GL_AMBIENT_AND_DIFFUSE, vCompColor);
+    glMaterialfv(GL_FRONT, GL_SPECULAR, vCompColor);
 
-  glColor3f(145 / 255., 82 / 255., 157 / 255.);
+    if(v_texture.size() == 7)
+    {
+        glColor3f(145 / 255., 82 / 255., 157 / 255.);
+        drawA(m_x, m_y, -m_z, m_start, true);
+        //   top square
+        drawA(m_x, m_y, m_z, m_start, true);
+        //   left square
+        drawA(-m_x, m_y, m_z, m_start, false);
+        // right square
+        drawA(m_x, m_y, m_z, m_start, false);
+    }
+    else
+    {
+        drawTexture(v_texture[9].img);
+        drawA(m_x, m_y, -m_z, m_start, true);
+        finTexture();
+        //   top square
+        drawTexture(v_texture[8].img);
+        drawA(m_x, m_y, m_z, m_start, true);
+        finTexture();
 
-  // drawTexture(v_texture[3].img);
-  drawA(m_x, m_y, -m_z, m_start, true);
-  // finTexture();
-  //   top square
-  // drawTexture(v_texture[2].img);
-  drawA(m_x, m_y, m_z, m_start, true);
-  // finTexture();
-
-  // drawTexture(v_texture[1].img);
-  //   left square
-  drawA(-m_x, m_y, m_z, m_start, false);
-  // right square
-  drawA(m_x, m_y, m_z, m_start, false);
-  // finTexture();
+        drawTexture(v_texture[7].img);
+        //   left square
+        drawA(-m_x, m_y, m_z, m_start, false);
+        // right square
+        drawA(m_x, m_y, m_z, m_start, false);
+        finTexture();
+    }
 }
 
 void Corridor::drawBonus(std::vector<Bonus> &v_bonus,
@@ -102,10 +114,10 @@ void Corridor::drawBonus(std::vector<Bonus> &v_bonus,
 
     // La vie
     if (bonus.getType() == 0)
-      drawTexture(v_texture[8].img);
+      drawTexture(v_texture[5].img);
     // La colle
     else
-      drawTexture(v_texture[9].img);
+      drawTexture(v_texture[6].img);
 
     drawCircle(x, bonus.getD(), z, h);
     finTexture();
@@ -121,7 +133,7 @@ void Corridor::drawEnemys(Racket r, std::vector<Enemy> &v_enemys,
     if (element.getD() < DISTANCE / 5 - 1)
       continue;
     if (element.getLeft() != -1 && element.getUp() != -1) {
-      drawTexture(v_texture[7].img);
+      drawTexture(v_texture[4].img);
       // Gauche
       if (element.getLeft()) {
         // Haut
@@ -149,19 +161,19 @@ void Corridor::drawEnemys(Racket r, std::vector<Enemy> &v_enemys,
     /* *** Enemy is completely horizontal *** */
     else if (element.getLeft() == -1) {
       if (element.getUp()) {
-        drawTexture(v_texture[6].img);
+        drawTexture(v_texture[3].img);
         drawHorizontalEnemy(m_x, element.getD(), m_z - element.getH(), m_z);
       } else {
-        drawTexture(v_texture[5].img);
+        drawTexture(v_texture[2].img);
         drawHorizontalEnemy(m_x, element.getD(), -m_z, -m_z + element.getH());
       }
       finTexture();
     }
     /* *** Enemy is completely vertical *** */
     else {
-      drawTexture(v_texture[4].img);
+      drawTexture(v_texture[1].img);
       // Picture can be upside down
-      if (v_texture[4].rot && element.getRot() == -1)
+      if (v_texture[1].rot && element.getRot() == -1)
         element.setRot(rand() % 2);
 
       if (element.getLeft())

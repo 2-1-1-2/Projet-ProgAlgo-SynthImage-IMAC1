@@ -14,6 +14,7 @@ Game::Game(Ball b, Corridor c, Racket r) {
   m_glue = false;
   m_lose = false;
   m_collision_racket = false;
+  m_texture = 1;
 }
 
 void Game::collision(std::vector<Enemy> v_enemys, float posX, float posY,
@@ -89,7 +90,7 @@ void Game::isThereBonus(std::vector<Bonus> &v_bonus)
         break;
       }
     }
-    else if(m_racket.getPos('Y') >= bonus.getD() + 13)
+    else if(m_racket.getPos('Y') >= bonus.getD() + 5)
     {
       v_bonus.erase(it);
       break;
@@ -103,7 +104,7 @@ void Game::drawBonus(std::vector<ImgTexture> &v_texture) {
   float z = -16;
   float h = 3;
 
-  drawTexture(v_texture[8].img);
+  drawTexture(v_texture[5].img);
 
   for (int i = 0; i < m_life; i++) {
     drawCircle(x, y, z, h);
@@ -115,7 +116,7 @@ void Game::drawBonus(std::vector<ImgTexture> &v_texture) {
   if (m_glue) {
     x = 0;
     z = -16;
-    drawTexture(v_texture[9].img);
+    drawTexture(v_texture[6].img);
     drawCircle(x, y, z, h);
     finTexture();
   }
@@ -133,6 +134,7 @@ bool Game::getGlue() { return m_glue; }
 bool Game::getLose() { return m_lose; }
 float Game::getScore() { return m_score; }
 bool Game::getCollisionRacket() { return m_collision_racket; }
+int Game::getTexture() { return m_texture; }
 
 /* ********** S E T T E R S ********** */
 void Game::setLife(int life) { m_life = life; }
@@ -142,3 +144,4 @@ void Game::setGlue(bool glue) { m_glue = glue; }
 void Game::setLose(bool lose) { m_lose = lose; }
 
 void Game::setScore() { m_score += 0.3f; }
+void Game::setTexture(int texture) { m_texture = texture; }

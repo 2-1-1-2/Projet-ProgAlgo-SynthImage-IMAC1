@@ -43,6 +43,7 @@ static Game game(Ball(0., DISTANCE / 5 + RADIUS_CIRCLE, 0.),
 
 double posX = 0, posY = 0;
 float h = tan(toRad(FOCAL / 2.)) * (DISTANCE);
+int compteur_tex = 1;
 
 /* Error handling function */
 void onError(int error, const char *description) {
@@ -74,7 +75,13 @@ void onWindowResized(GLFWwindow *window, int width, int height) {
 void onKey(GLFWwindow *window, int key, int scancode, int action, int mods) {
   if (action == GLFW_PRESS) {
     switch (key) {
-    case GLFW_KEY_A:
+    case GLFW_KEY_Q:
+      compteur_tex = 0;
+      if(game.getTexture() == 1)
+        game.setTexture(2);
+      else
+        game.setTexture(1);
+      break;
     case GLFW_KEY_ESCAPE:
       glfwSetWindowShouldClose(window, GLFW_TRUE);
       break;
@@ -211,6 +218,7 @@ void readFile(std::string nameFile, std::vector<ImgTexture> &v_texture,
     {
       std::istringstream iss(line);
 
+      printf("%s\n", line.c_str());
       if (!(iss >> t >> format >> rot) &&
           !(iss >> t >> format >> rot >> r >> g >> b))
         perror("not the good number of elements");
@@ -224,7 +232,8 @@ void readFile(std::string nameFile, std::vector<ImgTexture> &v_texture,
                                     SOIL_CREATE_NEW_ID, SOIL_FLAG_INVERT_Y);
 
       GLenum error = glGetError();
-      if (error != GL_NO_ERROR) {
+      if (error != GL_NO_ERROR) 
+      {
         // Il y a eu une erreur OpenGL lors du chargement de la texture
         const char *errorMessage =
             reinterpret_cast<const char *>(gluErrorString(error));
@@ -232,9 +241,7 @@ void readFile(std::string nameFile, std::vector<ImgTexture> &v_texture,
                 "Erreur OpenGL lors du chargement de la texture : %s n°%d\n",
                 errorMessage, start);
       }
-
       v_texture.push_back(ImgTexture{img, color, rot});
-
       start++;
     }
     lineNumber++;
@@ -285,7 +292,7 @@ int main(int argc, char **argv) {
   std::vector<Enemy> v_enemys;
   std::vector<Bonus> v_bonus;
 
-  readFile("src/loadImg.txt", v_texture, 0, 10);
+  readFile("src/loadImg.txt", v_texture, 0, 7);
   game.getCorridor().loadBonus(v_bonus);
 
   /* *********** I N I T     N I N A ********** */
@@ -351,6 +358,16 @@ int main(int argc, char **argv) {
       {
         game.getCorridor().loadEnemys(v_enemys, game.getMenu().getLevel());
         compteur++;
+      }
+
+      if(compteur_tex == 0)
+      {
+        v_texture.clear();
+        if(game.getTexture() == 1)
+          readFile("src/loadImg.txt", v_texture, 0, 7);
+        else
+          readFile("src/loadImg.txt", v_texture, 7, 18);
+        compteur_tex++;
       }
 
       initLight();

@@ -29,13 +29,16 @@ class Game
     bool getGlue();
     bool getLose();
     float getScore();
+    bool getCollisionRacket();
+    int getTexture();
 
     /* ********** S E T T E R S ********** */
     void setLife(int life);
     void setGlue(bool glue);
     void setLose(bool lose);
     void setScore();
-    bool getCollisionRacket();
+    void setTexture(int texture);
+
 
   private:
     Ball m_ball;
@@ -47,5 +50,6 @@ class Game
     bool m_glue;
     bool m_lose;
     bool m_collision_racket;
+    int m_texture;
 };
 #endif
