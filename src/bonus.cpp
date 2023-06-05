@@ -1,6 +1,6 @@
 #include "../include/bonus.h"
 
-Bonus::Bonus(int type, int x, int z, int h, int depth) 
+Bonus::Bonus(int type, int x, int z, int h, float depth) 
 {
   m_type = type;
   m_x = x;
@@ -22,7 +22,7 @@ int Bonus::getZ() {
 int Bonus::getH() {
   return m_h;}
 
-int Bonus::getD() {
+float Bonus::getD() {
   return m_d;}
 
 /* ********** S E T T E R S ********** */

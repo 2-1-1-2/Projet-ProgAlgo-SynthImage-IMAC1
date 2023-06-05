@@ -41,13 +41,15 @@ float clamp(float value, float min, float max) {
   return value;
 }
 
-void Game::isThereBonus(std::vector<Bonus> &v_bonus) {
-  for (auto it = v_bonus.begin(); it != v_bonus.end(); ++it) {
+void Game::isThereBonus(std::vector<Bonus> &v_bonus) 
+{
+  for (auto it = v_bonus.begin(); it != v_bonus.begin()+1; ++it) 
+  {
     Bonus &bonus = *it;
 
-    if (m_racket.getPos('Y') + 5 >= bonus.getD() &&
-        m_racket.getPos('Y') - 5 <= bonus.getD()) {
-      // printf("ON EST SUR LE MEME KILOMETRE %d\n", bonus.getD());
+    printf("ON EST SUR LE MEME KILOMETRE %f %f\n", m_racket.getPos('Y'), bonus.getD());
+    if(m_racket.getPos('Y') + 1 >= bonus.getD() && m_racket.getPos('Y') <= bonus.getD())
+    {
       float r_x = m_racket.getPos('X');
       float r_z = m_racket.getPos('Z');
       float r_h = m_racket.getLength();
@@ -86,6 +88,11 @@ void Game::isThereBonus(std::vector<Bonus> &v_bonus) {
         break;
       }
     }
+    else if(m_racket.getPos('Y') >= bonus.getD() + 13)
+    {
+      v_bonus.erase(it);
+      break;
+    }
   }
 }
 
@@ -105,8 +112,8 @@ void Game::drawBonus(std::vector<ImgTexture> &v_texture) {
   finTexture();
 
   if (m_glue) {
-    x = 10;
-    z = -8;
+    x = 0;
+    z = -16;
     drawTexture(v_texture[9].img);
     drawCircle(x, y, z, h);
     finTexture();

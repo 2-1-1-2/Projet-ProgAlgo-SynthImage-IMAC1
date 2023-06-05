@@ -255,7 +255,7 @@ void Corridor::loadBonus(std::vector<Bonus> &v_bonus) {
     }
 
     int type = std::rand() % 2;
-    Bonus bonus = Bonus(type, x, z, h, km);
+    Bonus bonus = Bonus(type, x, z, h, (float)km);
     v_bonus.push_back(bonus);
 
     km += 300;

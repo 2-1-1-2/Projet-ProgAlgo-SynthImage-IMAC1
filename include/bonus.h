@@ -5,7 +5,7 @@ class Bonus
 {
     public:
     
-        Bonus(int type, int x, int z, int h, int depth);
+        Bonus(int type, int x, int z, int h, float depth);
 
         /* ********** F U N C T I O N S ********** */
 
@@ -14,7 +14,7 @@ class Bonus
         int getX();
         int getZ();
         int getH();
-        int getD();
+        float getD();
 
         /* ********** S E T T E R S ********** */
         void setDWithWalk(float walk);
@@ -24,6 +24,6 @@ class Bonus
         int m_x;
         int m_z;
         int m_h;
-        int m_d;
+        float m_d;
 };
 #endif
