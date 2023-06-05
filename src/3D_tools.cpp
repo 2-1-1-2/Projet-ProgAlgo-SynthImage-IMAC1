@@ -1,10 +1,18 @@
 #include "../include/3D_tools.h"
 #include <GL/gl.h>
+float MatSpec[4] = {1.0f, 1.0f, 1.0f, 1.0f};
+float MatDif[4] = {0.3f, 0.3f, 0.3f, 1.0f};
+float MatAmb[4] = {0.3f, 0.3f, 0.3f, 1.0f};
+float Light1Pos[4] = {0.0f, DISTANCE, DISTANCE, 1.0f};
+float Light1Dif[4] = {1.0f, 1.0f, 1.0f, 1.0f};
+float Light1Spec[4] = {1.0f, 1.0f, 1.0f, 1.0f};
+float Light1Amb[4] = {0.5f, 0.5f, 0.5f, 1.0f};
+float Spot1Dir[3] = {0.0f, 0.0f, 1.0f};
 
 void setCamera() {
   gluLookAt(0, DISTANCE, 0.0, // origin cam
             0.0, 0.0, 0.0,    // point regardé
-            0.0, 0.0, 1.0);   // orientation
+            0.0, 1.0, 1.0);   // orientation
 }
 /* Convert degree to radians */
 float toRad(float deg) { return deg * M_PI / 180.0f; }
@@ -121,27 +129,25 @@ void drawSphere() {
   gluSphere(gluNewQuadric(), 1.0, NB_SEG_CIRCLE, NB_SEG_CIRCLE);
 }
 
-void light() {
-  GLfloat ambiantColor[] = {1.f, 1.f, 1.f, 1.f};
-  glLightModelfv(GL_LIGHT_MODEL_AMBIENT, ambiantColor);
+void light(float posX, float posY) {
 
-  // Position
+  GLfloat specular[] = {1, 1, 1, 1.0};
+  GLfloat shininess[] = {1.0};
+  GLfloat DiffuseLight[] = {0.5, 0.5, 0.5, 1};
+  GLfloat SpecularLight[] = {1, 1, 1, 1};
+  glMaterialfv(GL_FRONT, GL_SPECULAR, specular);
+  glMaterialfv(GL_FRONT, GL_SHININESS, shininess);
 
-  GLfloat lightColor0[] = {1.f, 1.f, 1.f, 1.f};
-  GLfloat lightPos0[] = {0.f, 0.f, -15.f, 1.f};
-  glLightfv(GL_LIGHT0, GL_DIFFUSE, lightColor0);
-  glLightfv(GL_LIGHT0, GL_POSITION, lightPos0);
+  glColorMaterial(GL_FRONT, GL_AMBIENT_AND_DIFFUSE);
+  glLightfv(GL_LIGHT0, GL_DIFFUSE, DiffuseLight);
+  glLightfv(GL_LIGHT0, GL_SPECULAR, SpecularLight);
 
-  GLfloat lightColor1[] = {1.f, 1.f, 1.f, 1.f};
-
-  GLfloat lightPos1[] = {0.f, -1.f, 0.f, 1.f}; // partant en direection
-
-  // glLightfv(GL_LIGHT0, GL_DIFFUSE, lightColor1);
-  // glLightfv(GL_LIGHT0, GL_POSITION, lightPos1);
+  GLfloat LightPosition[] = {0, -30, -CORRIDOR_HEIGHT * 4, 1.};
+  glLightfv(GL_LIGHT0, GL_POSITION, LightPosition);
 }
-void initLight() {
+void initLight(float posX, float posY) {
   glEnable(GL_LIGHTING);
   glEnable(GL_LIGHT0);
-  glEnable(GL_NORMALIZE);
-  light();
+  glEnable(GL_COLOR_MATERIAL);
+  light(posX, posY);
 }

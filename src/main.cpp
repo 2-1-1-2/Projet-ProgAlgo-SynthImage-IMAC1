@@ -213,7 +213,6 @@ int main(int argc, char **argv) {
 
   glPointSize(5.0);
   glEnable(GL_DEPTH_TEST);
-  initLight();
 
   /* ********** I N I T ********** */
   srand(static_cast<unsigned int>(time(nullptr)));
@@ -240,12 +239,18 @@ int main(int argc, char **argv) {
     glLoadIdentity();
     setCamera();
 
-    /* Initial scenery setup */
-    drawFrame();
+    initLight(posX, posY);
 
+    /* Initial scenery setup */
+
+    glPopMatrix();
+    drawFrame();
+    glPushMatrix();
     /* ***** C O R R I D O R ***** */
+    glPopMatrix();
     game.getCorridor().drawCorridor(v_texture);
     game.getCorridor().drawLines(v_enemys, v_texture);
+    glPushMatrix();
 
     glPushMatrix();
     game.getRacket().drawRacket();

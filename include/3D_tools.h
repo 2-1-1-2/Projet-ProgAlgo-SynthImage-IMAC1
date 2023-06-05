@@ -40,4 +40,4 @@ void drawSphere();
 
 /* Small tools */
 float toRad(float deg);
-void initLight();
+void initLight(float posX, float posY);
