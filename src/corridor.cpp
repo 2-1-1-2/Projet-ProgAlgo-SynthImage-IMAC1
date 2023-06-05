@@ -88,7 +88,7 @@ void Corridor::drawCorridor(std::vector<ImgTexture> &v_texture) {
         drawTexture(v_texture[9].img);
         drawA(m_x, m_y, -m_z, m_start, true);
         finTexture();
-        //   top square
+        //   top square+
         drawTexture(v_texture[8].img);
         drawA(m_x, m_y, m_z, m_start, true);
         finTexture();
@@ -238,9 +238,8 @@ void Corridor::loadEnemys(std::vector<Enemy> &v_enemys, int level)
 
     initializeEnemyMap(enemyMap);
 
-    end = 100;
+    end = 101;
 
-    printf("LEVEL %d\n", level);
     if(level == 1)
     {
         start = 0;
@@ -300,10 +299,6 @@ void Corridor::loadBonus(std::vector<Bonus> &v_bonus) {
 
 /* ********** G E T T E R S ********** */
 int Corridor::getZ() { return this->m_z; }
-
-/*int Corridor::getKm() {
-    return m_km;
-}*/
 
 int Corridor::getWalk() { return m_walk; }
 

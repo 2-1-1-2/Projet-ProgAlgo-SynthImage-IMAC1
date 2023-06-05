@@ -44,6 +44,7 @@ static Game game(Ball(0., DISTANCE / 5 + RADIUS_CIRCLE, 0.),
 double posX = 0, posY = 0;
 float h = tan(toRad(FOCAL / 2.)) * (DISTANCE);
 int compteur_tex = 1;
+int compteur = 0;
 
 /* Error handling function */
 void onError(int error, const char *description) {
@@ -141,18 +142,17 @@ void mouse_button_callback(GLFWwindow *window, int button, int action,
             if (posY >= -3.813613 && posY <= -0.773030)
               game.getMenu().setType(1);
             // Quitter
-            if (posY >= -8.451791 && posY <= -5.153531)
+            if (posY >= -6.215416 && posY <= -3.927533)
               glfwSetWindowShouldClose(window, GLFW_TRUE);
           }
           else if(game.getMenu().getType() == 1) 
           {
             // Niveau 1
-            if (posY >= 7.472621 && posY <= 10.770881)
+            if (posY >= 5.567183 && posY <= 7.855066)
               game.getMenu().setMenu(false);
             // Niveau 2
             if (posY >= 2.989048 && posY <= 6.081167)
             {
-              printf("coucou\n");
               game.getMenu().setLevel(2);
               game.getMenu().setMenu(false);
             }
@@ -161,9 +161,33 @@ void mouse_button_callback(GLFWwindow *window, int button, int action,
               game.getMenu().setType(0);
           }
         }
-      } 
-      else if (game.getBall().getMode() == -1 && !gameOver())
+      }
+      else if ((posX >= 15.557 && posX <= 23.7) &&
+                 (posY >= 11.477548 && posY <= 13.117197)) 
+      {
+        game.getMenu().setType(0);
+        game.getMenu().setMenu(true);
+      }
+      else if (game.getBall().getMode() == -1 && !game.gameOver())
         flag_walk = 1;
+      else if (game.gameOver()) 
+      {
+        if (posX >= -7.28 && posX <= 7.28) 
+        {
+          // rejouer
+          if (posY >= -5. && posY <= -2.22) 
+          {
+            game.reset();
+            /*compteur_tex = 0;*/
+            compteur = 0;
+            game.getMenu().setMenu(false);
+          } else if (posY >= -8.5 && posY <= -6.) 
+          {
+            // quitter
+            glfwSetWindowShouldClose(window, GLFW_TRUE);
+          }
+        }
+      }
     } 
     else if (action == GLFW_RELEASE)
       flag_walk = 0;
@@ -306,8 +330,6 @@ int main(int argc, char **argv) {
       "img/menu/score/textureScore6.jpg", "img/menu/score/textureScore7.jpg",
       "img/menu/score/textureScore8.jpg", "img/menu/score/textureScore9.jpg"};
 
-  int compteur = 0;
-
   /* Loop until the user closes the window */
   /* ***************** L O O P     G A M E ******************** */
   while (!glfwWindowShouldClose(window)) 
@@ -324,15 +346,13 @@ int main(int argc, char **argv) {
     setCamera();
 
     /* Initial scenery setup */
-    drawFrame();
+    //drawFrame();
 
     /* ********************* M   E   N   U ********************** */
     if (game.getMenu().getMenu()) {
       glDisable(GL_LIGHTING);
       switch (game.getMenu().getType()) {
       case 0:
-        if (game.gameOver())
-          game.reset();
         drawMenu(textureMenu, textureJouer, textureNiveaux, textureQuitter);
         break;
       case 1:
@@ -340,8 +360,7 @@ int main(int argc, char **argv) {
         break;
       }
     }
-    /* ******************************** G A M E
-     ************************************ */
+    /* ******************************** G A M E ************************************ */
     else if (game.gameOver()) 
     {
       glDisable(GL_LIGHTING);
@@ -355,12 +374,12 @@ int main(int argc, char **argv) {
       GLuint textureScore5 = loadTexture(cheminTexture[arr[5]]);
 
       // Load texture Fin du jeu
-      GLuint textureFin = loadTexture("../doc/textureFin.jpg");
-      GLuint textureRejouer = loadTexture("../doc/textureRejouer.jpg");
-      GLuint textureScore = loadTexture("../doc/textureScore.jpg");
-      GLuint textureScoreCase = loadTexture("../doc/textureScoreCase.jpg");
+      GLuint textureFin = loadTexture("img/menu/principal/textureFin.jpg");
+      GLuint textureRejouer = loadTexture("img/menu/principal/textureRejouer.jpg");
+      GLuint textureScore = loadTexture("img/menu/score/textureScoreCase.jpg");
+      GLuint textureScoreCase = loadTexture("img/menu/score/textureScoreCase.jpg");
 
-      GLuint textureQuitter = loadTexture("../doc/textureQuitter.jpg");
+      GLuint textureQuitter = loadTexture("img/menu/principal/quitter.jpg");
       drawFinJeu(textureFin, textureScore, textureScoreCase, textureScore0,
                  textureScore1, textureScore2, textureScore3, textureScore4,
                  textureScore5, textureRejouer, textureQuitter);
@@ -369,6 +388,7 @@ int main(int argc, char **argv) {
     {
       if(compteur == 0)
       {
+        v_enemys.clear();
         game.getCorridor().loadEnemys(v_enemys, game.getMenu().getLevel());
         compteur++;
       }

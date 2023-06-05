@@ -54,7 +54,6 @@ bool Enemy::contains(float posX, float posZ, float cx, float cz) {
     if ((getLeft() == 1 && posX <= -cx + m_w) ||
         ((!getLeft() && posX >= cx - m_w) && (!getUp() && posZ < -cz + m_h)) ||
         (getUp() && posZ > cz - m_h)) {
-      printf("c'est carré !!\n");
       return true;
     }
   }

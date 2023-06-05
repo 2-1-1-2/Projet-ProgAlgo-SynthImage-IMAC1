@@ -26,3 +26,9 @@ void drawScoreCaseFin(GLuint textureScoreCase, GLuint textureScore0,
                       GLuint textureScore1, GLuint textureScore2,
                       GLuint textureScore3, GLuint textureScore4,
                       GLuint textureScore5);
+
+void drawFinJeu(GLuint textureFin, GLuint textureScore, GLuint textureScoreCase,
+                GLuint textureScore0, GLuint textureScore1,
+                GLuint textureScore2, GLuint textureScore3,
+                GLuint textureScore4, GLuint textureScore5,
+                GLuint textureRejouer, GLuint textureQuitter);

@@ -33,8 +33,6 @@ void Game::collision(std::vector<Enemy> v_enemys, float posX, float posY,
                      int flag_walk) {
   if (flag_walk) {
 
-    // m_ball.collision(m_corridor, m_racket, v_enemys, m_glue);
-
     m_corridor.collision(m_racket, v_enemys);
   }
   if (m_ball.collision(m_corridor, m_racket, v_enemys, m_glue,
@@ -60,7 +58,6 @@ void Game::isThereBonus(std::vector<Bonus> &v_bonus)
   {
     Bonus &bonus = *it;
 
-    //printf("ON EST SUR LE MEME KILOMETRE %f %f\n", m_racket.getPos('Y'), bonus.getD());
     if(m_racket.getPos('Y') + 1 >= bonus.getD() && m_racket.getPos('Y') <= bonus.getD())
     {
       float r_x = m_racket.getPos('X');
@@ -88,7 +85,6 @@ void Game::isThereBonus(std::vector<Bonus> &v_bonus)
       float distanceSquared = distanceX * distanceX + distanceZ * distanceZ;
 
       if (distanceSquared <= b_r * b_r) {
-        printf("JE TE RAMASSE\n");
         // La vie
         if (bonus.getType() == 0 && m_life != 5)
           m_life += 1;
