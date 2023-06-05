@@ -7,14 +7,27 @@
 Game::Game(Ball b, Corridor c, Racket r) 
 {
   m_ball = Ball(b.getPos('X'), b.getPos('Y'), b.getPos('Z'));
-  m_corridor = Corridor(c.getPos('X'),c.getPos('Y'), c.getPos('Z'),c.getSpeed()) ;
+  m_corridor = Corridor(c.getPos('X'),c.getPos('Y'), c.getPos('Z'), c.getSpeed()) ;
   m_racket = Racket(r.getPos('X'),r.getPos('Y'), r.getPos('Z'));
   m_life = 5;
   m_score = 0;
   m_glue = false;
   m_lose = false;
+  m_collision_racket = false;
 }
 
+void Game::collision(std::vector<Enemy> v_enemys, float posX, float posY,
+                     int flag_walk) {
+  if (flag_walk) {
+
+    //m_ball.collision(m_corridor, m_racket, v_enemys, m_glue);
+
+    m_corridor.collision(m_racket, v_enemys);
+  }
+  m_ball.collision(m_corridor, m_racket, v_enemys, m_glue, &m_collision_racket);
+  m_ball.move(posX, posY);
+  m_racket.setPos(posX, posY);
+}
 
 // Fonction pour obtenir la valeur la plus proche d'une valeur donnée entre deux bornes
 float clamp(float value, float min, float max)
@@ -125,7 +138,7 @@ int Game::getLife() { return m_life; }
 bool Game::getGlue() { return m_glue; }
 bool Game::getLose() { return m_lose; }
 float Game::getScore() { return m_score; }
-
+bool Game::getCollisionRacket() { return m_collision_racket; }
 
 
 /* ********** S E T T E R S ********** */

@@ -3,15 +3,16 @@
 #include <GL/gl.h>
 #include <GL/glu.h>
 #include <GLFW/glfw3.h>
-#include <GLFW/glfw3.h>
-#include <GL/gl.h>
-#include <GL/glu.h>
-#include <stdio.h>
 #include <math.h>
+#include <stdio.h>
 #include <stdlib.h>
 
 #define NB_SEG_CIRCLE 64
-#define DISTANCE -10.
+#define RADIUS_CIRCLE 1.5
+#define CORRIDOR_WIDTH 25
+#define CORRIDOR_HEIGHT 12
+#define DISTANCE -50.
+#define FOCAL 60.
 
 /* Camera parameters and functions */
 static const float Z_NEAR = 0.1f;
@@ -41,3 +42,4 @@ void drawSphere();
 
 /* Small tools */
 float toRad(float deg);
+void initLight();

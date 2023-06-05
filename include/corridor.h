@@ -1,15 +1,26 @@
 #ifndef CORRIDOR_H
 #define CORRIDOR_H
-#include <vector>
-#include "enemy.h"
+#include "3D_tools.h"
 #include "dataEnemy.h"
+#include "draw_scene.h"
+#include "enemy.h"
+#include "math.h"
+#include "racket.h"
 #include "struct.h"
 #include "bonus.h"
+#include <GL/gl.h>
+#include <GL/glu.h>
+#include <algorithm>
+#include <cstdlib>
+#include <cstring>
+#include <fstream>
+#include <sstream>
+#include <string>
+#include <vector>
 
-class Corridor
+class Corridor 
 {
     public:
-    
         Corridor(int x, int y, int z, float speed);
         Corridor(){};
 
@@ -20,10 +31,11 @@ class Corridor
         void drawLines(std::vector<Enemy> &v_enemys, std::vector<Bonus> &v_bonus, std::vector<ImgTexture>& v_texture);
         void loadEnemys(std::vector<Enemy> &v_enemys);
         void loadBonus(std::vector<Bonus> &v_bonus);
+        bool collisionRacket(Racket r, std::vector<Enemy> v_enemys, float cx, float cz);
+        void collision(Racket r, std::vector<Enemy> v_enemys); 
 
         /* ********** G E T T E R S ********** */
         int getZ();
-        //int getKm();
         int getWalk();
         int getSpeed();
         float getPos(char pos);
@@ -34,10 +46,9 @@ class Corridor
 
     private:
         int m_x;
-        int m_y;
+        float m_y;
         int m_z;
         int m_start;
-        //float m_km;
         float m_walk;
         float m_speed;
         float m_colors[6];

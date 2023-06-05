@@ -1,4 +1,5 @@
 #include "../include/3D_tools.h"
+#include <GL/gl.h>
 
 void setCamera() {
   /*gluLookAt(dist_zoom*cos(toRad(theta))*sin(toRad(phy)),
@@ -7,11 +8,10 @@ void setCamera() {
                     0.0,0.0,0,
                     0.0,0.0,1.0);*/
   // printf("test : %f \n", test);
-    gluLookAt(0,-30,0,
-                0.0,1.0,0.0,
-                      0.0,0.0,1.0);
+  gluLookAt(0, DISTANCE, 0.0, // origin cam
+            0.0, 0.0, 0.0,    // point regardé
+            0.0, 0.0, 1.0);   // orientation
 }
-
 /* Convert degree to radians */
 float toRad(float deg) { return deg * M_PI / 180.0f; }
 
@@ -118,18 +118,16 @@ void drawSquare(float x, float y, float z, float h, GLenum m_mode)
   glEnd();
 }
 
-void drawLineLoop(int x, int y, int z) 
-{
-	glBegin(GL_LINE_LOOP);
-        glVertex3f(-x+0.1, y, -z+0.1);
-        glVertex3f(x-0.1, y, -z+0.1);
-        glVertex3f(x-0.1, y, z);
-        glVertex3f(-x+0.1, y, z);
+void drawLineLoop(int x, int y, int z) {
+  glBegin(GL_LINE_LOOP);
+	  glVertex3f(-x + 0.1, y, -z + 0.1);
+	  glVertex3f(x - 0.1, y, -z + 0.1);
+	  glVertex3f(x - 0.1, y, z);
+	  glVertex3f(-x + 0.1, y, z);
   glEnd();
 }
 
-void drawCircle() 
-{
+void drawCircle() {
   glBegin(GL_TRIANGLE_FAN);
   glVertex3f(0.0, 0.0, 0.0);
   float step_rad = 2 * M_PI / (float)NB_SEG_CIRCLE;
@@ -158,8 +156,7 @@ void drawCircle(float x, float y, float z, float r)
   glEnd();
 }
 
-void drawCone() 
-{
+void drawCone() {
   glBegin(GL_TRIANGLE_FAN);
   glVertex3f(0.0, 0.0, 1.0);
   float step_rad = 2 * M_PI / (float)NB_SEG_CIRCLE;
@@ -169,7 +166,31 @@ void drawCone()
   glEnd();
 }
 
-void drawSphere() 
-{
+void drawSphere() {
   gluSphere(gluNewQuadric(), 1.0, NB_SEG_CIRCLE, NB_SEG_CIRCLE);
+}
+
+void light() {
+  GLfloat ambiantColor[] = {1.f, 1.f, 1.f, 1.f};
+  glLightModelfv(GL_LIGHT_MODEL_AMBIENT, ambiantColor);
+
+  // Position
+
+  GLfloat lightColor0[] = {1.f, 1.f, 1.f, 1.f};
+  GLfloat lightPos0[] = {0.f, 0.f, -15.f, 1.f};
+  glLightfv(GL_LIGHT0, GL_DIFFUSE, lightColor0);
+  glLightfv(GL_LIGHT0, GL_POSITION, lightPos0);
+
+  GLfloat lightColor1[] = {1.f, 1.f, 1.f, 1.f};
+
+  GLfloat lightPos1[] = {0.f, -1.f, 0.f, 1.f}; // partant en direection
+
+  // glLightfv(GL_LIGHT0, GL_DIFFUSE, lightColor1);
+  // glLightfv(GL_LIGHT0, GL_POSITION, lightPos1);
+}
+void initLight() {
+  glEnable(GL_LIGHTING);
+  glEnable(GL_LIGHT0);
+  glEnable(GL_NORMALIZE);
+  light();
 }

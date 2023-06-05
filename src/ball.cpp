@@ -6,7 +6,8 @@ Ball::Ball(float x, float y, float z) {
   m_z = z;
   m_size = 32;
   m_speedX = 0;
-  m_speedY = 0.5;
+  m_speedY = 0.15;
+  m_radius = RADIUS_CIRCLE;
   m_speedZ = 0;
   m_mode = 1; // 1 sticky, -1 rebond
 }
@@ -14,78 +15,108 @@ Ball::Ball(float x, float y, float z) {
 /* ********** F U N C T I O N S ********** */
 void Ball::drawBall() 
 {
-  glColor3f(1, 1, 1);
+
+  static GLfloat vCompColor[4];
+  vCompColor[0] = 1.;
+  vCompColor[1] = 1.;
+  vCompColor[2] = 1.;
+  vCompColor[3] = 1.f;
+  glMaterialfv(GL_FRONT_AND_BACK, GL_AMBIENT_AND_DIFFUSE, vCompColor);
+  glMaterialfv(GL_FRONT_AND_BACK, GL_SPECULAR, vCompColor);
+
   GLUquadricObj *quadric = gluNewQuadric();
   gluQuadricTexture(quadric, GL_TRUE);
   // gluDeleteQuadric(quadric);
-  gluSphere(quadric, 2, m_size, m_size);
+  gluSphere(quadric, m_radius, m_size, m_size);
 }
 
-bool Ball::collisionRacket(Racket r, bool glue) {
+/*bool Ball::gameOver(Racket r) {
+  if (m_y >= r.getPos('Y') - 1)
+    return false;
+  setPos('X', r.getPos('X'));
+  setPos('Z', r.getPos('Z'));
+  setMode();
+  setLife(m_life - 1);
+  return m_life < 0;
+}*/
+
+bool Ball::collisionRacket(Racket r, bool glue, bool* collision_racket) 
+{
   // On vérifie si c'est sur le même Y
-  if ((int)m_y != r.getPos('Y')-1)
+  if (m_y > r.getPos('Y') - m_radius)
     return false;
   float d_x = r.getPos('X') - m_x;
   float d_z = r.getPos('Z') - m_z;
-  if (abs(d_x) - (m_size / (6. * M_PI)) > r.getLength() || abs(d_z)- (m_size / (6. * M_PI)) > r.getLength())
+  if (abs(d_x) - m_radius * 2 > r.getLength() ||
+      abs(d_z) - m_radius * 2 > r.getLength()) 
+  {
+    //gameOver(r);
     return false;
+  }
   // Bonus de colle
   if(glue && m_mode != 1)
     m_mode = -m_mode;
   else
   {
-    m_speedX = (d_x) / (r.getLength() * 2);
-    m_speedZ = (d_z) / (r.getLength() * 2);
-    m_y += r.getLength();
+    m_speedX = (d_x) / (r.getLength() * 5.);
+    m_speedZ = (d_z) / (r.getLength() * 5.);
+    //m_y += r.getLength();
     m_speedY *= -1;
+
+    m_y += m_speedY;
   }
-
-  //TODO gérer écart sur les coins => game over automatique sinon
+  *collision_racket = true;
   return true;
 }
 
-/*
-bool Ball::collisionRacket(Mur m) { //Liste de mur
-  // On vérifie si c'est sur le même Y
-  if ((int)m_y != m.getPos('Y'))
-    return false;
-  float d_x = m.getPos('X') - m_x;
-  float d_z = m.getPos('Z') - m_z;
-  printf("dX %f, DZ %f RposX %f RposZ %f\n", abs(d_x), abs(d_z), m.getPos('X'),
-         m.getPos('Z'));
-  if (abs(d_x) > m.getLength() || abs(d_z) > m.getLength())
-    return false;
-
-  m_speedX = (d_x) / 2.5;
-  m_speedZ = (d_z) / 2.5;
-  m_y += 0.3;
-  m_speedY *= -1;
-  printf("SPEED X : %f", m_speedX);
-  return true;
-}
-*/
-
-int Ball::collisionCorridor(Corridor c) {
+int Ball::collisionCorridor(Corridor c) 
+{
   // On vérifie si c'est sur le même Y
   int res = 0; // 0 rien, 1 GD, 2 HB, 3 GBHB
 
-  if (abs(m_x) + (m_size / (6. * M_PI)) > abs(c.getPos('X'))) {
+  if (abs(m_x) + m_radius > abs(c.getPos('X'))) {
     m_speedX *= -1;
+    m_x += m_speedX;
     res += 1;
   }
-  if (abs(m_z) + (m_size / (6. * M_PI)) > abs(c.getPos('Z'))) {
+  if (abs(m_z) + m_radius > abs(c.getPos('Z'))) {
     m_speedZ *= -1;
+    m_z += m_speedZ;
     res += 2;
   }
-
+  if (res > 0)
+    printf("collision murs couloir\n");
   return res;
 }
 
-bool Ball::collision(Corridor c, Racket r, bool glue) {
-  collisionCorridor(c);
-  if(collisionRacket(r, glue))
-    return true;
+bool Ball::collisionEnemy(std::vector<Enemy> v_enemys, float cx,
+                          float cz) { // Liste de mur
+  // On vérifie si c'est sur le même Y
+  float min = 6000;
+  for (Enemy element : v_enemys) {
+    min = element.getD() < min ? element.getD() : min;
+    // printf("MIN %f m_y%f \n", min, m_y);
+    if (abs(element.getD() - m_y) > RADIUS_CIRCLE)
+      continue;
+
+    if (element.contains(m_x, m_z, cx, cz)) 
+    {
+
+      m_speedY = element.getD() < m_y ? 0.15 : -0.15;
+      m_y += m_speedY;
+      printf("collision mur ennemie d%f m_y%f m_speedY%f  \n", element.getD(),
+             m_y, m_speedY);
+      return true;
+    }
+  }
   return false;
+}
+
+int Ball::collision(Corridor c, Racket r, std::vector<Enemy> v_enemys, bool glue, bool* collision_racket) {
+  *collision_racket = false;
+  return (collisionCorridor(c) || collisionRacket(r, glue, collision_racket) ||
+          collisionEnemy(v_enemys, c.getPos('X') - m_radius * 2,
+                         c.getPos('Z') - m_radius * 2));
 }
 
 /* ********** G E T T E R S ********** */
@@ -98,25 +129,30 @@ int Ball::getMode() { return m_mode; }
 /* ********** S E T T E R S ********** */
 void Ball::move(float posX, float posY) {
   if (m_mode == -1) {
-    if (m_y > 50 || m_y < DISTANCE - 10)
-      m_speedY *= -1;
     m_x += m_speedX;
     m_y += m_speedY;
     m_z += m_speedZ;
   } else {
-    m_x = posX;
-    m_z = posY;
+    float RIGHT = CORRIDOR_WIDTH - m_radius;
+    float TOP = CORRIDOR_HEIGHT - m_radius;
+    m_x = posX > RIGHT ? RIGHT : posX < -RIGHT ? -RIGHT : posX;
+    m_z = posY > TOP ? TOP : posY < -TOP ? -TOP : posY;
   }
 }
 
 void Ball::setMode() { m_mode = -m_mode; }
 
 void Ball::setPos(char pos, float p) {
-  switch (pos)
-  {
-    case 'X': m_x = p; break;
-    case 'Y': m_y = p; break;
-    case 'Z': m_z = p; break;
+  switch (pos) {
+  case 'X':
+    m_x = p;
+    break;
+  case 'Y':
+    m_y = p;
+    break;
+  case 'Z':
+    m_z = p;
+    break;
   default:
     break;
   }

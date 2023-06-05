@@ -1,9 +1,3 @@
-#include <GL/gl.h>
-#include <GL/glu.h>
-#include "../include/math.h"
-#include <algorithm>
-#include "../include/3D_tools.h"
-#include "../include/draw_scene.h"
 #include "../include/corridor.h"
 #include "../include/bonus.h"
 #include <vector>
@@ -12,8 +6,9 @@
 #include <string>
 #include <cstring>
 #include "algorithm"
-#include "enemy.h"
-#include <cstdlib>
+#include <GL/gl.h>
+#include <cstdio>
+#include "../include/3D_tools.h"
 
 Corridor::Corridor(int x, int y, int z, float speed)
 {
@@ -22,20 +17,19 @@ Corridor::Corridor(int x, int y, int z, float speed)
     this->m_z = z;
     this->m_start = -14;
     this->m_walk = 0;
-    //this->m_km = -14;
-    this->m_speed = speed;
+    this->m_speed = 0.3f;
 
-    float colors[6] = {0.5, 0.5, 1, 0.5, 0.8, 1};
-    std::copy(colors, colors + 6, m_colors);
+    /*float colors[6] = {0.5, 0.5, 1, 0.5, 0.8, 1};
+    std::copy(colors, colors + 6, m_colors);*/
 
     int temp = y;
-    for (size_t i = 0; i < 7; i++)
-    {
+    for (size_t i = 0; i < 7; i++) {
         m_lines[i] = temp;
         temp -= 10;
     }
 }
 
+/* ********** F U N C T I O N ********** */
 int randomInt(int min, int max) 
 {
     // Vérification des limites
@@ -52,19 +46,55 @@ int randomInt(int min, int max)
     return randomValue;
 }
 
-void Corridor::drawCorridor(std::vector<ImgTexture>& v_texture)
-{
+bool Corridor::collisionRacket(Racket r, std::vector<Enemy> v_enemys, float cx,
+                               float cz) { // Liste de mur
+  // On vérifie si c'est sur le même Y
+  for (Enemy element : v_enemys) {
+    if (element.getD() > r.getPos('Y') + RADIUS_CIRCLE * 2 ||
+        element.getD() < DISTANCE / 5 - 1)
+      continue;
+    //(int)(m_km + r.getPos('Y') - 0.5)
+    // printf("RAACKET pos %f\n", r.getPos('X'));
+    if (element.contains(r.getPos('X'), r.getPos('Z'), cx, cz)) {
+      /*printf("RACKET MUR DEPTH %f (m_km + r.getPos('Y')) %f m_km %f cc %d pos "
+             "X_rack %f\n",
+             element.getD(), (m_km + r.getPos('Y')), m_km,
+             (m_km > element.getD()), r.getPos('X'));*/
+      return true;
+    }
+  }
+  return false;
+}
+
+void Corridor::collision(Racket r, std::vector<Enemy> v_enemys) {
+  if (!collisionRacket(r, v_enemys, getPos('X'), getPos('Z')))
+    setWalk();
+}
+
+void Corridor::drawCorridor(std::vector<ImgTexture> &v_texture) {
     // bottom square
+    // drawTexture(v_texture[3].img);
+    static GLfloat vCompColor[4];
+    vCompColor[0] = 145 / 255.0f;
+    vCompColor[1] = 82 / 255.0f;
+    vCompColor[2] = 157 / 255.0f;
+    vCompColor[3] = 1.0f;
+    /*glMaterialfv(GL_FRONT_AND_BACK, GL_AMBIENT_AND_DIFFUSE, vCompColor);
+    glMaterialfv(GL_FRONT_AND_BACK, GL_SPECULAR, vCompColor);
+
+    glMaterialf(GL_FRONT_AND_BACK, GL_SHININESS, 10.0f);
+    glColor3f(145 / 255., 82 / 255., 157 / 255.);*/
+    //glColor3f(1, 1, 1);
     drawTexture(v_texture[3].img);
     drawSquare(m_x, m_y, -m_z, m_start, true);
     finTexture();
-    // top square
+    //  top square
     drawTexture(v_texture[2].img);
     drawSquare(m_x, m_y, m_z, m_start, true);
     finTexture();
 
     drawTexture(v_texture[1].img);
-    // left square
+    //  left square
     drawSquare(-m_x, m_y, m_z, m_start, false);
     // right square
     drawSquare(m_x, m_y, m_z, m_start, false);
@@ -161,14 +191,22 @@ void Corridor::drawEnemys(std::vector<Enemy>& v_enemys, std::vector<ImgTexture>&
 }
 
 // to make go backward the inside of the corridor
-void Corridor::drawLines(std::vector<Enemy> &v_enemys, std::vector<Bonus>& v_bonus, std::vector<ImgTexture>& v_texture)
-{       
-    // color white
+void Corridor::drawLines(std::vector<Enemy> &v_enemys, std::vector<Bonus> &v_bonus,
+                         std::vector<ImgTexture> &v_texture) {
+  // color white
+
+    static GLfloat vCompColor[4];
+    vCompColor[0] = 0.9f;
+    vCompColor[1] = 0.9f;
+    vCompColor[2] = 0.9f;
+    vCompColor[3] = 1.0f;
+    glMaterialfv(GL_FRONT_AND_BACK, GL_AMBIENT_AND_DIFFUSE, vCompColor);
+    glMaterialfv(GL_FRONT_AND_BACK, GL_SPECULAR, vCompColor);
     glColor3f(1, 1, 1);
     // size of the line
     glLineWidth(2);
     // To create the 7 lines
-    for(size_t i = 0; i < 7; i++)
+    for (size_t i = 0; i < 7; i++) 
     {
         m_lines[i] -= m_walk;
 
@@ -183,38 +221,37 @@ void Corridor::drawLines(std::vector<Enemy> &v_enemys, std::vector<Bonus>& v_bon
 
     // To create the bonus
     drawBonus(v_bonus, v_texture);
-
+    
     m_walk = 0;
 }
 
 // to initialize the enemys
-void Corridor::loadEnemys(std::vector<Enemy> &v_enemys)
+void Corridor::loadEnemys(std::vector<Enemy> &v_enemys) 
 {
-    std::map<std::string, std::tuple<int, int, int, int, int, int>> enemyMap;
-    std::string line;
-    std::ifstream file("src/enemys.txt");
-    std::string e;
-    int d;
+  std::map<std::string, std::tuple<int, int, int, int, int, int>> enemyMap;
+  std::string line;
+  std::ifstream file("src/enemys.txt");
+  std::string e;
+  int d;
 
-    if (!file.is_open())
-        perror("error while opening file\n");
+  if (!file.is_open())
+    perror("error while opening file\n");
 
-    initializeEnemyMap(enemyMap);
-    while (std::getline(file, line))
-    {
-        std::istringstream iss(line);
-        
-        if (!(iss >> e >> d)) 
-            perror("not the good number of elements");
+  initializeEnemyMap(enemyMap);
+  while (std::getline(file, line)) {
+    std::istringstream iss(line);
 
-        Enemy enemy = createEnemy(enemyMap, e, d);
-        v_enemys.push_back(enemy);
-    }
+    if (!(iss >> e >> d))
+      perror("not the good number of elements");
 
-    if (file.bad())
-        perror("error while reading file");
+    Enemy enemy = createEnemy(enemyMap, e, d);
+    v_enemys.push_back(enemy);
+  }
 
-    file.close();
+  if (file.bad())
+    perror("error while reading file");
+
+  file.close();
 }
 
 void Corridor::loadBonus(std::vector<Bonus> &v_bonus)
@@ -243,35 +280,22 @@ void Corridor::loadBonus(std::vector<Bonus> &v_bonus)
 }
 
 /* ********** G E T T E R S ********** */
-int Corridor::getZ() {
-    return this->m_z;
-}
+int Corridor::getZ() { return this->m_z; }
 
 /*int Corridor::getKm() {
     return m_km;
 }*/
 
-int Corridor::getWalk() {
-    return m_walk;
-}
+int Corridor::getWalk() { return m_walk; }
 
 
-int Corridor::getSpeed() {
-    return m_speed;
-}
+int Corridor::getSpeed() { return m_speed; }
 
 float Corridor::getPos(char pos) {
   return pos == 'X' ? m_x : pos == 'Y' ? m_y : m_z;
 }
 
 /* ********** S E T T E R S ********** */
-void Corridor::setWalk()
-{
-    this->m_walk += m_speed;
-    //this->m_km += m_speed;
-    //printf("Km: %f\n", m_km);
-}
+void Corridor::setWalk() { this->m_walk += m_speed; printf("SPEED %f\n", m_speed); }
 
-void Corridor::setWalk(int walk) {
-    m_walk = walk;
-}
+void Corridor::setWalk(int walk) { m_walk = walk; }

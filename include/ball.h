@@ -1,12 +1,14 @@
 #ifndef BALL_H
 #define BALL_H
 #include "3D_tools.h"
-#include <algorithm>
 #include "corridor.h"
-#include <math.h>
+#include "enemy.h"
 #include "racket.h"
 #include <GL/gl.h>
 #include <GL/glu.h>
+#include <algorithm>
+#include <math.h>
+#include <vector>
 
 class Ball {
 public:
@@ -15,9 +17,11 @@ public:
 
   /* ********** F U N C T I O N S ********** */
   void drawBall();
-  bool collisionRacket(Racket r, bool glue);
+  bool collisionRacket(Racket r, bool glue, bool* collision_racket);
+  bool collisionEnemy(std::vector<Enemy> v_enemys, float cx, float cz);
   int collisionCorridor(Corridor c);
-  bool collision(Corridor c, Racket r, bool glue);
+  int collision(Corridor c, Racket r, std::vector<Enemy> v_enemys, bool glue, bool* collision_racket);
+  bool gameOver(Racket r);
   /* ********** G E T T E R S ********** */
   float getPos(char pos);
   int getMode();
@@ -30,6 +34,7 @@ private:
   float m_x;
   float m_y;
   float m_z;
+  float m_radius;
   int m_size;
   float m_speedX;
   float m_speedY;

@@ -24,25 +24,25 @@
 #include <cmath>
 
 /* Window properties */
-static unsigned int WINDOW_WIDTH = 1920;
-static unsigned int WINDOW_HEIGHT = 1080;
 static const char WINDOW_TITLE[] = "Super jeu de la mort qui tue";
 static float aspectRatio = 1;
 
+static unsigned int WINDOW_WIDTH = 1920;
+static unsigned int WINDOW_HEIGHT = 1080;
+
 /* Test position*/
 static const float GL_VIEW_SIZE = 1.;
-
 /* Minimal time wanted between two images */
 static const double FRAMERATE_IN_SECONDS = 1. / 60.;
 
 /* IHM flag */
 static int flag_walk = 0;
-float alpha = 60;
-static Game game(Ball(0., DISTANCE - 4, 0.), Corridor(25, alpha, 12, 1),
-                 Racket(0., DISTANCE - 5, 0));
+static Game game(Ball(0., DISTANCE / 5 + RADIUS_CIRCLE, 0.),
+                 Corridor(CORRIDOR_WIDTH, FOCAL, CORRIDOR_HEIGHT, 0.3f),
+                 Racket(0., DISTANCE / 5 + 1, 0));
 
 double posX = 0, posY = 0;
-float h = -tan(toRad(alpha / 2.)) * 3 * DISTANCE;
+float h = tan(toRad(FOCAL / 2.)) * (DISTANCE);
 
 /* Error handling function */
 void onError(int error, const char *description) {
@@ -65,11 +65,11 @@ void onWindowResized(GLFWwindow *window, int width, int height)
   WINDOW_HEIGHT = height; // AJOUTER ICI
   aspectRatio = width / (float)height;
 
-  h = -tan(toRad(alpha / 2.)) * 3 * DISTANCE;
+  h = tan(toRad(FOCAL / 2.)) * (DISTANCE);
   glViewport(0, 0, width, height);
   glMatrixMode(GL_PROJECTION);
   glLoadIdentity();
-  gluPerspective(60.0, aspectRatio, Z_NEAR, Z_FAR);
+  gluPerspective(FOCAL, aspectRatio, Z_NEAR, Z_FAR);
   glMatrixMode(GL_MODELVIEW);
 }
 
@@ -88,6 +88,7 @@ void onKey(GLFWwindow *window, int key, int scancode, int action, int mods) {
       break;
     default:
       fprintf(stdout, "Touche non gérée (%d)\n", key);
+      break;
     }
   }
 
@@ -95,6 +96,7 @@ void onKey(GLFWwindow *window, int key, int scancode, int action, int mods) {
     switch (key) {
     default:
       fprintf(stdout, "Touche non gérée (%d)\n", key);
+      break;
     }
   }
 }
@@ -103,10 +105,23 @@ static void cursor_position_callback(GLFWwindow *window, double xpos,
                                      double ypos) {
   float r_l = game.getRacket().getLength();
   // TODO décalage sur les bords pour que ça ne sorte pas
-  posX = xpos * ((h * aspectRatio) / WINDOW_WIDTH) - ((h * aspectRatio) / 2);
-  posY = (-ypos * (h / WINDOW_HEIGHT) + (h / 2));
 
-  //printf("SVP SNIF JE PLEURE %f %f\n", posX, posY);
+  posX = -((xpos * 2 / WINDOW_WIDTH) - 1) * aspectRatio;
+  posY = ((ypos * 2 / WINDOW_HEIGHT) - 1);
+
+  posX = xpos * ((h * aspectRatio) / WINDOW_WIDTH) - ((h * aspectRatio));
+
+  posY = (ypos * (h / WINDOW_HEIGHT) + (h / 2));
+
+  // posY = posY * tan(((FOCAL * M_PI) / 180) / 2) * DISTANCE / 5 / aspectRatio;
+  // posX = posX * tan(((FOCAL * M_PI) / 180) / 2) * DISTANCE / 5 / aspectRatio;
+
+  posY = (((ypos * 2 / WINDOW_HEIGHT) - 1)) * toRad(FOCAL / 2.) * DISTANCE;
+
+  posX = -(((xpos * 2 / WINDOW_WIDTH) - 1) * aspectRatio) * toRad(FOCAL / 2.) *
+         DISTANCE;
+
+  //printf("POSX %f POSY %f\n", posX, posY);
 }
 
 void mouse_button_callback(GLFWwindow *window, int button, int action,
@@ -118,26 +133,29 @@ void mouse_button_callback(GLFWwindow *window, int button, int action,
       // si le bouton est pressé et que la balle est en mouvement
       if(action == GLFW_PRESS)
       {
+        printf("AU MOINS JE SUIS PRESSE!\n");
         if(game.getMenu().getMenu())
         {
-          if (posX >= -5.949663 && posX <= 6.017853)
+          if (posX >= -8.915609 && posX <= 9.018680)
           {
             // Jouer
-            if(posY >= 0.426194 && posY <= 2.591258)
+            if(posY >= 0.669959 && posY <= 3.813613)
             {
               game.getMenu().setType(0);
               game.getMenu().setMenu(false);
             }
             // Niveaux
-            if(posY >= -2.608304 && posY <= -0.392098)
+            if(posY >= -3.813613 && posY <= -0.773030)
               game.getMenu().setType(1);
             // Quitter
-            if(posY >= -5.608707 && posY <= -3.392501)
+            if(posY >= -8.451791 && posY <= -5.153531)
               glfwSetWindowShouldClose(window, GLFW_TRUE);
           }
         }
         else if(game.getBall().getMode() == -1)
+        {
           flag_walk = 1;
+        }
       }
       else if (action == GLFW_RELEASE)
         flag_walk = 0;
@@ -153,6 +171,7 @@ void mouse_button_callback(GLFWwindow *window, int button, int action,
 
     default:
       fprintf(stdout, "Touche non gérée (%d)\n", button);
+      break;
   }
 }
 
@@ -246,6 +265,8 @@ int main(int argc, char **argv)
 
   glPointSize(5.0);
   glEnable(GL_DEPTH_TEST);
+  glEnable(GL_BLEND);
+  //initLight();
 
   /* ********** I N I T I A L I S A T I O N ********** */
   srand(static_cast<unsigned int>(time(nullptr)));
@@ -276,6 +297,7 @@ int main(int argc, char **argv)
   const int nombreTexture = 10;
   const char* cheminTexture[nombreTexture] = {"img/menu/score/textureScore0.jpg", "img/menu/score/textureScore1.jpg", "img/menu/score/textureScore2.jpg", "img/menu/score/textureScore3.jpg","img/menu/score/textureScore4.jpg","img/menu/score/textureScore5.jpg", "img/menu/score/textureScore6.jpg", "img/menu/score/textureScore7.jpg","img/menu/score/textureScore8.jpg","img/menu/score/textureScore9.jpg"};
 
+  printf("AVANT LA BOUCLE\n");
 
 
   /* Loop until the user closes the window */
@@ -285,7 +307,7 @@ int main(int argc, char **argv)
     double startTime = glfwGetTime();
 
     /* Cleaning buffers and setting Matrix Mode */
-    glClearColor(0.2, 0.0, 0.0, 0.0);
+    glClearColor(0., 0.0, 0.0, 0.0);
 
     glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
@@ -295,15 +317,22 @@ int main(int argc, char **argv)
 
     /* Initial scenery setup */
     drawFrame();
+
     /* ********************* M   E   N   U ********************** */
     if(game.getMenu().getMenu())
     {
+      glDisable(GL_LIGHTING);
+      //printf("LE MENU: %d\n", game.getMenu().getType());
       switch (game.getMenu().getType()) 
       {
         case 0:
+            //printf("DANS LE MENU ZERO\n");
             drawMenu(textureMenu, textureJouer, textureNiveaux, textureQuitter);
+            break;
         case 1:
+          printf("DANS LE MENU UN\n");
           drawNiveaux(textureNiveau1, textureNiveau2, textureNiveau3, textureNiveau4, textureNiveau5);
+          break;
       }
     }
     /* ******************************** G A M E ************************************ */
@@ -318,19 +347,30 @@ int main(int argc, char **argv)
 
       if (flag_walk) 
       {
+        printf("JE VEUX RENTRER\n");
         game.getCorridor().setWalk();
         game.setScore();
         // game.getRacket().setMode();
       }
 
-      printf("LE SCORE %f\n", game.getScore());
+      //printf("LE SCORE %f\n", game.getScore());
 
       /* ***** R A C K E T ***** */
-      game.getRacket().setPos(posX, posY);
-      game.getBall().move(posX, posY);
+      /*game.getRacket().setPos(posX, posY);
+      game.getBall().move(posX, posY);*/
+      game.collision(v_enemys, posX, posY, flag_walk);
+      if(game.getCollisionRacket())
+      {
+        // Le joueur a perdu
+        if(game.getLose())
+          flag_walk = 0;
+        // Si le joueur n'a pas perdu et qu'il a le bonus colle
+        else if(!game.getLose() && game.getGlue())
+          game.setGlue(false);
+      }
+
       if(game.gameOver())
         glfwSetWindowShouldClose(window, GLFW_TRUE);
-
       
 
       /* ***** B O N U S ***** */
@@ -344,7 +384,7 @@ int main(int argc, char **argv)
 
       /* ALED */
       score(game.getScore(), arr);
-      printf("TA RACE %f %d\n", game.getScore(), arr[2]);
+      //printf("TA RACE %f %d\n", game.getScore(), arr[2]);
 
 
       glPushMatrix();
@@ -352,45 +392,47 @@ int main(int argc, char **argv)
       glPopMatrix();
 
       glPushMatrix();
-      // On dessine la balle
-      drawTexture(v_texture[0].img);
-      drawTransparence();
+        // On dessine la balle
+        drawTexture(v_texture[0].img);
+        drawTransparence();
 
-      glTranslatef(game.getBall().getPos('X'), game.getBall().getPos('Y'),
-                   game.getBall().getPos('Z'));
-      game.getBall().drawBall();
-      finTexture();
+        glTranslatef(game.getBall().getPos('X'), game.getBall().getPos('Y'),
+                     game.getBall().getPos('Z'));
+        game.getBall().drawBall();
+        finTexture();
       glPopMatrix();
 
       // S'il y a collision avec la raquette
-      if(game.getBall().collision(game.getCorridor(), game.getRacket(), game.getGlue()))
+      /*if(game.getBall().collision(game.getCorridor(), game.getRacket(), game.getGlue()))
       {
         // Le joueur a perdu
-        if(game.getLose())
+        /*if(game.getLose())
           flag_walk = 0;
         // Si le joueur n'a pas perdu et qu'il a le bonus colle
         else if(!game.getLose() && game.getGlue())
-          game.setGlue(false);
-      }
+          game.setGlue(false);*/
+      //}
+      // printf("TOUCHE ? %d\n",
+      // game.getBall().collisionRacket(game.getRacket()));
+
+      // game.getBall().collision(game.getCorridor(), game.getRacket(), v_enemys);
+      //  printf("TOUCHE ? %d\n",
+      //  game.getBall().collisionRacket(game.getRacket()));
     }
-    // printf("TOUCHE ? %d\n",
-    // game.getBall().collisionRacket(game.getRacket()));
 
-    /* Scene rendering */
+     /* Swap front and back buffers */
+      glfwSwapBuffers(window);
 
-    /* Swap front and back buffers */
-    glfwSwapBuffers(window);
+      /* Poll for and process events */
+      glfwPollEvents();
 
-    /* Poll for and process events */
-    glfwPollEvents();
+      /* Elapsed time computation from loop begining */
+      double elapsedTime = glfwGetTime() - startTime;
+      /* If to few time is spend vs our wanted FPS, we wait */
+      if (elapsedTime < FRAMERATE_IN_SECONDS)
+        glfwWaitEventsTimeout(FRAMERATE_IN_SECONDS - elapsedTime);
 
-    /* Elapsed time computation from loop begining */
-    double elapsedTime = glfwGetTime() - startTime;
-    /* If to few time is spend vs our wanted FPS, we wait */
-    if (elapsedTime < FRAMERATE_IN_SECONDS)
-      glfwWaitEventsTimeout(FRAMERATE_IN_SECONDS - elapsedTime);
-
-    /* Animate scenery */
+      /* Animate scenery */
   }
 
   /* ***** D E L E T E ***** */

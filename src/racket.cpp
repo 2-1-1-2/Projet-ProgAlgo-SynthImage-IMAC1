@@ -12,13 +12,23 @@ Racket::Racket(float x, float y, float z) {
 
 void Racket::drawRacket() {
 
-  glColor3f(1, 0, 1);
+  static GLfloat vCompColor[4];
+  vCompColor[0] = 104. / 255.;
+  vCompColor[1] = 42. / 255.;
+  vCompColor[2] = 115. / 255.;
+  vCompColor[3] = .5f;
+  glMaterialfv(GL_FRONT_AND_BACK, GL_AMBIENT_AND_DIFFUSE, vCompColor);
+  glMaterialfv(GL_FRONT_AND_BACK, GL_SPECULAR, vCompColor);
+
+  glMaterialf(GL_FRONT_AND_BACK, GL_SHININESS, 10.0f);
+  glColor4f(104., 42., 115., 0.5);
   glLineWidth(2);
-  glBegin(GL_LINE_LOOP);
-    glVertex3f(m_x + m_length, m_y, m_z + m_length);
-    glVertex3f(m_x - m_length, m_y, m_z + m_length);
-    glVertex3f(m_x - m_length, m_y, m_z - m_length);
-    glVertex3f(m_x + m_length, m_y, m_z - m_length);
+
+  glBegin(m_mode);
+    glVertex3f(m_x + m_length, m_y - 4, m_z + m_length);
+    glVertex3f(m_x - m_length, m_y - 4, m_z + m_length);
+    glVertex3f(m_x - m_length, m_y - 4, m_z - m_length);
+    glVertex3f(m_x + m_length, m_y - 4, m_z - m_length);
   glEnd();
 
   glBegin(GL_POINTS);
@@ -27,16 +37,21 @@ void Racket::drawRacket() {
 }
 
 /* ********** G E T T E R S ********** */
-float Racket::getPos(char pos) { return pos == 'X' ? m_x : pos == 'Y' ? m_y : m_z; }
+float Racket::getPos(char pos) {
+  return pos == 'X' ? m_x : pos == 'Y' ? m_y : m_z;
+}
 
-float Racket::getLength() {return m_length;}
+float Racket::getLength() {return m_length; }
 
 /* ********** S E T T E R S ********** */
 void Racket::setPos() { m_pos += m_speed; }
 
 void Racket::setPos(float posX, float posY) {
-  m_x = posX;
-  m_z = posY;
+
+  float RIGHT = CORRIDOR_WIDTH - m_length;
+  float TOP = CORRIDOR_HEIGHT - m_length;
+  m_x = posX > RIGHT ? RIGHT : posX < -RIGHT ? -RIGHT : posX;
+  m_z = posY > TOP ? TOP : posY < -TOP ? -TOP : posY;
 }
 
 void Racket::setMode() {
