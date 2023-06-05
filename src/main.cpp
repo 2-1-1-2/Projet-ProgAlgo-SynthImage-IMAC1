@@ -347,17 +347,21 @@ int main(int argc, char **argv)
 
       if (flag_walk) 
       {
-        printf("JE VEUX RENTRER\n");
         game.getCorridor().setWalk();
         game.setScore();
-        // game.getRacket().setMode();
+        //printf("ALEEEEEED %f\n", game.getScore());
       }
+
+      /* ****************************** D R A W I N G ****************************** */
+      game.getCorridor().drawCorridor(v_texture);
+      game.getCorridor().drawLines(v_enemys, v_bonus, v_texture);
+      game.drawBonus(v_texture);
+      drawMenuCase(textureMenu);
+      drawScoreCase(textureScoreCase, textureScore0, textureScore1, textureScore2, textureScore3, textureScore4, textureScore5);
 
       //printf("LE SCORE %f\n", game.getScore());
 
       /* ***** R A C K E T ***** */
-      /*game.getRacket().setPos(posX, posY);
-      game.getBall().move(posX, posY);*/
       game.collision(v_enemys, posX, posY, flag_walk);
       if(game.getCollisionRacket())
       {
@@ -375,14 +379,9 @@ int main(int argc, char **argv)
 
       /* ***** B O N U S ***** */
       game.isThereBonus(v_bonus);
-      /* ****************************** D R A W I N G ****************************** */
-      game.getCorridor().drawCorridor(v_texture);
-      game.getCorridor().drawLines(v_enemys, v_bonus, v_texture);
-      game.drawBonus(v_texture);
-      drawMenuCase(textureMenu);
-      drawScoreCase(textureScoreCase, textureScore0, textureScore1, textureScore2, textureScore3, textureScore4, textureScore5);
 
       /* ALED */
+      printf("ALEEEEEED %f\n", game.getScore());
       score(game.getScore(), arr);
       //printf("TA RACE %f %d\n", game.getScore(), arr[2]);
 

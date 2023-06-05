@@ -9,6 +9,7 @@
 #include <GL/gl.h>
 #include <cstdio>
 #include "../include/3D_tools.h"
+#include "3D_tools.h"
 
 Corridor::Corridor(int x, int y, int z, float speed)
 {
@@ -72,33 +73,31 @@ void Corridor::collision(Racket r, std::vector<Enemy> v_enemys) {
 }
 
 void Corridor::drawCorridor(std::vector<ImgTexture> &v_texture) {
-    // bottom square
-    // drawTexture(v_texture[3].img);
     static GLfloat vCompColor[4];
     vCompColor[0] = 145 / 255.0f;
     vCompColor[1] = 82 / 255.0f;
     vCompColor[2] = 157 / 255.0f;
     vCompColor[3] = 1.0f;
-    /*glMaterialfv(GL_FRONT_AND_BACK, GL_AMBIENT_AND_DIFFUSE, vCompColor);
+    glMaterialfv(GL_FRONT_AND_BACK, GL_AMBIENT_AND_DIFFUSE, vCompColor);
     glMaterialfv(GL_FRONT_AND_BACK, GL_SPECULAR, vCompColor);
 
     glMaterialf(GL_FRONT_AND_BACK, GL_SHININESS, 10.0f);
-    glColor3f(145 / 255., 82 / 255., 157 / 255.);*/
-    //glColor3f(1, 1, 1);
-    drawTexture(v_texture[3].img);
-    drawSquare(m_x, m_y, -m_z, m_start, true);
-    finTexture();
+    glColor3f(145 / 255., 82 / 255., 157 / 255.);
+    
+    //drawTexture(v_texture[3].img);
+    drawA(m_x, m_y, -m_z, m_start, true);
+    //finTexture();
     //  top square
-    drawTexture(v_texture[2].img);
-    drawSquare(m_x, m_y, m_z, m_start, true);
-    finTexture();
+    //drawTexture(v_texture[2].img);
+    drawA(m_x, m_y, m_z, m_start, true);
+    //finTexture();
 
-    drawTexture(v_texture[1].img);
+    //drawTexture(v_texture[1].img);
     //  left square
-    drawSquare(-m_x, m_y, m_z, m_start, false);
+    drawA(-m_x, m_y, m_z, m_start, false);
     // right square
-    drawSquare(m_x, m_y, m_z, m_start, false);
-    finTexture();
+    drawA(m_x, m_y, m_z, m_start, false);
+    //finTexture();
 }
 
 void Corridor::drawBonus(std::vector<Bonus>& v_bonus, std::vector<ImgTexture>& v_texture)
@@ -296,6 +295,6 @@ float Corridor::getPos(char pos) {
 }
 
 /* ********** S E T T E R S ********** */
-void Corridor::setWalk() { this->m_walk += m_speed; printf("SPEED %f\n", m_speed); }
+void Corridor::setWalk() { this->m_walk += m_speed; }
 
 void Corridor::setWalk(int walk) { m_walk = walk; }

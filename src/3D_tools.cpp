@@ -1,4 +1,5 @@
 #include "../include/3D_tools.h"
+#include "3D_tools.h"
 #include <GL/gl.h>
 
 void setCamera() {
@@ -74,7 +75,7 @@ void drawVerticalEnemy(int x1, int x2, int y, int z, bool rot)
 	}
 }
 
-void drawSquare(int x, int y, int z, int start, bool vertical) 
+void drawA(int x, float y, int z, int start, bool vertical) 
 {
 	if (vertical)
     {

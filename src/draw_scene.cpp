@@ -98,6 +98,7 @@ void deleteTexture(GLuint texture)
 void drawMenuCase(GLuint textureMenu)
 {
   glPushMatrix();
+    glColor3f(1, 1, 1);
     drawTexture(textureMenu);
     glTranslatef(16,-4,10);
     glScalef(0.5,0.5,1);
@@ -196,7 +197,7 @@ void drawMenu(GLuint textureMenu, GLuint textureJouer,GLuint textureNiveaux, GLu
 // Fond bleu
   glPushMatrix();
     glScalef(40,1,20);
-    glColor3f(0.4, 0.8, 1);
+    //glColor3f(0.4, 0.8, 1);
     glBegin(GL_QUADS);
       glVertex3f(-1.0,-10, -1.0);
       glVertex3f(-1.0,-10, 1.0);
@@ -301,7 +302,8 @@ void drawNiveaux(GLuint textureNiveau1, GLuint textureNiveau2, GLuint textureNiv
 //Fond bleu
   glPushMatrix();
     glScalef(40,1,20);
-    glColor3f(0.4, 0.8, 1);
+    //
+    //glColor3f(0.4, 0.8, 1);
     glBegin(GL_QUADS);
       glVertex3f(-1.0,-10, -1.0);
       glVertex3f(-1.0,-10, 1.0);

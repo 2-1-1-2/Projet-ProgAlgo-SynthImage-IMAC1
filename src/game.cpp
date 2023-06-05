@@ -155,5 +155,5 @@ void Game::setLose(bool lose) {
 }
 
 void Game::setScore() {
-  m_score += (float)m_corridor.getSpeed();
+  m_score += 0.3f;
 }
