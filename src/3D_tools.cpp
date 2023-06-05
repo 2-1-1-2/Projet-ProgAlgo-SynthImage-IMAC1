@@ -1,5 +1,4 @@
 #include "../include/3D_tools.h"
-#include "3D_tools.h"
 #include <GL/gl.h>
 
 void setCamera() {
