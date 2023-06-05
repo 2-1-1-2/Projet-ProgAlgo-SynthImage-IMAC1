@@ -204,15 +204,23 @@ int main(int argc, char** argv)
 	GLuint textureNiveau4 = loadTexture("../doc/textureNiveau4.jpg");
 	GLuint textureNiveau5 = loadTexture("../doc/textureNiveau5.jpg");
 
-	// afficher le score, changement de texture en fonction du score
+	// afficher le score, changement de texture en fonction du score, (pb ça plante quand on dépasse 99 jsp pourquoi)
 
-	int score = 0;
-	int score0 = score/10;
-	int score1 = score%10;
+	int score = 62189;
+	int score0 = score/100000;
+	int score1 = (score/10000)%10;
+	int score2 = (score/1000)%10;
+	int score3 = (score/100)%10;
+	int score4 = (score/10)%10;
+	int score5 = score%10;
 	const int nombreTexture = 10;
 	const char* cheminTexture[nombreTexture] = {"../doc/textureScore0.jpg", "../doc/textureScore1.jpg", "../doc/textureScore2.jpg", "../doc/textureScore3.jpg","../doc/textureScore4.jpg","../doc/textureScore5.jpg", "../doc/textureScore6.jpg", "../doc/textureScore7.jpg","../doc/textureScore8.jpg","../doc/textureScore9.jpg"};
 	GLuint textureScore0 = loadTexture(cheminTexture[score0]);
 	GLuint textureScore1 = loadTexture(cheminTexture[score1]);
+	GLuint textureScore2 = loadTexture(cheminTexture[score2]);
+	GLuint textureScore3 = loadTexture(cheminTexture[score3]);
+	GLuint textureScore4 = loadTexture(cheminTexture[score4]);
+	GLuint textureScore5 = loadTexture(cheminTexture[score5]);
 
 
 
@@ -246,11 +254,13 @@ int main(int argc, char** argv)
 		
 
 		// Dev Menu
-		glPushMatrix();
+	glPushMatrix();
 		glDisable(GL_LIGHTING);
-		drawMenuCase(textureMenu);
-		drawScoreCase(textureScoreCase, textureScore0, textureScore1);
 
+		
+		drawMenuCase(textureMenu);
+		drawScoreCase(textureScoreCase, textureScore0, textureScore1, textureScore2, textureScore3, textureScore4, textureScore5);
+		
 		if (menu1){
 			drawMenu(textureMenu, textureJouer, textureNiveaux, textureQuitter);
 		}
