@@ -136,6 +136,7 @@ void mouse_button_callback(GLFWwindow *window, int button, int action,
           {
             // Jouer
             if (posY >= 0.669959 && posY <= 3.813613) {
+              game.getMenu().setLevel(1);
               game.getMenu().setMenu(false);
             }
             // Niveaux
@@ -149,7 +150,10 @@ void mouse_button_callback(GLFWwindow *window, int button, int action,
           {
             // Niveau 1
             if (posY >= 5.567183 && posY <= 7.855066)
+            {
+              game.getMenu().setLevel(1);
               game.getMenu().setMenu(false);
+            }
             // Niveau 2
             if (posY >= 2.989048 && posY <= 6.081167)
             {
@@ -349,8 +353,11 @@ int main(int argc, char **argv) {
     //drawFrame();
 
     /* ********************* M   E   N   U ********************** */
-    if (game.getMenu().getMenu()) {
+    if (game.getMenu().getMenu()) 
+    {
       glDisable(GL_LIGHTING);
+      compteur = 0;
+      game.reset();
       switch (game.getMenu().getType()) {
       case 0:
         drawMenu(textureMenu, textureJouer, textureNiveaux, textureQuitter);
