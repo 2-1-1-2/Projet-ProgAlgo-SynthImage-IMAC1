@@ -4,11 +4,11 @@
 #include "../include/menu.h"
 #include <algorithm>
 
-Game::Game(Ball b, Corridor c, Racket r) 
-{
+Game::Game(Ball b, Corridor c, Racket r) {
   m_ball = Ball(b.getPos('X'), b.getPos('Y'), b.getPos('Z'));
-  m_corridor = Corridor(c.getPos('X'),c.getPos('Y'), c.getPos('Z'), c.getSpeed()) ;
-  m_racket = Racket(r.getPos('X'),r.getPos('Y'), r.getPos('Z'));
+  m_corridor =
+      Corridor(c.getPos('X'), c.getPos('Y'), c.getPos('Z'), c.getSpeed());
+  m_racket = Racket(r.getPos('X'), r.getPos('Y'), r.getPos('Z'));
   m_life = 5;
   m_score = 0;
   m_glue = false;
@@ -20,18 +20,20 @@ void Game::collision(std::vector<Enemy> v_enemys, float posX, float posY,
                      int flag_walk) {
   if (flag_walk) {
 
-    //m_ball.collision(m_corridor, m_racket, v_enemys, m_glue);
+    // m_ball.collision(m_corridor, m_racket, v_enemys, m_glue);
 
     m_corridor.collision(m_racket, v_enemys);
   }
-  m_ball.collision(m_corridor, m_racket, v_enemys, m_glue, &m_collision_racket);
+  if (m_ball.collision(m_corridor, m_racket, v_enemys, m_glue,
+                       &m_collision_racket) < 0)
+    m_life--;
   m_ball.move(posX, posY);
   m_racket.setPos(posX, posY);
 }
 
-// Fonction pour obtenir la valeur la plus proche d'une valeur donnée entre deux bornes
-float clamp(float value, float min, float max)
-{
+// Fonction pour obtenir la valeur la plus proche d'une valeur donnée entre deux
+// bornes
+float clamp(float value, float min, float max) {
   if (value < min)
     return min;
   if (value > max)
@@ -39,15 +41,13 @@ float clamp(float value, float min, float max)
   return value;
 }
 
-void Game::isThereBonus(std::vector<Bonus>& v_bonus)
-{
-  for(auto it = v_bonus.begin(); it != v_bonus.end(); ++it)
-  {
-    Bonus& bonus = *it;
+void Game::isThereBonus(std::vector<Bonus> &v_bonus) {
+  for (auto it = v_bonus.begin(); it != v_bonus.end(); ++it) {
+    Bonus &bonus = *it;
 
-    if(m_racket.getPos('Y') + 5 >= bonus.getD() && m_racket.getPos('Y') - 5 <= bonus.getD())
-    {
-      //printf("ON EST SUR LE MEME KILOMETRE %d\n", bonus.getD());
+    if (m_racket.getPos('Y') + 5 >= bonus.getD() &&
+        m_racket.getPos('Y') - 5 <= bonus.getD()) {
+      // printf("ON EST SUR LE MEME KILOMETRE %d\n", bonus.getD());
       float r_x = m_racket.getPos('X');
       float r_z = m_racket.getPos('Z');
       float r_h = m_racket.getLength();
@@ -72,11 +72,10 @@ void Game::isThereBonus(std::vector<Bonus>& v_bonus)
       float distanceZ = circleZ - closestZ;
       float distanceSquared = distanceX * distanceX + distanceZ * distanceZ;
 
-      if (distanceSquared <= b_r * b_r)
-      {
+      if (distanceSquared <= b_r * b_r) {
         printf("JE TE RAMASSE\n");
         // La vie
-        if(bonus.getType() == 0 && m_life != 5)
+        if (bonus.getType() == 0 && m_life != 5)
           m_life += 1;
         // La colle
         else if (bonus.getType() == 1)
@@ -90,8 +89,7 @@ void Game::isThereBonus(std::vector<Bonus>& v_bonus)
   }
 }
 
-void Game::drawBonus(std::vector<ImgTexture>& v_texture)
-{
+void Game::drawBonus(std::vector<ImgTexture> &v_texture) {
   float x = -15.5;
   float y = -14;
   float z = -8;
@@ -99,17 +97,14 @@ void Game::drawBonus(std::vector<ImgTexture>& v_texture)
 
   drawTexture(v_texture[8].img);
 
-
-  for (size_t i = 0; i < m_life; i++)
-  {
+  for (int i = 0; i < m_life; i++) {
     drawCircle(x, y, z, h);
     x += 0.8;
     z -= 0.00001;
   }
   finTexture();
 
-  if(m_glue)
-  {
+  if (m_glue) {
     x = 10;
     z = -8;
     drawTexture(v_texture[9].img);
@@ -118,16 +113,7 @@ void Game::drawBonus(std::vector<ImgTexture>& v_texture)
   }
 }
 
-bool Game::gameOver() 
-{
-  if (m_ball.getPos('Y') >= m_racket.getPos('Y')-1) return false;
-  m_ball.setPos('X', m_racket.getPos('X'));
-  m_ball.setPos('Z', m_racket.getPos('Z'));
-  m_ball.setMode();
-  m_life -= 1;
-  m_lose = true;
-  return m_life <= 0;
-}
+bool Game::gameOver() { return m_life <= 0; }
 
 /* ********** G E T T E R S ********** */
 Ball &Game::getBall() { return m_ball; }
@@ -140,20 +126,11 @@ bool Game::getLose() { return m_lose; }
 float Game::getScore() { return m_score; }
 bool Game::getCollisionRacket() { return m_collision_racket; }
 
-
 /* ********** S E T T E R S ********** */
-void Game::setLife(int life) {
-  m_life = life;
-}
+void Game::setLife(int life) { m_life = life; }
 
-void Game::setGlue(bool glue) {
-  m_glue = glue;
-}
+void Game::setGlue(bool glue) { m_glue = glue; }
 
-void Game::setLose(bool lose) {
-  m_lose = lose;
-}
+void Game::setLose(bool lose) { m_lose = lose; }
 
-void Game::setScore() {
-  m_score += 0.3f;
-}
+void Game::setScore() { m_score += 0.3f; }

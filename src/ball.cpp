@@ -13,8 +13,7 @@ Ball::Ball(float x, float y, float z) {
 }
 
 /* ********** F U N C T I O N S ********** */
-void Ball::drawBall() 
-{
+void Ball::drawBall() {
 
   static GLfloat vCompColor[4];
   vCompColor[0] = 1.;
@@ -30,47 +29,38 @@ void Ball::drawBall()
   gluSphere(quadric, m_radius, m_size, m_size);
 }
 
-/*bool Ball::gameOver(Racket r) {
-  if (m_y >= r.getPos('Y') - 1)
-    return false;
-  setPos('X', r.getPos('X'));
-  setPos('Z', r.getPos('Z'));
-  setMode();
-  setLife(m_life - 1);
-  return m_life < 0;
-}*/
-
-bool Ball::collisionRacket(Racket r, bool glue, bool* collision_racket) 
-{
+int Ball::collisionRacket(
+    Racket r, bool glue,
+    bool *collision_racket) { // 0 collision, 1 collision, -1 perdu une vie
   // On vérifie si c'est sur le même Y
   if (m_y > r.getPos('Y') - m_radius)
-    return false;
+    return 0;
   float d_x = r.getPos('X') - m_x;
   float d_z = r.getPos('Z') - m_z;
   if (abs(d_x) - m_radius * 2 > r.getLength() ||
-      abs(d_z) - m_radius * 2 > r.getLength()) 
-  {
-    //gameOver(r);
-    return false;
+      abs(d_z) - m_radius * 2 > r.getLength()) {
+
+    setPos('X', r.getPos('X'));
+    setPos('Z', r.getPos('Z'));
+    setMode();
+    return -1;
   }
   // Bonus de colle
-  if(glue && m_mode != 1)
+  if (glue && m_mode != 1)
     m_mode = -m_mode;
-  else
-  {
+  else {
     m_speedX = (d_x) / (r.getLength() * 5.);
     m_speedZ = (d_z) / (r.getLength() * 5.);
-    //m_y += r.getLength();
+    // m_y += r.getLength();
     m_speedY *= -1;
 
     m_y += m_speedY;
   }
   *collision_racket = true;
-  return true;
+  return 1;
 }
 
-int Ball::collisionCorridor(Corridor c) 
-{
+int Ball::collisionCorridor(Corridor c) {
   // On vérifie si c'est sur le même Y
   int res = 0; // 0 rien, 1 GD, 2 HB, 3 GBHB
 
@@ -99,8 +89,7 @@ bool Ball::collisionEnemy(std::vector<Enemy> v_enemys, float cx,
     if (abs(element.getD() - m_y) > RADIUS_CIRCLE)
       continue;
 
-    if (element.contains(m_x, m_z, cx, cz)) 
-    {
+    if (element.contains(m_x, m_z, cx, cz)) {
 
       m_speedY = element.getD() < m_y ? 0.15 : -0.15;
       m_y += m_speedY;
@@ -112,7 +101,8 @@ bool Ball::collisionEnemy(std::vector<Enemy> v_enemys, float cx,
   return false;
 }
 
-int Ball::collision(Corridor c, Racket r, std::vector<Enemy> v_enemys, bool glue, bool* collision_racket) {
+int Ball::collision(Corridor c, Racket r, std::vector<Enemy> v_enemys,
+                    bool glue, bool *collision_racket) {
   *collision_racket = false;
   return (collisionCorridor(c) || collisionRacket(r, glue, collision_racket) ||
           collisionEnemy(v_enemys, c.getPos('X') - m_radius * 2,

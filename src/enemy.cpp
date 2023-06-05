@@ -50,7 +50,7 @@ bool Enemy::contains(float posX, float posZ, float cx, float cz) {
   // cas carré
   if (getLeft() != -1 && getUp() != -1) {
     if ((getLeft() == 1 && posX <= -cx + m_w) ||
-        (!getLeft() && posX >= cx - m_w) && (!getUp() && posZ < -cz + m_h) ||
+        ((!getLeft() && posX >= cx - m_w) && (!getUp() && posZ < -cz + m_h)) ||
         (getUp() && posZ > cz - m_h)) {
       printf("c'est carré !!\n");
       return true;

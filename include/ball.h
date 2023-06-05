@@ -17,11 +17,11 @@ public:
 
   /* ********** F U N C T I O N S ********** */
   void drawBall();
-  bool collisionRacket(Racket r, bool glue, bool* collision_racket);
+  int collisionRacket(Racket r, bool glue, bool *collision_racket);
   bool collisionEnemy(std::vector<Enemy> v_enemys, float cx, float cz);
   int collisionCorridor(Corridor c);
-  int collision(Corridor c, Racket r, std::vector<Enemy> v_enemys, bool glue, bool* collision_racket);
-  bool gameOver(Racket r);
+  int collision(Corridor c, Racket r, std::vector<Enemy> v_enemys, bool glue,
+                bool *collision_racket);
   /* ********** G E T T E R S ********** */
   float getPos(char pos);
   int getMode();
