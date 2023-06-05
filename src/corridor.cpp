@@ -48,15 +48,10 @@ bool Corridor::collisionRacket(Racket r, std::vector<Enemy> v_enemys, float cx,
                                float cz) { // Liste de mur
   // On vérifie si c'est sur le même Y
   for (Enemy element : v_enemys) {
-    if (element.getD() > r.getPos('Y') + RADIUS_CIRCLE * 2 ||
-        element.getD() < DISTANCE / 5 - 1)
+    if (element.getD() > DISTANCE / 5 + RADIUS_CIRCLE * 2 ||
+        element.getD() < DISTANCE / 5 - 1 + RADIUS_CIRCLE * 2)
       continue;
-    //(int)(m_km + r.getPos('Y') - 0.5)
-    // printf("RAACKET pos %f\n", r.getPos('X'));
     if (element.contains(r.getPos('X'), r.getPos('Z'), cx, cz)) {
-      /*printf("RACKET MUR DEPTH %f (m_km + r.getPos('Y')) %f m_km %f cc %d pos
-         " "X_rack %f\n", element.getD(), (m_km + r.getPos('Y')), m_km, (m_km >
-         element.getD()), r.getPos('X'));*/
       return true;
     }
   }

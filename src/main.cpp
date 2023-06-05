@@ -110,8 +110,9 @@ static void cursor_position_callback(GLFWwindow *window, double xpos,
 
   posY = (ypos * (h / WINDOW_HEIGHT) + (h / 2));
 
-  // posY = posY * tan(((FOCAL * M_PI) / 180) / 2) * DISTANCE / 5 / aspectRatio;
-  // posX = posX * tan(((FOCAL * M_PI) / 180) / 2) * DISTANCE / 5 / aspectRatio;
+  // posY = posY * tan(((FOCAL * game.PI) / 180) / 2) * DISTANCE / 5 /
+  // aspectRatio; posX = posX * tan(((FOCAL * game.PI) / 180) / 2) * DISTANCE /
+  // 5 / aspectRatio;
 
   posY = (((ypos * 2 / WINDOW_HEIGHT) - 1)) * toRad(FOCAL / 2.) * DISTANCE;
 
@@ -338,7 +339,7 @@ int main(int argc, char **argv) {
       if (flag_walk) {
         game.getBall().setPos('Y', game.getBall().getPos('Y') -
                                        game.getCorridor().getSpeed());
-        game.getCorridor().setWalk();
+        game.getCorridor().collision(game.getRacket(), v_enemys);
         game.setScore();
         // printf("ALEEEEEED %f\n", game.getScore());
       }

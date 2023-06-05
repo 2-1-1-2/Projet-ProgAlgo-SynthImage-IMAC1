@@ -41,8 +41,11 @@ bool Enemy::contains(float posX, float posZ, float cx, float cz) {
   }
   /* *** Enemy is completely vertical *** */
   if (getUp() == -1 && getLeft() != -1) {
+
     if ((getLeft() == 1 && posX <= -cx + m_w) ||
         (!getLeft() && posX >= cx - m_w)) {
+
+      printf("contéains ?\n");
       return true;
     }
   }
