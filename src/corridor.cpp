@@ -5,6 +5,7 @@
 #include "../include/3D_tools.h"
 #include "../include/draw_scene.h"
 #include "../include/corridor.h"
+#include "../include/bonus.h"
 #include <vector>
 #include <fstream>
 #include <sstream>
@@ -35,6 +36,22 @@ Corridor::Corridor(int x, int y, int z, float speed)
     }
 }
 
+int randomInt(int min, int max) 
+{
+    // Vérification des limites
+    if (min > max) {
+        std::swap(min, max);
+    }
+
+    // Calcul de l'intervalle
+    int range = max - min + 1;
+
+    // Génération de l'entier aléatoire dans l'intervalle spécifié
+    int randomValue = std::rand() % range + min;
+
+    return randomValue;
+}
+
 void Corridor::drawCorridor(std::vector<ImgTexture>& v_texture)
 {
     // bottom square
@@ -54,25 +71,31 @@ void Corridor::drawCorridor(std::vector<ImgTexture>& v_texture)
     finTexture();
 }
 
-// to make go backward the inside of the corridor
-void Corridor::drawLines(std::vector<Enemy> &v_enemys, std::vector<ImgTexture>& v_texture)
-{       
-    // color white
-    glColor3f(1, 1, 1);
-    // size of the line
-    glLineWidth(2);
-    // To create the 7 lines
-    for(size_t i = 0; i < 7; i++)
+void Corridor::drawBonus(std::vector<Bonus>& v_bonus, std::vector<ImgTexture>& v_texture)
+{
+    for(Bonus &bonus : v_bonus)
     {
-        m_lines[i] -= m_walk;
+        // to make walk the bonus
+        bonus.setDWithWalk(m_walk);
 
-        if (m_lines[i] <= -10)
-            m_lines[i] = m_y - 1;
+        int x = bonus.getX();
+        int z = bonus.getZ();
+        int h = bonus.getH();
 
-        drawLineLoop(m_x, m_lines[i], m_z);
+        // La vie
+        if(bonus.getType() == 0)
+            drawTexture(v_texture[8].img);
+        // La colle
+        else
+            drawTexture(v_texture[9].img);
+
+        drawCircle(x, bonus.getD(), z, h);
+        finTexture();
     }
+}
 
-    // To create the enemys
+void Corridor::drawEnemys(std::vector<Enemy>& v_enemys, std::vector<ImgTexture>& v_texture)
+{
     for(Enemy &element : v_enemys)
     {
         // to make walk the enemys
@@ -134,6 +157,33 @@ void Corridor::drawLines(std::vector<Enemy> &v_enemys, std::vector<ImgTexture>& 
             finTexture();
         }
     }
+    
+}
+
+// to make go backward the inside of the corridor
+void Corridor::drawLines(std::vector<Enemy> &v_enemys, std::vector<Bonus>& v_bonus, std::vector<ImgTexture>& v_texture)
+{       
+    // color white
+    glColor3f(1, 1, 1);
+    // size of the line
+    glLineWidth(2);
+    // To create the 7 lines
+    for(size_t i = 0; i < 7; i++)
+    {
+        m_lines[i] -= m_walk;
+
+        if (m_lines[i] <= -10)
+            m_lines[i] = m_y - 1;
+
+        drawLineLoop(m_x, m_lines[i], m_z);
+    }
+
+    // To create the enemys
+    drawEnemys(v_enemys, v_texture);
+
+    // To create the bonus
+    drawBonus(v_bonus, v_texture);
+
     m_walk = 0;
 }
 
@@ -167,9 +217,38 @@ void Corridor::loadEnemys(std::vector<Enemy> &v_enemys)
     file.close();
 }
 
+void Corridor::loadBonus(std::vector<Bonus> &v_bonus)
+{
+    int km = 200;
+    int h = 4;
+
+    for(size_t i = 0; i < 5; i++)
+    {
+        int x = randomInt(-m_x, m_x);
+        while(((x + h) >= m_x) || ((x - h) <= -m_x)) {
+            x = randomInt(-m_x, m_x);
+        }
+
+        int z = randomInt(-m_z, m_z);
+        while(((z + h) >= m_z) || ((z - h) <= -m_z)) {
+            z = randomInt(-m_z, m_z);
+        }
+
+        int type = std::rand() % 2;
+        Bonus bonus = Bonus(type, x, z, h, km);
+        v_bonus.push_back(bonus);
+
+        km += 300;
+    }
+}
+
 /* ********** G E T T E R S ********** */
 int Corridor::getZ() {
     return this->m_z;
+}
+
+int Corridor::getKm() {
+    return m_km;
 }
 
 int Corridor::getWalk() {

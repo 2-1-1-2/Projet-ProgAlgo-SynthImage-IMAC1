@@ -7,7 +7,9 @@ void setCamera() {
                     0.0,0.0,0,
                     0.0,0.0,1.0);*/
   // printf("test : %f \n", test);
-  gluLookAt(0, 3*DISTANCE, 0, 0, 0, 0, 0, 0, 1);
+    gluLookAt(0,-30,0,
+                0.0,1.0,0.0,
+                      0.0,0.0,1.0);
 }
 
 /* Convert degree to radians */
@@ -102,6 +104,20 @@ void drawSquare(int x, int y, int z, int start, bool vertical)
     }
 }
 
+void drawSquare(float x, float y, float z, float h, GLenum m_mode)
+{
+	glBegin(m_mode);
+		glTexCoord2f(0.0f, 0.0f);
+    glVertex3f(x - h, y, z - h);
+    glTexCoord2f(1.0f, 0.0f);
+    glVertex3f(x + h, y, z - h);
+    glTexCoord2f(1.0f, 1.0f);
+    glVertex3f(x + h, y, z + h);
+    glTexCoord2f(0.0f, 1.0f);
+    glVertex3f(x - h, y, z + h);
+  glEnd();
+}
+
 void drawLineLoop(int x, int y, int z) 
 {
 	glBegin(GL_LINE_LOOP);
@@ -119,6 +135,25 @@ void drawCircle()
   float step_rad = 2 * M_PI / (float)NB_SEG_CIRCLE;
   for (int i = 0; i <= NB_SEG_CIRCLE; i++) {
     glVertex3f(cos(i * step_rad), sin(i * step_rad), 0.0f);
+  }
+  glEnd();
+}
+
+void drawCircle(float x, float y, float z, float r) 
+{
+  glBegin(GL_TRIANGLE_FAN);
+  glTexCoord2f(0.5f, 0.5f); 
+  glVertex3f(x, y, z);
+  float step_rad = 2 * M_PI / (float)NB_SEG_CIRCLE;
+  for (int i = 0; i <= NB_SEG_CIRCLE; i++) 
+  {
+    float angle = i * step_rad;
+    float dx = r * cos(angle);
+    float dz = r * sin(angle);
+    float tx = 0.5f + 0.5f * cos(angle);  // Coordonnée de texture en X
+    float tz = 0.5f + 0.5f * sin(angle);  // Coordonnée de texture en Y
+    glTexCoord2f(tx, tz);
+    glVertex3f(x + dx, y, z + dz);
   }
   glEnd();
 }

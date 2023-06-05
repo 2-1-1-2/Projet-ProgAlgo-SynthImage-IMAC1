@@ -15,25 +15,21 @@ public:
 
   /* ********** F U N C T I O N S ********** */
   void drawBall();
-  bool collisionRacket(Racket r);
+  bool collisionRacket(Racket r, bool glue);
   int collisionCorridor(Corridor c);
-  void collision(Corridor c, Racket r);
-  bool gameOver(Racket r);
+  bool collision(Corridor c, Racket r, bool glue);
   /* ********** G E T T E R S ********** */
   float getPos(char pos);
   int getMode();
-  int getLife();
   /* ********** S E T T E R S ********** */
   void move(float posX, float posY);
   void setMode();
   void setPos(char pos, float p);
-  void setLife(int life);
 
 private:
   float m_x;
   float m_y;
   float m_z;
-  int m_life;
   int m_size;
   float m_speedX;
   float m_speedY;

@@ -7,8 +7,8 @@
 #include <stdlib.h>
 
 void drawFrame();
-
-void drawBall();
+void drawTransparence(GLuint texture);
+void drawTransparence();
 
 GLuint loadTexture(const char *fileName);
 void drawTexture(GLuint texture);

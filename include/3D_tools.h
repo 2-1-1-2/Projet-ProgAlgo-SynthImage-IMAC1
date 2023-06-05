@@ -28,10 +28,12 @@ void drawEnemy(int x1, int x2, int y, int z1, int z2);
 void drawHorizontalEnemy(int x, int y, int z1, int z2);
 void drawVerticalEnemy(int x1, int x2, int y, int z, bool rot);
 void drawSquare(int x, int y, int z, int start, bool vertical);
+void drawSquare(float x, float y, float z, float h, GLenum m_mode);
 
 void drawLineLoop(int x, int y, int z);
 
 void drawCircle();
+void drawCircle(float x, float y, float z, float r);
 
 void drawCone();
 

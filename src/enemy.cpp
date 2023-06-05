@@ -59,7 +59,7 @@ int Enemy::getRot() {
     return m_rot;
 }
 
-/* ********** G E T T E R S ********** */
+/* ********** S E T T E R S ********** */
 void Enemy::setD(float d) {
     m_d = d;
 }

@@ -4,6 +4,7 @@
 #include "enemy.h"
 #include "dataEnemy.h"
 #include "struct.h"
+#include "bonus.h"
 
 class Corridor
 {
@@ -14,11 +15,15 @@ class Corridor
 
         /* ********** F U N C T I O N S ********** */
         void drawCorridor(std::vector<ImgTexture>& v_texture);
-        void drawLines(std::vector<Enemy> &v_enemys, std::vector<ImgTexture>& v_texture);
+        void drawBonus(std::vector<Bonus>& v_bonus, std::vector<ImgTexture>& v_texture);
+        void drawEnemys(std::vector<Enemy>& v_enemys, std::vector<ImgTexture>& v_texture);
+        void drawLines(std::vector<Enemy> &v_enemys, std::vector<Bonus> &v_bonus, std::vector<ImgTexture>& v_texture);
         void loadEnemys(std::vector<Enemy> &v_enemys);
+        void loadBonus(std::vector<Bonus> &v_bonus);
 
         /* ********** G E T T E R S ********** */
         int getZ();
+        int getKm();
         int getWalk();
         int getSpeed();
         float getPos(char pos);
@@ -29,7 +34,7 @@ class Corridor
 
     private:
         int m_x;
-        float m_y;
+        int m_y;
         int m_z;
         int m_start;
         float m_km;
