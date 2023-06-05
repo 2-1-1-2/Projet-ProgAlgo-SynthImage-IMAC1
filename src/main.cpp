@@ -101,21 +101,13 @@ void onKey(GLFWwindow *window, int key, int scancode, int action, int mods) {
 
 static void cursor_position_callback(GLFWwindow *window, double xpos,
                                      double ypos) {
-  // TODO décalage sur les bords pour que ça ne sorte pas
-
-  float rl = game.getRacket().getLength();
 
   float h = tan(toRad(FOCAL / 2.)) * DISTANCE;
 
   posX = ((WINDOW_WIDTH / (h * aspectRatio)) - (xpos * 2 / (h * aspectRatio)));
 
-  // posX = -(xpos * ((h * aspectRatio) / WINDOW_WIDTH));
   posY =
       -((WINDOW_HEIGHT / (h * aspectRatio)) - (ypos * 2 / (h * aspectRatio)));
-
-  // posX = -(xpos * ((h * aspectRatio) / WINDOW_WIDTH));
-  printf("posX %f - posX %f\n", posX, posY);
-  // printf("POSX %f POSY %f\n", posX, posY);
 }
 
 void mouse_button_callback(GLFWwindow *window, int button, int action,
@@ -124,6 +116,10 @@ void mouse_button_callback(GLFWwindow *window, int button, int action,
   /* ***** W A L K ***** */
   case GLFW_MOUSE_BUTTON_LEFT:
     // si le bouton est pressé et que la balle est en mouvement
+    if (game.getBall().getMode() == 1) {
+
+      flag_walk = 0;
+    }
     if (action == GLFW_PRESS) {
       if (game.getMenu().getMenu()) {
         if (posX >= -8.915609 && posX <= 9.018680) {
@@ -140,18 +136,19 @@ void mouse_button_callback(GLFWwindow *window, int button, int action,
             glfwSetWindowShouldClose(window, GLFW_TRUE);
         }
       } else if ((posX >= 16.75 && posX <= 25.91) &&
-                 (posY >= -12.51 && posY <= 14.30)) {
+                 (posY >= 12.51 && posY <= 14.30)) {
 
         game.getMenu().setType(0);
         game.getMenu().setMenu(true);
-      } else if (game.getBall().getMode() == -1) {
+      } else if (game.getBall().getMode() == -1 && !game.gameOver()) {
         flag_walk = 1;
       }
     } else if (action == GLFW_RELEASE)
       flag_walk = 0;
     break;
   case GLFW_MOUSE_BUTTON_RIGHT:
-    if (action == GLFW_PRESS && game.getBall().getMode() == 1) {
+    if (action == GLFW_PRESS && game.getBall().getMode() == 1 &&
+        !game.gameOver()) {
       game.getBall().setMode();
       if (game.getLose())
         game.setLose(false);
@@ -311,10 +308,10 @@ int main(int argc, char **argv) {
     /* ********************* M   E   N   U ********************** */
     if (game.getMenu().getMenu()) {
       glDisable(GL_LIGHTING);
-      // printf("LE MENU: %d\n", game.getMenu().getType());
       switch (game.getMenu().getType()) {
       case 0:
-        // printf("DANS LE MENU ZERO\n");
+        if (game.gameOver())
+          game.reset();
         drawMenu(textureMenu, textureJouer, textureNiveaux, textureQuitter);
         break;
       case 1:
@@ -326,7 +323,19 @@ int main(int argc, char **argv) {
     }
     /* ******************************** G A M E
      ************************************ */
-    else {
+    else if (game.gameOver()) {
+
+      drawMenuCase(textureMenu);
+      GLuint textureScore0 = loadTexture(cheminTexture[arr[0]]);
+      GLuint textureScore1 = loadTexture(cheminTexture[arr[1]]);
+      GLuint textureScore2 = loadTexture(cheminTexture[arr[2]]);
+      GLuint textureScore3 = loadTexture(cheminTexture[arr[3]]);
+      GLuint textureScore4 = loadTexture(cheminTexture[arr[4]]);
+      GLuint textureScore5 = loadTexture(cheminTexture[arr[5]]);
+      drawScoreCaseFin(textureScoreCase, textureScore0, textureScore1,
+                       textureScore2, textureScore3, textureScore4,
+                       textureScore5);
+    } else {
 
       initLight();
       GLuint textureScore0 = loadTexture(cheminTexture[arr[0]]);
@@ -341,7 +350,6 @@ int main(int argc, char **argv) {
         // game.getCorridor().getSpeed());
         game.getCorridor().collision(game.getRacket(), v_enemys);
         game.setScore();
-        // printf("ALEEEEEED %f\n", game.getScore());
       }
 
       /* ****************************** D R A W I N G
@@ -354,8 +362,6 @@ int main(int argc, char **argv) {
       drawScoreCase(textureScoreCase, textureScore0, textureScore1,
                     textureScore2, textureScore3, textureScore4, textureScore5);
 
-      // printf("LE SCORE %f\n", game.getScore());
-
       /* ***** R A C K E T ***** */
       game.collision(v_enemys, posX, posY, flag_walk);
       if (game.getCollisionRacket()) {
@@ -367,16 +373,14 @@ int main(int argc, char **argv) {
           game.setGlue(false);
       }
 
-      if (game.gameOver())
-        glfwSetWindowShouldClose(window, GLFW_TRUE);
+      /*GAME OVER*/
+      // glfwSetWindowShouldClose(window, GLFW_TRUE);
 
       /* ***** B O N U S ***** */
       game.isThereBonus(v_bonus);
 
       /* ALED */
-      // printf("ALEEEEEED %f\n", game.getScore());
       score(game.getScore(), arr);
-      // printf("TA RACE %f %d\n", game.getScore(), arr[2]);
 
       glPushMatrix();
       game.getRacket().drawRacket();

@@ -3,12 +3,24 @@
 #include "../include/draw_scene.h"
 #include "../include/menu.h"
 #include <algorithm>
+#include <cstdio>
 
 Game::Game(Ball b, Corridor c, Racket r) {
   m_ball = Ball(b.getPos('X'), b.getPos('Y'), b.getPos('Z'));
   m_corridor =
       Corridor(c.getPos('X'), c.getPos('Y'), c.getPos('Z'), c.getSpeed());
   m_racket = Racket(r.getPos('X'), r.getPos('Y'), r.getPos('Z'));
+  m_life = 5;
+  m_score = 0;
+  m_glue = false;
+  m_lose = false;
+  m_collision_racket = false;
+}
+
+void Game::reset() {
+  m_life = 5;
+  m_corridor.setWalk(0);
+  m_score = 0;
   m_life = 5;
   m_score = 0;
   m_glue = false;
@@ -113,7 +125,10 @@ void Game::drawBonus(std::vector<ImgTexture> &v_texture) {
   }
 }
 
-bool Game::gameOver() { return m_life <= 0; }
+bool Game::gameOver() {
+  m_lose = true;
+  return m_life <= 0;
+}
 
 /* ********** G E T T E R S ********** */
 Ball &Game::getBall() { return m_ball; }

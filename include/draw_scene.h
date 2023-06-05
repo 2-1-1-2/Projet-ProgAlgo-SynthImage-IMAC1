@@ -19,6 +19,16 @@ void drawTransparence();
 
 /* ********** MENU ********** */
 void drawMenuCase(GLuint textureMenu);
-void drawMenu(GLuint textureMenu, GLuint textureJouer,GLuint textureNiveaux, GLuint textureQuitter);
-void drawNiveaux(GLuint textureNiveau1, GLuint textureNiveau2, GLuint textureNiveau3, GLuint textureNiveau4, GLuint textureNiveau5);
-void drawScoreCase(GLuint textureScoreCase, GLuint textureScore0, GLuint textureScore1, GLuint textureScore2, GLuint textureScore3, GLuint textureScore4, GLuint textureScore5);
+void drawMenu(GLuint textureMenu, GLuint textureJouer, GLuint textureNiveaux,
+              GLuint textureQuitter);
+void drawNiveaux(GLuint textureNiveau1, GLuint textureNiveau2,
+                 GLuint textureNiveau3, GLuint textureNiveau4,
+                 GLuint textureNiveau5);
+void drawScoreCase(GLuint textureScoreCase, GLuint textureScore0,
+                   GLuint textureScore1, GLuint textureScore2,
+                   GLuint textureScore3, GLuint textureScore4,
+                   GLuint textureScore5);
+void drawScoreCaseFin(GLuint textureScoreCase, GLuint textureScore0,
+                      GLuint textureScore1, GLuint textureScore2,
+                      GLuint textureScore3, GLuint textureScore4,
+                      GLuint textureScore5);
