@@ -337,8 +337,8 @@ int main(int argc, char **argv) {
       GLuint textureScore5 = loadTexture(cheminTexture[arr[5]]);
 
       if (flag_walk) {
-        game.getBall().setPos('Y', game.getBall().getPos('Y') -
-                                       game.getCorridor().getSpeed());
+        // game.getBall().setPos('Y', game.getBall().getPos('Y') -
+        // game.getCorridor().getSpeed());
         game.getCorridor().collision(game.getRacket(), v_enemys);
         game.setScore();
         // printf("ALEEEEEED %f\n", game.getScore());

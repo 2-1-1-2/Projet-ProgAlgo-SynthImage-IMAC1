@@ -45,7 +45,6 @@ bool Enemy::contains(float posX, float posZ, float cx, float cz) {
     if ((getLeft() == 1 && posX <= -cx + m_w) ||
         (!getLeft() && posX >= cx - m_w)) {
 
-      printf("contéains ?\n");
       return true;
     }
   }

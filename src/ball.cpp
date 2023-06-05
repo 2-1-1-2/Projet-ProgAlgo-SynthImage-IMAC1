@@ -6,7 +6,7 @@ Ball::Ball(float x, float y, float z) {
   m_z = z;
   m_size = 32;
   m_speedX = 0;
-  m_speedY = 0.15;
+  m_speedY = 0.4;
   m_radius = RADIUS_CIRCLE;
   m_speedZ = 0;
   m_mode = 1; // 1 sticky, -1 rebond
@@ -38,8 +38,7 @@ int Ball::collisionRacket(
     return 0;
   float d_x = r.getPos('X') - m_x;
   float d_z = r.getPos('Z') - m_z;
-  if (abs(d_x) - m_radius * 2 > r.getLength() ||
-      abs(d_z) - m_radius * 2 > r.getLength()) {
+  if (abs(d_x) - m_radius * 2 > r.getLength() || m_y < DISTANCE / 5 - 1) {
 
     setPos('X', r.getPos('X'));
     setPos('Z', r.getPos('Z'));
@@ -53,7 +52,8 @@ int Ball::collisionRacket(
     m_speedX = (d_x) / (r.getLength() * 5.);
     m_speedZ = (d_z) / (r.getLength() * 5.);
     // m_y += r.getLength();
-    m_speedY *= -1;
+
+    m_speedY = m_y < 0 ? abs(m_speedY) : -abs(m_speedY);
 
     m_y += m_speedY;
   }
@@ -66,13 +66,13 @@ int Ball::collisionCorridor(Corridor c) {
   int res = 0; // 0 rien, 1 GD, 2 HB, 3 GBHB
 
   if (abs(m_x) + m_radius > abs(c.getPos('X'))) {
-    m_speedX *= -1;
-    m_x += m_speedX;
+
+    m_speedX = m_x < 0 ? abs(m_speedX) : -abs(m_speedX);
     res += 1;
   }
   if (abs(m_z) + m_radius > abs(c.getPos('Z'))) {
-    m_speedZ *= -1;
-    m_z += m_speedZ;
+
+    m_speedZ = m_z < 0 ? abs(m_speedZ) : -abs(m_speedZ);
     res += 2;
   }
   if (res > 0)
@@ -92,7 +92,7 @@ bool Ball::collisionEnemy(std::vector<Enemy> v_enemys, float cx,
 
     if (element.contains(m_x, m_z, cx, cz)) {
 
-      m_speedY = element.getD() < m_y ? 0.15 : -0.15;
+      m_speedY = element.getD() < m_y ? abs(m_speedY) : -abs(m_speedY);
       m_y += m_speedY;
       printf("collision mur ennemie d%f m_y%f m_speedY%f  \n", element.getD(),
              m_y, m_speedY);
