@@ -20,7 +20,7 @@ public:
   bool collisionRacket(Racket r);
   bool collisionEnemy(std::vector<Enemy> v_enemys, float cx, float cz);
   int collisionCorridor(Corridor c);
-  void collision(Corridor c, Racket r, std::vector<Enemy> v_enemys);
+  int collision(Corridor c, Racket r, std::vector<Enemy> v_enemys);
   bool gameOver(Racket r);
   /* ********** G E T T E R S ********** */
   float getPos(char pos);
@@ -38,7 +38,7 @@ private:
   float m_y;
   float m_z;
   int m_life;
-  int m_radius;
+  float m_radius;
   int m_size;
   float m_km;
   float m_speedX;

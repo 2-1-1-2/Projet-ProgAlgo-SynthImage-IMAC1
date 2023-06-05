@@ -21,25 +21,24 @@
 #include <vector>
 
 /* Window properties */
-static unsigned int WINDOW_WIDTH = 1280;
-static unsigned int WINDOW_HEIGHT = 720;
 static const char WINDOW_TITLE[] = "Super jeu de la mort qui tue";
 static float aspectRatio = 1;
 
+static unsigned int WINDOW_WIDTH = 1280;
+static unsigned int WINDOW_HEIGHT = 720;
 /* Test position*/
 static const float GL_VIEW_SIZE = 1.;
-
 /* Minimal time wanted between two images */
 static const double FRAMERATE_IN_SECONDS = 1. / 60.;
 
 /* IHM flag */
 static int flag_walk = 0;
-float alpha = 60;
-static Game game(Ball(0., DISTANCE - 4, 0.), Corridor(25, alpha, 12, 1),
-                 Racket(0., DISTANCE - 5, 0));
+static Game game(Ball(0., DISTANCE / 5 + RADIUS_CIRCLE, 0.),
+                 Corridor(CORRIDOR_WIDTH, FOCAL, CORRIDOR_HEIGHT, 1),
+                 Racket(0., DISTANCE / 5 + 1, 0));
 float walk = 0;
 double posX = 0, posY = 0;
-float h = -tan(toRad(alpha / 2.)) * 3 * DISTANCE;
+float h = tan(toRad(FOCAL / 2.)) * (DISTANCE);
 
 /* Error handling function */
 void onError(int error, const char *description) {
@@ -51,11 +50,11 @@ void onWindowResized(GLFWwindow *window, int width, int height) {
   WINDOW_HEIGHT = height; // AJOUTER ICI
   aspectRatio = width / (float)height;
 
-  h = -tan(toRad(alpha / 2.)) * 3 * DISTANCE;
+  h = tan(toRad(FOCAL / 2.)) * (DISTANCE);
   glViewport(0, 0, width, height);
   glMatrixMode(GL_PROJECTION);
   glLoadIdentity();
-  gluPerspective(60.0, aspectRatio, Z_NEAR, Z_FAR);
+  gluPerspective(FOCAL, aspectRatio, Z_NEAR, Z_FAR);
   glMatrixMode(GL_MODELVIEW);
 }
 
@@ -89,8 +88,22 @@ static void cursor_position_callback(GLFWwindow *window, double xpos,
                                      double ypos) {
   float r_l = game.getRacket().getLength();
   // TODO décalage sur les bords pour que ça ne sorte pas
-  posX = xpos * ((h * aspectRatio) / WINDOW_WIDTH) - ((h * aspectRatio) / 2);
-  posY = (-ypos * (h / WINDOW_HEIGHT) + (h / 2));
+  posX = -((xpos * 2 / WINDOW_WIDTH) - 1) * aspectRatio;
+  posY = ((ypos * 2 / WINDOW_HEIGHT) - 1);
+
+  posX = xpos * ((h * aspectRatio) / WINDOW_WIDTH) - ((h * aspectRatio));
+
+  posY = (ypos * (h / WINDOW_HEIGHT) + (h / 2));
+
+  // posY = posY * tan(((FOCAL * M_PI) / 180) / 2) * DISTANCE / 5 / aspectRatio;
+  // posX = posX * tan(((FOCAL * M_PI) / 180) / 2) * DISTANCE / 5 / aspectRatio;
+
+  posY = (((ypos * 2 / WINDOW_HEIGHT) - 1)) * toRad(FOCAL / 2.) * DISTANCE;
+
+  posX = -(((xpos * 2 / WINDOW_WIDTH) - 1) * aspectRatio) * toRad(FOCAL / 2.) *
+         DISTANCE;
+
+  // printf("POSX %f POSY %f\n", posX, posY);
 }
 
 void mouse_button_callback(GLFWwindow *window, int button, int action,
@@ -214,12 +227,11 @@ int main(int argc, char **argv) {
     /* Get time (in second) at loop beginning */
     double startTime = glfwGetTime();
 
-    /* ***** R A C K E T ***** */
-    game.getRacket().setPos(posX, posY);
-    game.getBall().move(posX, posY);
-    game.getBall().gameOver(game.getRacket());
+    /* ***** R A C K E T - G A M E ***** */
+
+    game.collision(v_enemys, posX, posY, flag_walk);
     /* Cleaning buffers and setting Matrix Mode */
-    glClearColor(0.2, 0.0, 0.0, 0.0);
+    glClearColor(0., 0.0, 0.0, 0.0);
 
     glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
@@ -246,16 +258,18 @@ int main(int argc, char **argv) {
     glTranslatef(game.getBall().getPos('X'), game.getBall().getPos('Y'),
                  game.getBall().getPos('Z'));
     game.getBall().drawBall();
+
     finTexture();
     glPopMatrix();
-    game.getBall().collision(game.getCorridor(), game.getRacket(), v_enemys);
-    // printf("TOUCHE ? %d\n",
-    // game.getBall().collisionRacket(game.getRacket()));
+    // game.getBall().collision(game.getCorridor(), game.getRacket(), v_enemys);
+    //  printf("TOUCHE ? %d\n",
+    //  game.getBall().collisionRacket(game.getRacket()));
 
     /* Scene rendering */
 
     if (flag_walk) {
-      game.getCorridor().setWalk();
+      // game.getCorridor().collision(game.getRacket(), v_enemys);
+
       // game.getRacket().setMode();
     }
     /* Swap front and back buffers */

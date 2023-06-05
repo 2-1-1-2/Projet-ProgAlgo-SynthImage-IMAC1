@@ -7,8 +7,8 @@ Ball::Ball(float x, float y, float z) {
   m_life = 5;
   m_size = 32;
   m_speedX = 0;
-  m_speedY = 0.5;
-  m_radius = 2;
+  m_speedY = 0.2;
+  m_radius = RADIUS_CIRCLE;
   m_speedZ = 0;
   m_mode = 1; // 1 sticky, -1 rebond
   m_km = 0;
@@ -35,20 +35,23 @@ bool Ball::gameOver(Racket r) {
 
 bool Ball::collisionRacket(Racket r) {
   // On vérifie si c'est sur le même Y
-  if ((int)m_y != r.getPos('Y') - 1)
+  if (m_y > r.getPos('Y') - m_radius)
     return false;
   float d_x = r.getPos('X') - m_x;
   float d_z = r.getPos('Z') - m_z;
-  if (abs(d_x) - m_radius > r.getLength() ||
-      abs(d_z) - m_radius > r.getLength())
+  if (abs(d_x) - m_radius * 2 > r.getLength() ||
+      abs(d_z) - m_radius * 2 > r.getLength()) {
+    gameOver(r);
     return false;
-
+  }
+  printf("collision raquette\n");
   m_speedX = (d_x) / (r.getLength() * 4.);
   m_speedZ = (d_z) / (r.getLength() * 4.);
-  m_y += r.getLength();
+  // m_y += r.getLength();
+
   m_speedY *= -1;
 
-  // TODO gérer écart sur les coins => game over automatique sinon
+  m_y += m_speedY;
   return true;
 }
 
@@ -58,35 +61,45 @@ int Ball::collisionCorridor(Corridor c) {
 
   if (abs(m_x) + m_radius > abs(c.getPos('X'))) {
     m_speedX *= -1;
+    m_x += m_speedX;
     res += 1;
   }
   if (abs(m_z) + m_radius > abs(c.getPos('Z'))) {
     m_speedZ *= -1;
+    m_z += m_speedZ;
     res += 2;
   }
-
+  if (res > 0)
+    printf("collision murs couloir\n");
   return res;
 }
 bool Ball::collisionEnemy(std::vector<Enemy> v_enemys, float cx,
                           float cz) { // Liste de mur
   // On vérifie si c'est sur le même Y
-
+  float min = 6000;
   for (Enemy element : v_enemys) {
-    if ((int)(m_km) == (int)(element.getD() - m_radius) &&
+    min = element.getD() < min ? element.getD() : min;
+    // printf("MIN %f m_y%f \n", min, m_y);
+
+    if (((int)(m_y) == (int)(element.getD() - m_radius / 1.5) && m_speedY > 0 ||
+         (int)(m_y) == (int)(element.getD() + m_radius / 1.5) &&
+             m_speedY < 0) &&
         element.contains(m_x, m_z, cx, cz)) {
+
       printf("DEPTH %f m_km %f cc %d\n", element.getD(), m_km,
              (m_km > element.getD()));
       m_speedY *= -1;
+
+      printf("collision mur ennemie\n");
       return true;
     }
   }
   return false;
 }
-void Ball::collision(Corridor c, Racket r, std::vector<Enemy> v_enemys) {
-  collisionCorridor(c);
-  collisionRacket(r);
-  collisionEnemy(v_enemys, c.getPos('X') - m_radius * 2,
-                 c.getPos('Z') - m_radius * 2);
+int Ball::collision(Corridor c, Racket r, std::vector<Enemy> v_enemys) {
+  return (collisionCorridor(c) || collisionRacket(r) ||
+          collisionEnemy(v_enemys, c.getPos('X') - m_radius * 2,
+                         c.getPos('Z') - m_radius * 2));
 }
 
 /* ********** G E T T E R S ********** */
@@ -102,16 +115,15 @@ void Ball::setLife(int life) { m_life = life; };
 
 void Ball::move(float posX, float posY) {
   if (m_mode == -1) {
-    if (m_y < DISTANCE - 10)
-      m_speedY *= -1;
     m_x += m_speedX;
     m_y += m_speedY;
     m_z += m_speedZ;
     setKm();
   } else {
-
-    m_x = posX;
-    m_z = posY;
+    float RIGHT = CORRIDOR_WIDTH - m_radius;
+    float TOP = CORRIDOR_HEIGHT - m_radius;
+    m_x = posX > RIGHT ? RIGHT : posX < -RIGHT ? -RIGHT : posX;
+    m_z = posY > TOP ? TOP : posY < -TOP ? -TOP : posY;
   }
 }
 

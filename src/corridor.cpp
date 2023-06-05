@@ -1,5 +1,7 @@
 #include "../include/corridor.h"
 #include "algorithm"
+#include <GL/gl.h>
+#include <cstdio>
 
 Corridor::Corridor(int x, int y, int z, float speed) {
   this->m_x = x;
@@ -8,7 +10,7 @@ Corridor::Corridor(int x, int y, int z, float speed) {
   this->m_start = -14;
   this->m_walk = 0;
   this->m_km = -14;
-  this->m_speed = speed;
+  this->m_speed = 0.2;
 
   float colors[6] = {0.5, 0.5, 1, 0.5, 0.8, 1};
   std::copy(colors, colors + 6, m_colors);
@@ -20,22 +22,49 @@ Corridor::Corridor(int x, int y, int z, float speed) {
   }
 }
 
+/* ********** F U N C T I O N ********** */
+bool Corridor::collisionRacket(Racket r, std::vector<Enemy> v_enemys, float cx,
+                               float cz) { // Liste de mur
+  // On vérifie si c'est sur le même Y
+
+  for (Enemy element : v_enemys) {
+    if (element.getD() > r.getPos('Y') + RADIUS_CIRCLE * 2 ||
+        element.getD() < DISTANCE / 5 - 1)
+      continue;
+    //(int)(m_km + r.getPos('Y') - 0.5)
+    // printf("RAACKET pos %f\n", r.getPos('X'));
+    if (element.contains(r.getPos('X'), r.getPos('Z'), cx, cz)) {
+      printf("RACKET MUR DEPTH %f (m_km + r.getPos('Y')) %f m_km %f cc %d pos "
+             "X_rack %f\n",
+             element.getD(), (m_km + r.getPos('Y')), m_km,
+             (m_km > element.getD()), r.getPos('X'));
+      return true;
+    }
+  }
+  return false;
+}
+void Corridor::collision(Racket r, std::vector<Enemy> v_enemys) {
+  if (!collisionRacket(r, v_enemys, getPos('X'), getPos('Z')))
+    setWalk();
+}
 void Corridor::drawCorridor(std::vector<ImgTexture> &v_texture) {
   // bottom square
-  drawTexture(v_texture[3].img);
-  drawSquare(m_x, m_y, -m_z, m_start, true);
-  finTexture();
-  // top square
-  drawTexture(v_texture[2].img);
-  drawSquare(m_x, m_y, m_z, m_start, true);
-  finTexture();
+  // drawTexture(v_texture[3].img);
 
-  drawTexture(v_texture[1].img);
-  // left square
+  glColor3f(145 / 255., 82 / 255., 157 / 255.);
+  drawSquare(m_x, m_y, -m_z, m_start, true);
+  // finTexture();
+  //  top square
+  // drawTexture(v_texture[2].img);
+  drawSquare(m_x, m_y, m_z, m_start, true);
+  // finTexture();
+
+  // drawTexture(v_texture[1].img);
+  //  left square
   drawSquare(-m_x, m_y, m_z, m_start, false);
   // right square
   drawSquare(m_x, m_y, m_z, m_start, false);
-  finTexture();
+  // finTexture();
 }
 
 // to make go backward the inside of the corridor
@@ -58,11 +87,13 @@ void Corridor::drawLines(std::vector<Enemy> &v_enemys,
   // To create the enemys
   for (Enemy &element : v_enemys) {
     // to make walk the enemys
+    if (element.getD() < DISTANCE / 5 - 1)
+      continue; // disparait quand derrière la raquette
     element.setDWithWalk(m_walk);
 
     if (element.getLeft() != -1 && element.getUp() != -1) {
-      drawTexture(v_texture[7].img);
-      // Gauche
+      // drawTexture(v_texture[7].img);
+      //  Gauche
       if (element.getLeft()) {
         // Haut
         if (element.getUp())
@@ -84,23 +115,24 @@ void Corridor::drawLines(std::vector<Enemy> &v_enemys,
           drawEnemy(m_x - element.getW(), m_x, element.getD(), -m_z,
                     -m_z + element.getH());
       }
-      finTexture();
+      // finTexture();
     }
     /* *** Enemy is completely horizontal *** */
     else if (element.getLeft() == -1) {
       if (element.getUp()) {
-        drawTexture(v_texture[6].img);
+        // drawTexture(v_texture[6].img);
         drawHorizontalEnemy(m_x, element.getD(), m_z - element.getH(), m_z);
       } else {
-        drawTexture(v_texture[5].img);
+        // drawTexture(v_texture[5].img);
         drawHorizontalEnemy(m_x, element.getD(), -m_z, -m_z + element.getH());
       }
-      finTexture();
+      // finTexture();
     }
     /* *** Enemy is completely vertical *** */
     else {
-      drawTexture(v_texture[4].img);
-      // Picture can be upside down
+      // TODO remettre draw texture
+      //  drawTexture(v_texture[4].img);
+      //   Picture can be upside down
       if (v_texture[4].rot && element.getRot() == -1)
         element.setRot(rand() % 2);
 
@@ -111,7 +143,7 @@ void Corridor::drawLines(std::vector<Enemy> &v_enemys,
         drawVerticalEnemy(m_x, m_x - element.getW(), element.getD(), m_z,
                           element.getRot());
 
-      finTexture();
+      // finTexture();
     }
   }
   m_walk = 0;
@@ -160,7 +192,7 @@ float Corridor::getPos(char pos) {
 void Corridor::setWalk() {
   this->m_walk += m_speed;
   this->m_km += m_speed;
-  // printf("Km: %f\n", m_km);
+  printf("Km: %f\n", m_speed);
 }
 
 void Corridor::setWalk(int walk) { m_walk = walk; }

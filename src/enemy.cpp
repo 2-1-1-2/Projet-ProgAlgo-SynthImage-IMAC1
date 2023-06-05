@@ -34,35 +34,27 @@ Enemy::Enemy(const Enemy &e) {
 bool Enemy::contains(float posX, float posZ, float cx, float cz) {
 
   /* *** Enemy is completely horizontal *** */
-  if (getLeft() == -1 && (getUp() != -1 && abs(posZ) > cz - m_h)) {
-    printf("3\n");
-    return true;
+  if (getLeft() == -1 && getUp() != -1) {
+    if ((!getUp() && posZ < -cz + m_h) || (getUp() && posZ > cz - m_h)) {
+      return true;
+    }
   }
   /* *** Enemy is completely vertical *** */
-  if (getUp() == -1 && getLeft() != 1 &&
-      abs(posX) > cx - m_w) { // posX <= -cx + m_w
-    printf("VERTICALE %f cx %f -m_w %d cx - m_w %f DEPTH %f \n", abs(posX), cx,
-           -m_w, (cx - m_w), m_d);
-    return true;
+  if (getUp() == -1 && getLeft() != -1) {
+    if ((getLeft() == 1 && posX <= -cx + m_w) ||
+        (!getLeft() && posX >= cx - m_w)) {
+      return true;
+    }
   }
+
   // cas carré
   if (getLeft() != -1 && getUp() != -1) {
-    // UP et LEFT 0 ou 1
-    //  Gauche
-    if (((getLeft() != -1 && abs(posX) > cx - m_w)) &&
-        ((getUp() && posZ > cz - m_h) || (getUp() == 0 && posZ < -cz + m_h))) {
-      printf("1\n");
+    if ((getLeft() == 1 && posX <= -cx + m_w) ||
+        (!getLeft() && posX >= cx - m_w) && (!getUp() && posZ < -cz + m_h) ||
+        (getUp() && posZ > cz - m_h)) {
+      printf("c'est carré !!\n");
       return true;
     }
-    /*
-    // Droite
-    if ((getLeft() == 0 && posX > cx - m_w) &&
-        ((getUp() && posZ > cz - m_h) || (getUp() == 0 && posZ < -cz + m_h))) {
-
-      printf("2\n");
-      return true;
-    }
-    */
   }
   return false;
 }

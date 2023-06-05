@@ -5,6 +5,7 @@
 #include "draw_scene.h"
 #include "enemy.h"
 #include "math.h"
+#include "racket.h"
 #include "struct.h"
 #include <GL/gl.h>
 #include <GL/glu.h>
@@ -26,6 +27,9 @@ public:
   void drawLines(std::vector<Enemy> &v_enemys,
                  std::vector<ImgTexture> &v_texture);
   void loadEnemys(std::vector<Enemy> &v_enemys);
+  bool collisionRacket(Racket r, std::vector<Enemy> v_enemys, float cx,
+                       float cz);
+  void collision(Racket r, std::vector<Enemy> v_enemys);
 
   /* ********** G E T T E R S ********** */
   int getZ();
