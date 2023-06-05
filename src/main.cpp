@@ -103,22 +103,18 @@ static void cursor_position_callback(GLFWwindow *window, double xpos,
                                      double ypos) {
   // TODO décalage sur les bords pour que ça ne sorte pas
 
-  posX = -((xpos * 2 / WINDOW_WIDTH) - 1) * aspectRatio;
-  posY = ((ypos * 2 / WINDOW_HEIGHT) - 1);
+  float rl = game.getRacket().getLength();
 
-  posX = xpos * ((h * aspectRatio) / WINDOW_WIDTH) - ((h * aspectRatio));
+  float h = tan(toRad(FOCAL / 2.)) * DISTANCE;
 
-  posY = (ypos * (h / WINDOW_HEIGHT) + (h / 2));
+  posX = ((WINDOW_WIDTH / (h * aspectRatio)) - (xpos * 2 / (h * aspectRatio)));
 
-  // posY = posY * tan(((FOCAL * game.PI) / 180) / 2) * DISTANCE / 5 /
-  // aspectRatio; posX = posX * tan(((FOCAL * game.PI) / 180) / 2) * DISTANCE /
-  // 5 / aspectRatio;
+  // posX = -(xpos * ((h * aspectRatio) / WINDOW_WIDTH));
+  posY =
+      -((WINDOW_HEIGHT / (h * aspectRatio)) - (ypos * 2 / (h * aspectRatio)));
 
-  posY = (((ypos * 2 / WINDOW_HEIGHT) - 1)) * toRad(FOCAL / 2.) * DISTANCE;
-
-  posX = -(((xpos * 2 / WINDOW_WIDTH) - 1) * aspectRatio) * toRad(FOCAL / 2.) *
-         DISTANCE;
-
+  // posX = -(xpos * ((h * aspectRatio) / WINDOW_WIDTH));
+  printf("posX %f - posX %f\n", posX, posY);
   // printf("POSX %f POSY %f\n", posX, posY);
 }
 
@@ -129,7 +125,6 @@ void mouse_button_callback(GLFWwindow *window, int button, int action,
   case GLFW_MOUSE_BUTTON_LEFT:
     // si le bouton est pressé et que la balle est en mouvement
     if (action == GLFW_PRESS) {
-      printf("AU MOINS JE SUIS PRESSE!\n");
       if (game.getMenu().getMenu()) {
         if (posX >= -8.915609 && posX <= 9.018680) {
           // Jouer
@@ -144,6 +139,11 @@ void mouse_button_callback(GLFWwindow *window, int button, int action,
           if (posY >= -8.451791 && posY <= -5.153531)
             glfwSetWindowShouldClose(window, GLFW_TRUE);
         }
+      } else if ((posX >= 16.75 && posX <= 25.91) &&
+                 (posY >= -12.51 && posY <= 14.30)) {
+
+        game.getMenu().setType(0);
+        game.getMenu().setMenu(true);
       } else if (game.getBall().getMode() == -1) {
         flag_walk = 1;
       }
