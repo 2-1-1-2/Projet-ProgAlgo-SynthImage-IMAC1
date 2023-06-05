@@ -47,7 +47,7 @@ void Game::isThereBonus(std::vector<Bonus> &v_bonus)
   {
     Bonus &bonus = *it;
 
-    printf("ON EST SUR LE MEME KILOMETRE %f %f\n", m_racket.getPos('Y'), bonus.getD());
+    //printf("ON EST SUR LE MEME KILOMETRE %f %f\n", m_racket.getPos('Y'), bonus.getD());
     if(m_racket.getPos('Y') + 1 >= bonus.getD() && m_racket.getPos('Y') <= bonus.getD())
     {
       float r_x = m_racket.getPos('X');
@@ -83,6 +83,7 @@ void Game::isThereBonus(std::vector<Bonus> &v_bonus)
         else if (bonus.getType() == 1)
           m_glue = true;
 
+        m_score += 100;
         // Enlever l'objet du vecteur v_bonus
         v_bonus.erase(it);
         break;

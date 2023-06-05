@@ -32,7 +32,7 @@ public:
   void drawLines(Racket r, std::vector<Enemy> &v_enemys,
                  std::vector<Bonus> &v_bonus,
                  std::vector<ImgTexture> &v_texture);
-  void loadEnemys(std::vector<Enemy> &v_enemys);
+  void loadEnemys(std::vector<Enemy> &v_enemys, int level);
   void loadBonus(std::vector<Bonus> &v_bonus);
   bool collisionRacket(Racket r, std::vector<Enemy> v_enemys, float cx,
                        float cz);

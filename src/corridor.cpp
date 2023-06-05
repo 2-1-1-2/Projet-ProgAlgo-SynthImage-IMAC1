@@ -212,25 +212,49 @@ void Corridor::drawLines(Racket r, std::vector<Enemy> &v_enemys,
 }
 
 // to initialize the enemys
-void Corridor::loadEnemys(std::vector<Enemy> &v_enemys) {
-  std::map<std::string, std::tuple<int, int, int, int, int, int>> enemyMap;
-  std::string line;
-  std::ifstream file("src/enemys.txt");
-  std::string e;
-  int d;
+void Corridor::loadEnemys(std::vector<Enemy> &v_enemys, int level) 
+{
+    std::map<std::string, std::tuple<int, int, int, int, int, int>> enemyMap;
+    std::string line;
+    std::ifstream file("src/enemys.txt");
+    std::string e;
+    int d, start, end, adapt;
+    int lineNumber = 0;
 
-  if (!file.is_open())
+    if (!file.is_open())
     perror("error while opening file\n");
 
-  initializeEnemyMap(enemyMap);
-  while (std::getline(file, line)) {
-    std::istringstream iss(line);
+    initializeEnemyMap(enemyMap);
 
-    if (!(iss >> e >> d))
-      perror("not the good number of elements");
+    end = 100;
 
-    Enemy enemy = createEnemy(enemyMap, e, d);
-    v_enemys.push_back(enemy);
+    printf("LEVEL %d\n", level);
+    if(level == 1)
+    {
+        start = 0;
+        adapt = 0;
+    }
+    else
+    {
+        start = 51;
+        adapt = 1440;
+    }
+
+  while (std::getline(file, line)) 
+  {
+    if (lineNumber >= start && start < end) 
+    {
+        std::istringstream iss(line);
+
+        if (!(iss >> e >> d))
+          perror("not the good number of elements");
+
+        Enemy enemy = createEnemy(enemyMap, e, d - adapt);
+        v_enemys.push_back(enemy);
+
+        start++;
+    }
+    lineNumber++;
   }
 
   if (file.bad())

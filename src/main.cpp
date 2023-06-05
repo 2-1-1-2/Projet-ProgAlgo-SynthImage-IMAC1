@@ -119,7 +119,7 @@ static void cursor_position_callback(GLFWwindow *window, double xpos,
   posX = -(((xpos * 2 / WINDOW_WIDTH) - 1) * aspectRatio) * toRad(FOCAL / 2.) *
          DISTANCE;
 
-  printf("POSX %f POSY %f\n", posX, posY);
+  //printf("POSX %f POSY %f\n", posX, posY);
 }
 
 void mouse_button_callback(GLFWwindow *window, int button, int action,
@@ -134,7 +134,6 @@ void mouse_button_callback(GLFWwindow *window, int button, int action,
       {
         if (posX >= -8.915609 && posX <= 9.018680) 
         {
-          printf("TA RACE\n");
           // Menu 1
           if(game.getMenu().getType() == 0)
           {
@@ -151,13 +150,16 @@ void mouse_button_callback(GLFWwindow *window, int button, int action,
           }
           else if(game.getMenu().getType() == 1) 
           {
-            printf("coucou");
             // Niveau 1
             if (posY >= 7.472621 && posY <= 10.770881)
               game.getMenu().setMenu(false);
             // Niveau 2
             if (posY >= 2.989048 && posY <= 6.081167)
-            {}
+            {
+              printf("coucou\n");
+              game.getMenu().setLevel(2);
+              game.getMenu().setMenu(false);
+            }
             // Retour
             if (posY >= -1.546059 && posY <= 1.597595)
               game.getMenu().setType(0);
@@ -203,8 +205,10 @@ void readFile(std::string nameFile, std::vector<ImgTexture> &v_texture,
   int lineNumber = 0;
   ColorRGB color(r, g, b);
 
-  while (std::getline(file, line) && start < end) {
-    if (lineNumber >= start) {
+  while (std::getline(file, line) && start < end) 
+  {
+    if (lineNumber >= start) 
+    {
       std::istringstream iss(line);
 
       if (!(iss >> t >> format >> rot) &&
@@ -282,7 +286,6 @@ int main(int argc, char **argv) {
   std::vector<Bonus> v_bonus;
 
   readFile("src/loadImg.txt", v_texture, 0, 10);
-  game.getCorridor().loadEnemys(v_enemys);
   game.getCorridor().loadBonus(v_bonus);
 
   /* *********** I N I T     N I N A ********** */
@@ -306,11 +309,12 @@ int main(int argc, char **argv) {
       "img/menu/score/textureScore6.jpg", "img/menu/score/textureScore7.jpg",
       "img/menu/score/textureScore8.jpg", "img/menu/score/textureScore9.jpg"};
 
-  printf("AVANT LA BOUCLE\n");
+  int compteur = 0;
 
   /* Loop until the user closes the window */
   /* ***************** L O O P     G A M E ******************** */
-  while (!glfwWindowShouldClose(window)) {
+  while (!glfwWindowShouldClose(window)) 
+  {
     double startTime = glfwGetTime();
 
     /* Cleaning buffers and setting Matrix Mode */
@@ -341,7 +345,13 @@ int main(int argc, char **argv) {
     }
     /* ******************************** G A M E
      ************************************ */
-    else {
+    else 
+    {
+      if(compteur == 0)
+      {
+        game.getCorridor().loadEnemys(v_enemys, game.getMenu().getLevel());
+        compteur++;
+      }
 
       initLight();
       GLuint textureScore0 = loadTexture(cheminTexture[arr[0]]);
