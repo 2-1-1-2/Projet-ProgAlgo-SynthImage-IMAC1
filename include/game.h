@@ -3,24 +3,24 @@
 #include "3D_tools.h"
 #include "ball.h"
 #include "menu.h"
-#include <math.h>
 #include <GL/gl.h>
 #include <GL/glu.h>
 #include <algorithm>
+#include <math.h>
 
-class Game 
-{
-  public:
-    Game(Ball b, Corridor c, Racket r);
+class Game {
+public:
+  Game(Ball b, Corridor c, Racket r);
 
-    /* ********** F U N C T I O N S ********** */
-    void collision(std::vector<Enemy> v_enemys, float posX, float posY,
+  /* ********** F U N C T I O N S ********** */
+  void collision(std::vector<Enemy> v_enemys, float posX, float posY,
                  int flag_walk);
-    void isThereBonus(std::vector<Bonus>& v_bonus);
-    void drawBonus(std::vector<ImgTexture>& v_texture);
-    bool gameOver();
+  void isThereBonus(std::vector<Bonus> &v_bonus);
+  void drawBonus(std::vector<ImgTexture> &v_texture);
+  bool gameOver();
+  void reset();
 
-    /* ********** G E T T E R S ********** */
+/* ********** G E T T E R S ********** */
     Ball &getBall();
     Corridor &getCorridor();
     Racket &getRacket();

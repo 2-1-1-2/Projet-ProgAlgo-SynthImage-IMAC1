@@ -42,7 +42,8 @@ int Ball::collisionRacket(
 
     setPos('X', r.getPos('X'));
     setPos('Z', r.getPos('Z'));
-    setMode();
+    setPos('Y', DISTANCE / 5 + RADIUS_CIRCLE);
+    m_mode = 1;
     return -1;
   }
   // Bonus de colle
@@ -94,8 +95,6 @@ bool Ball::collisionEnemy(std::vector<Enemy> v_enemys, float cx,
 
       m_speedY = element.getD() < m_y ? abs(m_speedY) : -abs(m_speedY);
       m_y += m_speedY;
-      printf("collision mur ennemie d%f m_y%f m_speedY%f  \n", element.getD(),
-             m_y, m_speedY);
       return true;
     }
   }
@@ -105,9 +104,12 @@ bool Ball::collisionEnemy(std::vector<Enemy> v_enemys, float cx,
 int Ball::collision(Corridor c, Racket r, std::vector<Enemy> v_enemys,
                     bool glue, bool *collision_racket) {
   *collision_racket = false;
-  return (collisionCorridor(c) || collisionRacket(r, glue, collision_racket) ||
-          collisionEnemy(v_enemys, c.getPos('X') - m_radius * 2,
-                         c.getPos('Z') - m_radius * 2));
+  if (collisionCorridor(c))
+    return true;
+  if (collisionEnemy(v_enemys, c.getPos('X') - m_radius * 2,
+                     c.getPos('Z') - m_radius * 2))
+    return true;
+  return collisionRacket(r, glue, collision_racket);
 }
 
 /* ********** G E T T E R S ********** */
