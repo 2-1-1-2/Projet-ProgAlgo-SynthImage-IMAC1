@@ -10,7 +10,7 @@ Corridor::Corridor(int x, int y, int z, float speed) {
   this->m_start = -14;
   this->m_walk = 0;
   this->m_km = -14;
-  this->m_speed = 0.25;
+  this->m_speed = 0.3;
 
   float colors[6] = {0.5, 0.5, 1, 0.5, 0.8, 1};
   std::copy(colors, colors + 6, m_colors);

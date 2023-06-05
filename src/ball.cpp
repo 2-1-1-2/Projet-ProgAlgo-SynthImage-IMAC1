@@ -53,8 +53,8 @@ bool Ball::collisionRacket(Racket r) {
     return false;
   }
   printf("collision raquette\n");
-  m_speedX = (d_x) / (r.getLength() * 4.);
-  m_speedZ = (d_z) / (r.getLength() * 4.);
+  m_speedX = (d_x) / (r.getLength() * 5.);
+  m_speedZ = (d_z) / (r.getLength() * 5.);
   // m_y += r.getLength();
 
   m_speedY *= -1;
@@ -88,15 +88,15 @@ bool Ball::collisionEnemy(std::vector<Enemy> v_enemys, float cx,
   for (Enemy element : v_enemys) {
     min = element.getD() < min ? element.getD() : min;
     // printf("MIN %f m_y%f \n", min, m_y);
-    if (abs(element.getD() - m_y) > RADIUS_CIRCLE/* && (m_speedY< 0 && element.getD() > m_y || m_speedY> 0 && element.getD() < m_y )*/)
+    if (abs(element.getD() - m_y) > RADIUS_CIRCLE)
       continue;
+
     if (element.contains(m_x, m_z, cx, cz)) {
 
-      printf("DEPTH %f m_km %f cc %d\n", element.getD(), m_km,
-             (m_km > element.getD()));
-      m_y += m_speedY < 0 ? m_radius + 1 : -m_radius - 1;
-      m_speedY *= -1;
-      printf("collision mur ennemie\n");
+      m_speedY = element.getD() < m_y ? 0.15 : -0.15;
+      m_y += m_speedY;
+      printf("collision mur ennemie d%f m_y%f m_speedY%f  \n", element.getD(),
+             m_y, m_speedY);
       return true;
     }
   }
