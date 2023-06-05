@@ -253,7 +253,6 @@ int main(int argc, char **argv) {
   glPointSize(5.0);
   glEnable(GL_DEPTH_TEST);
   glEnable(GL_BLEND);
-  // initLight();
 
   /* ********** I N I T I A L I S A T I O N ********** */
   srand(static_cast<unsigned int>(time(nullptr)));
@@ -327,6 +326,8 @@ int main(int argc, char **argv) {
     /* ******************************** G A M E
      ************************************ */
     else {
+
+      initLight();
       GLuint textureScore0 = loadTexture(cheminTexture[arr[0]]);
       GLuint textureScore1 = loadTexture(cheminTexture[arr[1]]);
       GLuint textureScore2 = loadTexture(cheminTexture[arr[2]]);

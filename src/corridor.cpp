@@ -70,14 +70,13 @@ void Corridor::collision(Racket r, std::vector<Enemy> v_enemys) {
 
 void Corridor::drawCorridor(std::vector<ImgTexture> &v_texture) {
   static GLfloat vCompColor[4];
-  vCompColor[0] = 145 / 255.0f;
-  vCompColor[1] = 82 / 255.0f;
-  vCompColor[2] = 157 / 255.0f;
+  vCompColor[0] = 1.0f;
+  vCompColor[1] = 1.0f;
+  vCompColor[2] = 1.0f;
   vCompColor[3] = 1.0f;
-  glMaterialfv(GL_FRONT_AND_BACK, GL_AMBIENT_AND_DIFFUSE, vCompColor);
-  glMaterialfv(GL_FRONT_AND_BACK, GL_SPECULAR, vCompColor);
+  glMaterialfv(GL_FRONT, GL_AMBIENT_AND_DIFFUSE, vCompColor);
+  glMaterialfv(GL_FRONT, GL_SPECULAR, vCompColor);
 
-  glMaterialf(GL_FRONT_AND_BACK, GL_SHININESS, 10.0f);
   glColor3f(145 / 255., 82 / 255., 157 / 255.);
 
   // drawTexture(v_texture[3].img);

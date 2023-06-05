@@ -20,9 +20,10 @@ void Ball::drawBall() {
   vCompColor[1] = 1.;
   vCompColor[2] = 1.;
   vCompColor[3] = 1.f;
-  glMaterialfv(GL_FRONT_AND_BACK, GL_AMBIENT_AND_DIFFUSE, vCompColor);
-  glMaterialfv(GL_FRONT_AND_BACK, GL_SPECULAR, vCompColor);
+  glMaterialfv(GL_FRONT, GL_AMBIENT_AND_DIFFUSE, vCompColor);
+  glMaterialfv(GL_FRONT, GL_SPECULAR, vCompColor);
 
+  glColor3f(1, 1, 1);
   GLUquadricObj *quadric = gluNewQuadric();
   gluQuadricTexture(quadric, GL_TRUE);
   // gluDeleteQuadric(quadric);

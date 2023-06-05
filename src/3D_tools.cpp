@@ -158,7 +158,6 @@ void drawSphere() {
 }
 
 void light() {
-
   GLfloat specular[] = {1, 1, 1, 1.0};
   GLfloat shininess[] = {1.0};
   GLfloat DiffuseLight[] = {0.5, 0.5, 0.5, 1};
