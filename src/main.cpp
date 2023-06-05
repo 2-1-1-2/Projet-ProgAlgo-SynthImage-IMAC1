@@ -323,18 +323,27 @@ int main(int argc, char **argv) {
     }
     /* ******************************** G A M E
      ************************************ */
-    else if (game.gameOver()) {
+    else if (!game.gameOver()) {
 
-      drawMenuCase(textureMenu);
+      // Load texture Menu
+
       GLuint textureScore0 = loadTexture(cheminTexture[arr[0]]);
       GLuint textureScore1 = loadTexture(cheminTexture[arr[1]]);
       GLuint textureScore2 = loadTexture(cheminTexture[arr[2]]);
       GLuint textureScore3 = loadTexture(cheminTexture[arr[3]]);
       GLuint textureScore4 = loadTexture(cheminTexture[arr[4]]);
       GLuint textureScore5 = loadTexture(cheminTexture[arr[5]]);
-      drawScoreCaseFin(textureScoreCase, textureScore0, textureScore1,
-                       textureScore2, textureScore3, textureScore4,
-                       textureScore5);
+
+      // Load texture Fin du jeu
+      GLuint textureFin = loadTexture("../doc/textureFin.jpg");
+      GLuint textureRejouer = loadTexture("../doc/textureRejouer.jpg");
+      GLuint textureScore = loadTexture("../doc/textureScore.jpg");
+      GLuint textureScoreCase = loadTexture("../doc/textureScoreCase.jpg");
+
+      GLuint textureQuitter = loadTexture("../doc/textureQuitter.jpg");
+      drawFinJeu(textureFin, textureScore, textureScoreCase, textureScore0,
+                 textureScore1, textureScore2, textureScore3, textureScore4,
+                 textureScore5, textureRejouer, textureQuitter);
     } else {
 
       initLight();
