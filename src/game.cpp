@@ -1,6 +1,7 @@
 #include "../include/game.h"
 #include "../include/3D_tools.h"
 #include "../include/draw_scene.h"
+#include "../include/menu.h"
 #include <algorithm>
 
 Game::Game(Ball b, Corridor c, Racket r) 
@@ -8,7 +9,8 @@ Game::Game(Ball b, Corridor c, Racket r)
   m_ball = Ball(b.getPos('X'), b.getPos('Y'), b.getPos('Z'));
   m_corridor = Corridor(c.getPos('X'),c.getPos('Y'), c.getPos('Z'),c.getSpeed()) ;
   m_racket = Racket(r.getPos('X'),r.getPos('Y'), r.getPos('Z'));
-  m_life = 2;
+  m_life = 5;
+  m_score = 0;
   m_glue = false;
   m_lose = false;
 }
@@ -118,9 +120,11 @@ bool Game::gameOver()
 Ball &Game::getBall() { return m_ball; }
 Corridor &Game::getCorridor() { return m_corridor; }
 Racket &Game::getRacket() { return m_racket; }
+Menu &Game::getMenu() { return m_menu; }
 int Game::getLife() { return m_life; }
 bool Game::getGlue() { return m_glue; }
 bool Game::getLose() { return m_lose; }
+float Game::getScore() { return m_score; }
 
 
 
@@ -135,4 +139,8 @@ void Game::setGlue(bool glue) {
 
 void Game::setLose(bool lose) {
   m_lose = lose;
+}
+
+void Game::setScore() {
+  m_score += (float)m_corridor.getSpeed();
 }

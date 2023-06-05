@@ -22,7 +22,7 @@ Corridor::Corridor(int x, int y, int z, float speed)
     this->m_z = z;
     this->m_start = -14;
     this->m_walk = 0;
-    this->m_km = -14;
+    //this->m_km = -14;
     this->m_speed = speed;
 
     float colors[6] = {0.5, 0.5, 1, 0.5, 0.8, 1};
@@ -247,9 +247,9 @@ int Corridor::getZ() {
     return this->m_z;
 }
 
-int Corridor::getKm() {
+/*int Corridor::getKm() {
     return m_km;
-}
+}*/
 
 int Corridor::getWalk() {
     return m_walk;
@@ -268,7 +268,7 @@ float Corridor::getPos(char pos) {
 void Corridor::setWalk()
 {
     this->m_walk += m_speed;
-    this->m_km += m_speed;
+    //this->m_km += m_speed;
     //printf("Km: %f\n", m_km);
 }
 

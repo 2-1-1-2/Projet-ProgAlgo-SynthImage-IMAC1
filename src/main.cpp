@@ -20,6 +20,8 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <vector>
+#include "menu.h"
+#include <cmath>
 
 /* Window properties */
 static unsigned int WINDOW_WIDTH = 1920;
@@ -38,12 +40,23 @@ static int flag_walk = 0;
 float alpha = 60;
 static Game game(Ball(0., DISTANCE - 4, 0.), Corridor(25, alpha, 12, 1),
                  Racket(0., DISTANCE - 5, 0));
+
 double posX = 0, posY = 0;
 float h = -tan(toRad(alpha / 2.)) * 3 * DISTANCE;
 
 /* Error handling function */
 void onError(int error, const char *description) {
   fprintf(stderr, "GLFW Error: %s\n", description);
+}
+
+void score(float score, int (&arr)[6])
+{
+  arr[0] = round(score/100000.0f);
+  arr[1] = fmodf(score/10000.0f, 10.0f);
+  arr[2] = fmodf(score/1000.0f, 10.0f);
+  arr[3] = fmodf(score/100.0f, 10.0f);
+  arr[4] = fmodf(score/10.0f, 10.0f);
+  arr[5] = fmodf(score, 10.0f);
 }
 
 void onWindowResized(GLFWwindow *window, int width, int height) 
@@ -92,6 +105,8 @@ static void cursor_position_callback(GLFWwindow *window, double xpos,
   // TODO décalage sur les bords pour que ça ne sorte pas
   posX = xpos * ((h * aspectRatio) / WINDOW_WIDTH) - ((h * aspectRatio) / 2);
   posY = (-ypos * (h / WINDOW_HEIGHT) + (h / 2));
+
+  //printf("SVP SNIF JE PLEURE %f %f\n", posX, posY);
 }
 
 void mouse_button_callback(GLFWwindow *window, int button, int action,
@@ -101,9 +116,30 @@ void mouse_button_callback(GLFWwindow *window, int button, int action,
     /* ***** W A L K ***** */
     case GLFW_MOUSE_BUTTON_LEFT:
       // si le bouton est pressé et que la balle est en mouvement
-      if(action == GLFW_PRESS && game.getBall().getMode() == -1)
-        flag_walk = 1;
-      else
+      if(action == GLFW_PRESS)
+      {
+        if(game.getMenu().getMenu())
+        {
+          if (posX >= -5.949663 && posX <= 6.017853)
+          {
+            // Jouer
+            if(posY >= 0.426194 && posY <= 2.591258)
+            {
+              game.getMenu().setType(0);
+              game.getMenu().setMenu(false);
+            }
+            // Niveaux
+            if(posY >= -2.608304 && posY <= -0.392098)
+              game.getMenu().setType(1);
+            // Quitter
+            if(posY >= -5.608707 && posY <= -3.392501)
+              glfwSetWindowShouldClose(window, GLFW_TRUE);
+          }
+        }
+        else if(game.getBall().getMode() == -1)
+          flag_walk = 1;
+      }
+      else if (action == GLFW_RELEASE)
         flag_walk = 0;
       break;
     case GLFW_MOUSE_BUTTON_RIGHT:
@@ -221,24 +257,32 @@ int main(int argc, char **argv)
   game.getCorridor().loadEnemys(v_enemys);
   game.getCorridor().loadBonus(v_bonus);
 
-  /* ***************** L O O P ******************** */
+  /* *********** I N I T     N I N A ********** */
+  GLuint textureMenu = loadTexture("img/menu/principal/menu.jpg");
+  GLuint textureJouer = loadTexture("img/menu/principal/jouer.jpg");
+  GLuint textureNiveaux = loadTexture("img/menu/principal/niveaux.jpg");
+  GLuint textureQuitter = loadTexture("img/menu/principal/quitter.jpg");
+
+  //Load texture Niveaux
+  GLuint textureNiveau1 = loadTexture("img/menu/niveaux/niveau1.jpg");
+  GLuint textureNiveau2 = loadTexture("img/menu/niveaux/niveau2.jpg");
+  GLuint textureNiveau3 = loadTexture("img/menu/niveaux/niveau3.jpg");
+  GLuint textureNiveau4 = loadTexture("img/menu/niveaux/niveau4.jpg");
+  GLuint textureNiveau5 = loadTexture("img/menu/niveaux/niveau5.jpg");
+
+  // score
+  GLuint textureScoreCase = loadTexture("img/menu/score/textureScoreCase.jpg");
+  int arr[6] = {0};
+  const int nombreTexture = 10;
+  const char* cheminTexture[nombreTexture] = {"img/menu/score/textureScore0.jpg", "img/menu/score/textureScore1.jpg", "img/menu/score/textureScore2.jpg", "img/menu/score/textureScore3.jpg","img/menu/score/textureScore4.jpg","img/menu/score/textureScore5.jpg", "img/menu/score/textureScore6.jpg", "img/menu/score/textureScore7.jpg","img/menu/score/textureScore8.jpg","img/menu/score/textureScore9.jpg"};
+
+
+
   /* Loop until the user closes the window */
+  /* ***************** L O O P     G A M E ******************** */
   while (!glfwWindowShouldClose(window)) 
   {
-    //printf("ALEEEED %d\n", game.getBall().getMode());
-    /* Get time (in second) at loop beginning */
     double startTime = glfwGetTime();
-
-    if (flag_walk) {
-      game.getCorridor().setWalk();
-      // game.getRacket().setMode();
-    }
-
-    /* ***** R A C K E T ***** */
-    game.getRacket().setPos(posX, posY);
-    game.getBall().move(posX, posY);
-    if(game.gameOver())
-      glfwSetWindowShouldClose(window, GLFW_TRUE);
 
     /* Cleaning buffers and setting Matrix Mode */
     glClearColor(0.2, 0.0, 0.0, 0.0);
@@ -251,38 +295,83 @@ int main(int argc, char **argv)
 
     /* Initial scenery setup */
     drawFrame();
-
-    /* ***** B O N U S ***** */
-    game.isThereBonus(v_bonus);
-    /* ***** C O R R I D O R ***** */
-    game.getCorridor().drawCorridor(v_texture);
-    game.getCorridor().drawLines(v_enemys, v_bonus, v_texture);
-    game.drawBonus(v_texture);
-
-    glPushMatrix();
-      game.getRacket().drawRacket();
-    glPopMatrix();
-
-    glPushMatrix();
-    // On dessine la balle
-    drawTexture(v_texture[0].img);
-    drawTransparence();
-
-    glTranslatef(game.getBall().getPos('X'), game.getBall().getPos('Y'),
-                 game.getBall().getPos('Z'));
-    game.getBall().drawBall();
-    finTexture();
-    glPopMatrix();
-
-    // S'il y a collision avec la raquette
-    if(game.getBall().collision(game.getCorridor(), game.getRacket(), game.getGlue()))
+    /* ********************* M   E   N   U ********************** */
+    if(game.getMenu().getMenu())
     {
-      // Le joueur a perdu
-      if(game.getLose())
-        flag_walk = 0;
-      // Si le joueur n'a pas perdu et qu'il a le bonus colle
-      else if(!game.getLose() && game.getGlue())
-        game.setGlue(false);
+      switch (game.getMenu().getType()) 
+      {
+        case 0:
+            drawMenu(textureMenu, textureJouer, textureNiveaux, textureQuitter);
+        case 1:
+          drawNiveaux(textureNiveau1, textureNiveau2, textureNiveau3, textureNiveau4, textureNiveau5);
+      }
+    }
+    /* ******************************** G A M E ************************************ */
+    else
+    {
+      GLuint textureScore0 = loadTexture(cheminTexture[arr[0]]);
+      GLuint textureScore1 = loadTexture(cheminTexture[arr[1]]);
+      GLuint textureScore2 = loadTexture(cheminTexture[arr[2]]);
+      GLuint textureScore3 = loadTexture(cheminTexture[arr[3]]);
+      GLuint textureScore4 = loadTexture(cheminTexture[arr[4]]);
+      GLuint textureScore5 = loadTexture(cheminTexture[arr[5]]);
+
+      if (flag_walk) 
+      {
+        game.getCorridor().setWalk();
+        game.setScore();
+        // game.getRacket().setMode();
+      }
+
+      printf("LE SCORE %f\n", game.getScore());
+
+      /* ***** R A C K E T ***** */
+      game.getRacket().setPos(posX, posY);
+      game.getBall().move(posX, posY);
+      if(game.gameOver())
+        glfwSetWindowShouldClose(window, GLFW_TRUE);
+
+      
+
+      /* ***** B O N U S ***** */
+      game.isThereBonus(v_bonus);
+      /* ****************************** D R A W I N G ****************************** */
+      game.getCorridor().drawCorridor(v_texture);
+      game.getCorridor().drawLines(v_enemys, v_bonus, v_texture);
+      game.drawBonus(v_texture);
+      drawMenuCase(textureMenu);
+      drawScoreCase(textureScoreCase, textureScore0, textureScore1, textureScore2, textureScore3, textureScore4, textureScore5);
+
+      /* ALED */
+      score(game.getScore(), arr);
+      printf("TA RACE %f %d\n", game.getScore(), arr[2]);
+
+
+      glPushMatrix();
+        game.getRacket().drawRacket();
+      glPopMatrix();
+
+      glPushMatrix();
+      // On dessine la balle
+      drawTexture(v_texture[0].img);
+      drawTransparence();
+
+      glTranslatef(game.getBall().getPos('X'), game.getBall().getPos('Y'),
+                   game.getBall().getPos('Z'));
+      game.getBall().drawBall();
+      finTexture();
+      glPopMatrix();
+
+      // S'il y a collision avec la raquette
+      if(game.getBall().collision(game.getCorridor(), game.getRacket(), game.getGlue()))
+      {
+        // Le joueur a perdu
+        if(game.getLose())
+          flag_walk = 0;
+        // Si le joueur n'a pas perdu et qu'il a le bonus colle
+        else if(!game.getLose() && game.getGlue())
+          game.setGlue(false);
+      }
     }
     // printf("TOUCHE ? %d\n",
     // game.getBall().collisionRacket(game.getRacket()));
@@ -308,6 +397,17 @@ int main(int argc, char **argv)
   for (auto texture : v_texture) {
     deleteTexture(texture.img);
   }
+
+  deleteTexture(textureMenu);
+  deleteTexture(textureJouer);
+  deleteTexture(textureNiveaux);
+  deleteTexture(textureScoreCase);
+  deleteTexture(textureQuitter);
+  deleteTexture(textureNiveau1);
+  deleteTexture(textureNiveau2);
+  deleteTexture(textureNiveau3);
+  deleteTexture(textureNiveau4);
+  deleteTexture(textureNiveau5);
 
   v_enemys.clear();
   v_bonus.clear();

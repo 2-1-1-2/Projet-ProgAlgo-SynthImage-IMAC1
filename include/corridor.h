@@ -23,7 +23,7 @@ class Corridor
 
         /* ********** G E T T E R S ********** */
         int getZ();
-        int getKm();
+        //int getKm();
         int getWalk();
         int getSpeed();
         float getPos(char pos);
@@ -37,7 +37,7 @@ class Corridor
         int m_y;
         int m_z;
         int m_start;
-        float m_km;
+        //float m_km;
         float m_walk;
         float m_speed;
         float m_colors[6];
