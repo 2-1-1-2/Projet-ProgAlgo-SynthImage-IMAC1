@@ -90,17 +90,17 @@ void Game::isThereBonus(std::vector<Bonus> &v_bonus) {
 }
 
 void Game::drawBonus(std::vector<ImgTexture> &v_texture) {
-  float x = -15.5;
+  float x = -22.5;
   float y = -14;
-  float z = -8;
-  float h = 0.8;
+  float z = -16;
+  float h = 3;
 
   drawTexture(v_texture[8].img);
 
   for (int i = 0; i < m_life; i++) {
     drawCircle(x, y, z, h);
-    x += 0.8;
-    z -= 0.00001;
+    x += 2.5;
+    y -= 0.1;
   }
   finTexture();
 
