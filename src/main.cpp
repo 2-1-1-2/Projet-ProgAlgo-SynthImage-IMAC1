@@ -213,6 +213,7 @@ int main(int argc, char **argv) {
 
   glPointSize(5.0);
   glEnable(GL_DEPTH_TEST);
+  initLight();
 
   /* ********** I N I T ********** */
   srand(static_cast<unsigned int>(time(nullptr)));

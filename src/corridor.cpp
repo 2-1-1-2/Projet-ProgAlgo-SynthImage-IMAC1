@@ -10,7 +10,7 @@ Corridor::Corridor(int x, int y, int z, float speed) {
   this->m_start = -14;
   this->m_walk = 0;
   this->m_km = -14;
-  this->m_speed = 0.2;
+  this->m_speed = 0.25;
 
   float colors[6] = {0.5, 0.5, 1, 0.5, 0.8, 1};
   std::copy(colors, colors + 6, m_colors);
@@ -50,7 +50,15 @@ void Corridor::collision(Racket r, std::vector<Enemy> v_enemys) {
 void Corridor::drawCorridor(std::vector<ImgTexture> &v_texture) {
   // bottom square
   // drawTexture(v_texture[3].img);
+  static GLfloat vCompColor[4];
+  vCompColor[0] = 145 / 255.0f;
+  vCompColor[1] = 82 / 255.0f;
+  vCompColor[2] = 157 / 255.0f;
+  vCompColor[3] = 1.0f;
+  glMaterialfv(GL_FRONT_AND_BACK, GL_AMBIENT_AND_DIFFUSE, vCompColor);
+  glMaterialfv(GL_FRONT_AND_BACK, GL_SPECULAR, vCompColor);
 
+  glMaterialf(GL_FRONT_AND_BACK, GL_SHININESS, 10.0f);
   glColor3f(145 / 255., 82 / 255., 157 / 255.);
   drawSquare(m_x, m_y, -m_z, m_start, true);
   // finTexture();
@@ -71,6 +79,14 @@ void Corridor::drawCorridor(std::vector<ImgTexture> &v_texture) {
 void Corridor::drawLines(std::vector<Enemy> &v_enemys,
                          std::vector<ImgTexture> &v_texture) {
   // color white
+
+  static GLfloat vCompColor[4];
+  vCompColor[0] = 0.9f;
+  vCompColor[1] = 0.9f;
+  vCompColor[2] = 0.9f;
+  vCompColor[3] = 1.0f;
+  glMaterialfv(GL_FRONT_AND_BACK, GL_AMBIENT_AND_DIFFUSE, vCompColor);
+  glMaterialfv(GL_FRONT_AND_BACK, GL_SPECULAR, vCompColor);
   glColor3f(1, 1, 1);
   // size of the line
   glLineWidth(2);
@@ -192,7 +208,6 @@ float Corridor::getPos(char pos) {
 void Corridor::setWalk() {
   this->m_walk += m_speed;
   this->m_km += m_speed;
-  printf("Km: %f\n", m_speed);
 }
 
 void Corridor::setWalk(int walk) { m_walk = walk; }

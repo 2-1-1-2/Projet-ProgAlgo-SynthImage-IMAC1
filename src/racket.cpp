@@ -12,6 +12,15 @@ Racket::Racket(float x, float y, float z) {
 
 void Racket::drawRacket() {
 
+  static GLfloat vCompColor[4];
+  vCompColor[0] = 104. / 255.;
+  vCompColor[1] = 42. / 255.;
+  vCompColor[2] = 115. / 255.;
+  vCompColor[3] = .5f;
+  glMaterialfv(GL_FRONT_AND_BACK, GL_AMBIENT_AND_DIFFUSE, vCompColor);
+  glMaterialfv(GL_FRONT_AND_BACK, GL_SPECULAR, vCompColor);
+
+  glMaterialf(GL_FRONT_AND_BACK, GL_SHININESS, 10.0f);
   glColor4f(104., 42., 115., 0.5);
   glLineWidth(2);
   glBegin(m_mode);

@@ -7,7 +7,7 @@ Ball::Ball(float x, float y, float z) {
   m_life = 5;
   m_size = 32;
   m_speedX = 0;
-  m_speedY = 0.2;
+  m_speedY = 0.15;
   m_radius = RADIUS_CIRCLE;
   m_speedZ = 0;
   m_mode = 1; // 1 sticky, -1 rebond
@@ -16,7 +16,15 @@ Ball::Ball(float x, float y, float z) {
 
 /* ********** F U N C T I O N S ********** */
 void Ball::drawBall() {
-  glColor3f(1, 1, 1);
+
+  static GLfloat vCompColor[4];
+  vCompColor[0] = 1.;
+  vCompColor[1] = 1.;
+  vCompColor[2] = 1.;
+  vCompColor[3] = 1.f;
+  glMaterialfv(GL_FRONT_AND_BACK, GL_AMBIENT_AND_DIFFUSE, vCompColor);
+  glMaterialfv(GL_FRONT_AND_BACK, GL_SPECULAR, vCompColor);
+
   GLUquadricObj *quadric = gluNewQuadric();
   gluQuadricTexture(quadric, GL_TRUE);
   // gluDeleteQuadric(quadric);
@@ -80,16 +88,14 @@ bool Ball::collisionEnemy(std::vector<Enemy> v_enemys, float cx,
   for (Enemy element : v_enemys) {
     min = element.getD() < min ? element.getD() : min;
     // printf("MIN %f m_y%f \n", min, m_y);
-
-    if (((int)(m_y) == (int)(element.getD() - m_radius / 1.5) && m_speedY > 0 ||
-         (int)(m_y) == (int)(element.getD() + m_radius / 1.5) &&
-             m_speedY < 0) &&
-        element.contains(m_x, m_z, cx, cz)) {
+    if (abs(element.getD() - m_y) > RADIUS_CIRCLE/* && (m_speedY< 0 && element.getD() > m_y || m_speedY> 0 && element.getD() < m_y )*/)
+      continue;
+    if (element.contains(m_x, m_z, cx, cz)) {
 
       printf("DEPTH %f m_km %f cc %d\n", element.getD(), m_km,
              (m_km > element.getD()));
+      m_y += m_speedY < 0 ? m_radius + 1 : -m_radius - 1;
       m_speedY *= -1;
-
       printf("collision mur ennemie\n");
       return true;
     }
